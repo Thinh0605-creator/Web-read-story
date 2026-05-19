@@ -77,12 +77,8 @@
                 });
             }
 
-            // Ghi nhận lịch sử đọc vào bộ nhớ máy tính người dùng
             const readingHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
-            readingHistory[storyId] = {
-                chapter: parseInt(chNum),
-                time: new Date().getTime()
-            };
+            readingHistory[storyId] = { chapter: parseInt(chNum), time: new Date().getTime() };
             localStorage.setItem('wattpad_reading_history', JSON.stringify(readingHistory));
 
             database.ref(`stories/${storyId}/chapters/chuong_${chNum}`).once('value').then((snapshot) => {

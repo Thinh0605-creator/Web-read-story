@@ -1,4 +1,120 @@
-// SỬA LẠI ĐOẠN ĐỌC DANH SÁCH CHƯƠNG TRONG DETAIL.HTML
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Truyện - My Wattpad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .blur-bg {
+            filter: blur(20px);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black text-orange-600 tracking-tighter">WATTPAD-CLONE</a>
+            <div class="flex space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-orange-600 font-medium">Quay lại trang chủ</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative overflow-hidden bg-gray-900 py-16">
+        <img id="bg-blur" src="https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-bg">
+        
+        <div class="relative max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+            <div class="w-48 h-72 flex-shrink-0 shadow-2xl rounded-lg overflow-hidden border-2 border-white/20">
+                <img id="story-cover" src="https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover">
+            </div>
+
+            <div class="text-white text-center md:text-left">
+                <h1 id="story-title" class="text-4xl font-bold mb-2">Đang tải truyện...</h1>
+                <p id="story-author" class="text-orange-400 font-medium mb-4 italic">Tác giả: ...</p>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-6 text-sm">
+                    <span id="story-views-display">👁️ 0 lượt đọc</span>
+                    <span id="total-chapters-count">📝 0 chương</span>
+                </div>
+
+                <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                    <a id="btn-read-now" href="read.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105">
+                        Đọc ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div class="md:col-span-2">
+            <section class="mb-10">
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 w-fit pb-1">Giới thiệu</h3>
+                <p id="story-desc" class="text-gray-700 leading-relaxed whitespace-pre-line">Đang tải nội dung tóm tắt...</p>
+            </section>
+
+            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border">
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 w-fit pb-1">Danh sách chương</h3>
+                <div id="chapters-list" class="space-y-2">
+                    </div>
+            </section>
+        </div>
+
+        <div class="md:col-span-1">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border sticky top-24">
+                <h4 class="font-bold mb-4">Thông tin truyện</h4>
+                <div class="text-sm space-y-3 text-gray-600">
+                    <p><strong>Trạng thái:</strong> Đang tiến hành</p>
+                    <p><strong>Thể loại:</strong> Thanh xuân, Lãng mạn</p>
+                    <p><strong>Tags:</strong> 
+                        <span class="bg-gray-100 px-2 py-1 rounded">#muahe</span>
+                        <span class="bg-gray-100 px-2 py-1 rounded">#tinhyeu</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+
+        if(storyId) {
+            document.getElementById('btn-read-now').href = `read.html?id=${storyId}&ch=1`;
+
+            // 1. Tải thông tin chung
+            database.ref(`stories/${storyId}/story_info`).once('value').then((snapshot) => {
+                const info = snapshot.val();
+                if(info) {
+                    document.getElementById('story-title').innerText = info.title;
+                    document.getElementById('story-author').innerText = "Tác giả: " + (info.author || "Khuyết danh");
+                    document.getElementById('story-desc').innerText = info.description || "Truyện chưa có tóm tắt.";
+                    document.getElementById('story-cover').src = info.cover;
+                    document.getElementById('bg-blur').src = info.cover;
+                    document.getElementById('story-views-display').innerText = `👁️ ${info.views || 0} lượt đọc`;
+                }
+            });
+
+            // 2. Tải danh sách chương nối chữ tự động
             database.ref(`stories/${storyId}/chapters`).on('value', (snapshot) => {
                 const listContainer = document.getElementById('chapters-list');
                 listContainer.innerHTML = "";
@@ -6,21 +122,25 @@
                 const chapters = snapshot.val();
                 if(!chapters) {
                     listContainer.innerHTML = `<p class="text-gray-400 italic text-sm">Tác giả đang chuẩn bị bản thảo cho chương đầu tiên.</p>`;
+                    document.getElementById('total-chapters-count').innerText = "📝 0 chương";
                     return;
                 }
 
-                // Sắp xếp chương theo số thứ tự chính xác
                 const sortedKeys = Object.keys(chapters).sort((a,b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
+                document.getElementById('total-chapters-count').innerText = `📝 ${sortedKeys.length} chương`;
 
                 sortedKeys.forEach((chKey) => {
                     const ch = chapters[chKey];
-                    // Tự động ghép nối "Chương + Số chương + : + Tên chương" ở đây
                     const row = `
                         <a href="read.html?id=${storyId}&ch=${ch.id}" class="flex justify-between items-center p-4 bg-gray-50 hover:bg-orange-50 border rounded-xl transition font-medium text-gray-700 hover:text-orange-600">
                             <span>Chương ${ch.id}: ${ch.title}</span>
-                            <span class="text-gray-400 text-xs">${ch.date || ''}</span>
+                            <span class="text-gray-400 text-xs">${ch.date || 'Gần đây'}</span>
                         </a>
                     `;
                     listContainer.innerHTML += row;
                 });
             });
+        }
+    </script>
+</body>
+</html>
