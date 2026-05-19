@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Viết Truyện - Firebase Pro Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@400&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .editor-input:focus { outline: none; }
+        .font-story { font-family: 'Merriweather', serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="bg-white border-b sticky top-0 z-50 px-6 py-3 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-gray-500 hover:text-gray-700">← Rời khỏi</a>
+            <span id="save-status" class="text-sm text-orange-500 font-medium">Bước 1: Thiết lập truyện</span>
+        </div>
+        <div>
+            <button id="btn-publish" onclick="publishToFirebase()" class="hidden bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow transition">
+                🚀 Đăng tải lên mạng
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-10">
+        
+        <div id="step-1-container" class="bg-white rounded-2xl shadow-sm border p-8 md:p-12 space-y-6">
+            <h2 class="text-2xl font-bold text-orange-600 border-b pb-3">✍️ Thiết Lập Truyện Mới</h2>
+            
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-2">ẢNH BÌA TRUYỆN</label>
+                <input type="file" id="book-cover-file" accept="image/*" class="hidden" onchange="previewImage(this)">
+                <div onclick="document.getElementById('book-cover-file').click()" 
+                     class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/30 transition min-h-[180px] bg-gray-50 overflow-hidden relative">
+                    <img id="cover-preview" class="hidden absolute inset-0 w-full h-full object-contain z-10 bg-white" src="" alt="Preview">
+                    <div id="upload-instruction" class="text-center">
+                        <span class="text-4xl block mb-2">🖼️</span>
+                        <p class="text-sm font-semibold text-gray-600">Bấm vào đây để tải ảnh từ máy tính lên</p>
+                        <p class="text-xs text-gray-400 mt-1">Hỗ trợ PNG, JPG, JPEG (Nên dùng ảnh dọc)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">TÊN TRUYỆN TỔNG THỂ</label>
+                    <input type="text" id="book-title" class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold text-lg" >
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">TÊN TÁC GIẢ (BÚT DANH)</label>
+                    <input type="text" id="book-author" class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold text-lg text-orange-600" >
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-2">TÓM TẮT / GIỚI THIỆU TRUYỆN</label>
+                <textarea id="book-desc" class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none h-32 resize-none" ></textarea>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="goToStep2()" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-bold shadow transition">
+                    Tiếp tục: Viết nội dung chương →
+                </button>
+            </div>
+        </div>
+
+        <div id="step-2-container" class="hidden bg-white rounded-2xl shadow-sm border p-8 md:p-12 min-h-[70vh]">
+            <button onclick="goToStep1()" class="text-sm text-gray-400 hover:text-orange-500 mb-4 inline-block">← Sửa lại thông tin truyện</button>
+
+            <div class="flex gap-4 mb-4">
+                <div class="w-1/3">
+                    <label class="block text-xs text-gray-400 font-bold mb-1">SỐ CHƯƠNG</label>
+                    <input type="number" id="chapter-id" class="w-full p-2 border rounded font-bold" placeholder="Ví dụ: 1" min="1">
+                </div>
+                <div class="w-2/3">
+                    <label class="block text-xs text-gray-400 font-bold mb-1">TIÊU ĐỀ CHƯƠNG</label>
+                    <input type="text" id="story-title" class="w-full p-2 border rounded font-bold" placeholder="Ví dụ: Khởi đầu mới...">
+                </div>
+            </div>
+            
+            <label class="block text-xs text-gray-400 font-bold mb-1">NỘI DUNG TRUYỆN</label>
+            <textarea id="story-body" class="editor-input w-full min-h-[50vh] text-lg leading-relaxed font-story resize-none border p-4 rounded-xl" placeholder="Bắt đầu gõ nội dung chương truyện tại đây..."></textarea>
+        </div>
+
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/", 
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const step1 = document.getElementById('step-1-container');
+        const step2 = document.getElementById('step-2-container');
+        const btnPublish = document.getElementById('btn-publish');
+        const statusSpan = document.getElementById('save-status');
+
+        const bookTitleInput = document.getElementById('book-title');
+        const bookAuthorInput = document.getElementById('book-author');
+        const bookDescInput = document.getElementById('book-desc');
+        const chIdInput = document.getElementById('chapter-id');
+        const titleInput = document.getElementById('story-title');
+        const bodyInput = document.getElementById('story-body');
+
+        let base64ImageString = "";
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                if(file.size > 1500000) {
+                    alert("Ảnh hơi nặng rồi cậu ơi! Hãy chọn ảnh dưới 1.5MB nhé.");
+                    input.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64ImageString = e.target.result;
+                    const previewImg = document.getElementById('cover-preview');
+                    previewImg.src = base64ImageString;
+                    previewImg.classList.remove('hidden');
+                    document.getElementById('upload-instruction').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function goToStep2() {
+            if(!bookTitleInput.value.trim() || !bookAuthorInput.value.trim() || !bookDescInput.value.trim()) {
+                alert("Cậu vui lòng điền đầy đủ Tên truyện, Tên tác giả và Mô tả truyện trước nhé!");
+                return;
+            }
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+            btnPublish.classList.remove('hidden');
+            statusSpan.innerText = "Bước 2: Viết nội dung chương";
+            statusSpan.className = "text-sm text-green-500 font-medium";
+        }
+
+        function goToStep1() {
+            step2.classList.add('hidden');
+            step1.classList.remove('hidden');
+            btnPublish.classList.add('hidden');
+            statusSpan.innerText = "Bước 1: Thiết lập truyện";
+            statusSpan.className = "text-sm text-orange-500 font-medium";
+        }
+
+        function publishToFirebase() {
+            const bTitle = bookTitleInput.value.trim();
+            const bAuthor = bookAuthorInput.value.trim();
+            const bDesc = bookDescInput.value.trim();
+            const chId = chIdInput.value;
+            const chTitle = titleInput.value.trim();
+            const chBody = bodyInput.value;
+
+            if(!chId || !chTitle || !chBody) {
+                alert("Cậu quên chưa nhập Số chương hoặc Nội dung chương rồi kìa!");
+                return;
+            }
+
+            statusSpan.innerText = "⏳ Đang đẩy lên mạng...";
+            const finalCover = base64ImageString || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+
+            // Ghi nhận thông tin truyện (Giữ lại lượt xem cũ nếu có, nếu chưa có thì khởi tạo = 0)
+            database.ref('story_info').once('value').then((snapshot) => {
+                const existingData = snapshot.val();
+                const currentViews = (existingData && existingData.views) ? existingData.views : 0;
+
+                database.ref('story_info').set({
+                    title: bTitle,
+                    author: bAuthor, // Đã lưu tên tác giả động
+                    cover: finalCover,
+                    description: bDesc,
+                    views: currentViews // Giữ nguyên lượt xem thực tế
+                });
+            });
+
+            // Lưu chương truyện
+            database.ref('chapters/chuong_' + chId).set({
+                id: chId,
+                title: chTitle,
+                content: chBody,
+                date: new Date().toLocaleDateString('vi-VN')
+            }, (error) => {
+                if (error) {
+                    alert("Lỗi: " + error.message);
+                } else {
+                    alert(`🎉 Quá đỉnh! Truyện đã được lưu lên mạng thành công!`);
+                    statusSpan.innerText = "✓ Đã đăng tải thành công mọi thứ";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

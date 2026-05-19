@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đọc Truyện - Giao Diện Tối Giản</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        .font-story { font-family: 'Merriweather', serif; }
+        .dark-mode { background-color: #1a1a1a; color: #e0e0e0; }
+        .dark-mode .bg-white { background-color: #2d2d2d; color: #f0f0f0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 transition-colors duration-300" id="body">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold text-orange-600">WATTPAD-CLONE</a>
+            <button onclick="document.getElementById('body').classList.toggle('dark-mode')" class="p-2 bg-gray-100 rounded-full">🌙 Mode</button>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4 py-10">
+        <div id="loading" class="text-center text-gray-400 py-10">⏳ Đang tải nội dung từ vũ trụ về...</div>
+        
+        <div id="story-container" class="hidden">
+            <h1 id="render-title" class="text-3xl font-bold mb-2 text-center md:text-left"></h1>
+            <p id="render-date" class="text-sm text-gray-400 mb-8 text-center md:text-left"></p>
+            
+            <article id="render-content" class="font-story text-xl leading-relaxed space-y-6 whitespace-pre-line border-t pt-6">
+                </article>
+
+            <div class="mt-12 flex justify-between items-center border-t pt-8">
+                <button onclick="navigateChapter(-1)" id="btn-prev" class="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">← Chương trước</button>
+                <span id="current-ch-display" class="font-bold text-orange-500">Chương 1</span>
+                <button onclick="navigateChapter(1)" id="btn-next" class="px-5 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">Chương sau →</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ĐỒNG BỘ MÃ CẤU HÌNH CỦA CẬU
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Lấy số chương hiện tại từ URL (Ví dụ: read.html?ch=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentChapter = parseInt(urlParams.get('ch')) || 1;
+
+        function loadChapter(chNum) {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('story-container').classList.add('hidden');
+            document.getElementById('current-ch-display').innerText = "Chương " + chNum;
+
+            // ================= TỰ ĐỘNG TĂNG LƯỢT XEM KHI ĐỌC CHƯƠNG 1 =================
+            if (parseInt(chNum) === 1) { 
+                database.ref('story_info/views').transaction((currentViews) => {
+                    return (currentViews || 0) + 1;
+                });
+            }
+            // =========================================================================
+
+            // Truy vấn lấy dữ liệu từ Firebase
+            database.ref('chapters/chuong_' + chNum).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('story-container').classList.remove('hidden');
+
+                if (data) {
+                    document.getElementById('render-title').innerText = data.title;
+                    document.getElementById('render-date').innerText = "Ngày đăng: " + data.date;
+                    document.getElementById('render-content').innerText = data.content;
+                } else {
+                    document.getElementById('render-title').innerText = "Chương chưa ra mắt";
+                    document.getElementById('render-date').innerText = "";
+                    document.getElementById('render-content').innerText = "Tác giả đang vắt óc suy nghĩ nội dung, cậu quay lại sau nhé! 😉";
+                }
+            });
+        }
+
+        // Hàm chuyển chương khi bấm nút
+        function navigateChapter(direction) {
+            currentChapter += direction;
+            if(currentChapter < 1) currentChapter = 1;
+            // Đổi đường dẫn URL mà không cần tải lại trang hoàn toàn
+            window.history.pushState({}, '', `?ch=${currentChapter}`);
+            loadChapter(currentChapter);
+        }
+
+        // Khởi chạy khi mở trang
+        loadChapter(currentChapter);
+    </script>
+</body>
+</html>

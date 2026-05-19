@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Truyện - My Wattpad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .blur-bg {
+            filter: blur(20px);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black text-orange-600 tracking-tighter">WATTPAD-CLONE</a>
+            <div class="flex space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-orange-600 font-medium">Quay lại</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative overflow-hidden bg-gray-900 py-16">
+        <img src="https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-bg">
+        
+        <div class="relative max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+            <div class="w-48 h-72 flex-shrink-0 shadow-2xl rounded-lg overflow-hidden border-2 border-white/20">
+                <img src="https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover">
+            </div>
+
+            <div class="text-white text-center md:text-left">
+                <h1 class="text-4xl font-bold mb-2">Mùa Hè Năm Ấy</h1>
+                <p class="text-orange-400 font-medium mb-4 italic">Tác giả: Của Cậu</p>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-6 text-sm">
+                    <span>👁️ 1.2k lượt đọc</span>
+                    <span>⭐ 450 bình chọn</span>
+                    <span id="total-chapters-count">⏳ Đang tính toán...</span>
+                </div>
+
+                <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                    <a href="read.html?ch=1" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105">
+                        Đọc ngay
+                    </a>
+                    <button class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full font-bold backdrop-blur-sm border border-white/30">
+                        + Thêm vào thư viện
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+        
+        <div class="md:col-span-2">
+            <section class="mb-10">
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 w-fit pb-1">Giới thiệu</h3>
+                <p class="text-gray-700 leading-relaxed">
+                    Đây là một câu chuyện về những kỷ niệm đẹp nhất của tuổi trẻ. Những ngày nắng chói chang, tiếng ve kêu râm ran và những lời chưa kịp ngỏ... <br><br>
+                    Cậu sẽ được đắm chìm trong không gian của mùa hè rực rỡ, nơi mọi thứ đều bắt đầu bằng sự tình cờ và kết thúc bằng một nỗi nhớ khôn nguôi.
+                </p>
+            </section>
+
+            <section>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-orange-500 w-fit pb-1">Danh sách chương</h3>
+                
+                <div id="chapters-loading" class="text-gray-400 italic py-4">⏳ Đang đồng bộ danh sách chương từ dữ liệu...</div>
+                
+                <div id="chapters-list" class="space-y-2 hidden">
+                    </div>
+            </section>
+        </div>
+
+        <div class="md:col-span-1">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border sticky top-24">
+                <h4 class="font-bold mb-4">Thông tin truyện</h4>
+                <div class="text-sm space-y-3 text-gray-600">
+                    <p><strong>Trạng thái:</strong> Đang tiến hành</p>
+                    <p><strong>Thể loại:</strong> Thanh xuân, Lãng mạn</p>
+                    <p><strong>Tags:</strong> 
+                        <span class="bg-gray-100 px-2 py-1 rounded">#muahe</span>
+                        <span class="bg-gray-100 px-2 py-1 rounded">#tinhyeu</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-10 text-gray-400 text-sm">
+        © 2026 Designed with ❤️ for Your Story
+    </footer>
+
+    <script>
+        // Đồng bộ hoàn toàn thông số kết nối Firebase từ dự án của cậu
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function fetchChaptersList() {
+            const listContainer = document.getElementById('chapters-list');
+            const loadingIndicator = document.getElementById('chapters-loading');
+            const countDisplay = document.getElementById('total-chapters-count');
+
+            // Gọi tới nhánh chứa các chương truyện trên Firebase
+            database.ref('chapters').once('value').then((snapshot) => {
+                const chaptersData = snapshot.val();
+                loadingIndicator.classList.add('hidden');
+                listContainer.classList.remove('hidden');
+
+                if (chaptersData) {
+                    let htmlContent = '';
+                    let count = 0;
+
+                    // Chuyển đối tượng Object từ Firebase thành một mảng để sắp xếp theo thứ tự số chương tăng dần
+                    const chaptersArray = [];
+                    for (let key in chaptersData) {
+                        chaptersArray.push(chaptersData[key]);
+                    }
+                    chaptersArray.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+                    // Vòng lặp dựng giao diện từng hàng chương truyện
+                    chaptersArray.forEach((chapter) => {
+                        count++;
+                        htmlContent += `
+                            <a href="read.html?ch=${chapter.id}" class="flex justify-between items-center p-4 bg-white hover:bg-orange-50 border rounded-xl transition shadow-sm group">
+                                <span class="font-medium group-hover:text-orange-600 transition">Chương ${chapter.id}: ${chapter.title}</span>
+                                <span class="text-gray-400 text-sm">${chapter.date || 'Gần đây'}</span>
+                            </a>
+                        `;
+                    });
+
+                    listContainer.innerHTML = htmlContent;
+                    countDisplay.innerText = `📝 ${count} chương`;
+                } else {
+                    listContainer.innerHTML = `<p class="text-gray-500 italic p-4">Truyện hiện tại chưa có chương nào được đăng tải công khai.</p>`;
+                    countDisplay.innerText = `📝 0 chương`;
+                }
+            }).catch((error) => {
+                console.error("Lỗi lấy danh sách chương:", error);
+                loadingIndicator.innerText = "❌ Không thể tải danh sách chương, vui lòng kiểm tra cấu hình Database.";
+            });
+        }
+
+        // Kích hoạt hàm lấy dữ liệu ngay khi tải xong cây thư mục DOM
+        window.addEventListener('DOMContentLoaded', fetchChaptersList);
+    </script>
+</body>
+</html>

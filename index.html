@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wattpad Universe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-story { font-family: 'Merriweather', serif; }
+        .book-card:hover img { transform: scale(1.05); transition: 0.3s; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black text-orange-600 tracking-tighter">WATTPAD-CLONE</a>
+            <div class="hidden md:flex space-x-6 text-gray-600 font-medium">
+                <a href="#" class="hover:text-orange-600">Khám phá</a>
+                <a href="#" class="hover:text-orange-600">Thư viện</a>
+                <a href="editor.html" class="hover:text-orange-600">Viết truyện</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="editor.html" class="bg-orange-500 text-white px-5 py-2 rounded-full font-bold hover:bg-orange-600 transition flex items-center gap-1 shadow-sm text-sm">
+                    ✍️ Tạo truyện mới
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-r from-orange-400 to-rose-400 py-16 text-white text-center">
+        <h2 class="text-4xl font-bold mb-4">Nơi những câu chuyện bắt đầu</h2>
+        <p class="text-lg opacity-90">Đăng tải và chia sẻ tác phẩm của chính bạn với cộng đồng.</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-10">
+        
+        <div class="mb-10">
+            <h3 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="bg-orange-500 w-2 h-8 mr-3 rounded-full"></span>
+                Truyện mới của tớ
+            </h3>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                
+                <a href="detail.html" class="book-card group cursor-pointer block">
+                    <div class="overflow-hidden rounded-lg shadow-lg aspect-[2/3] mb-3 bg-gray-100">
+                        <img id="realtime-cover" src="https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500" alt="Cover" class="w-full h-full object-cover">
+                    </div>
+                    <h4 id="realtime-title" class="font-bold text-gray-800 group-hover:text-orange-600 line-clamp-1">Đang tải truyện...</h4>
+                    <p id="realtime-author" class="text-sm text-gray-500 italic">Tác giả: ...</p>
+                    <div class="flex items-center mt-2 text-xs text-gray-400">
+                        <span id="realtime-views" class="mr-2">👁️ 0 lượt đọc</span>
+                    </div>
+                </a>
+
+                <div class="book-card group cursor-pointer">
+                    <div class="overflow-hidden rounded-lg shadow-lg aspect-[2/3] mb-3">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=500" alt="Cover" class="w-full h-full object-cover">
+                    </div>
+                    <h4 class="font-bold text-gray-800 group-hover:text-orange-600 line-clamp-1">Chuyến Xe Cuối Cùng</h4>
+                    <p class="text-sm text-gray-500 italic">Tác giả: Lam Vũ</p>
+                    <div class="flex items-center mt-2 text-xs text-gray-400">
+                        <span id="realtime-views" class="mr-2">👁️ 0 lượt đọc</span>
+                    </div>
+                </div>
+
+                <a href="editor.html" class="book-card group cursor-pointer block border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:border-orange-500 transition aspect-[2/3] bg-white">
+                    <span class="text-3xl mb-2 text-gray-400 group-hover:text-orange-500 transition">➕</span>
+                    <h4 class="font-bold text-gray-500 group-hover:text-orange-500 transition text-sm">Thêm truyện mới</h4>
+                    <p class="text-xs text-gray-400 mt-1">Sáng tác chương tiếp theo ngay lập tức</p>
+                </a>
+
+            </div>
+        </div>
+
+        <section class="bg-white p-8 rounded-2xl shadow-sm border">
+            <h3 class="text-xl font-bold mb-4">Về dự án của tớ</h3>
+            <p class="text-gray-600 leading-relaxed">
+                Đây là nơi tớ lưu trữ tất cả các bản thảo. Từ những mẩu chuyện ngắn đến các tiểu thuyết dài tập. Độc giả có thể dễ dàng tìm kiếm và theo dõi tiến độ ra chương mới nhất tại đây.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t py-10 mt-20">
+        <div class="text-center text-gray-400 text-sm">
+            <p>Made with ❤️ by Gemini</p>
+            <p class="mt-2 font-bold text-orange-500">2026 Your Studio</p>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ĐOẠN CODE QUAN TRỌNG: Lắng nghe sự thay đổi trên mạng theo thời gian thực (Realtime)
+        function listenToStoryInfo() {
+            database.ref('story_info').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if(data) {
+                    // Cập nhật tên, tác giả, ảnh bìa và lượt đọc ngay lập tức lên màn hình chủ
+                    document.getElementById('realtime-title').innerText = data.title || "Truyện chưa đặt tên";
+                    document.getElementById('realtime-author').innerText = "Tác giả: " + (data.author || "Khuyết danh");
+                    document.getElementById('realtime-cover').src = data.cover;
+                    document.getElementById('realtime-views').innerText = `👁️ ${data.views || 0} lượt đọc`;
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', listenToStoryInfo);
+    </script>
+</body>
+</html>
