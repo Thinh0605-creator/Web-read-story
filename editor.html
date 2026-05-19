@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Studio Sáng Tác - Quản Lý Bản Thảo Thông Minh</title>
+    <title>Studio Sáng Tác - Khu Vực Bảo Mật</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@400&display=swap"
@@ -23,7 +23,10 @@
       }
     </style>
   </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body
+    class="bg-gray-50 text-gray-900 opacity-0 transition-opacity duration-300"
+    id="editor-body"
+  >
     <nav
       class="bg-white border-b sticky top-0 z-50 px-6 py-3 flex justify-between items-center shadow-sm"
     >
@@ -52,7 +55,7 @@
         class="bg-white rounded-2xl shadow-sm border p-8 md:p-12 space-y-6"
       >
         <h2 class="text-2xl font-bold text-orange-600 border-b pb-3">
-          ✍️ Khu Vực Quản Lý Sáng Tác
+          ✍️ Khu Vực Quản Lý Sáng Tác (Đã khóa)
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -68,7 +71,7 @@
               <option value="new">🆕 Tạo một bộ truyện mới hoàn toàn</option>
             </select>
           </div>
-          <div id="chapter-select-group" class="hidden">
+          <div>
             <label class="block text-xs font-bold text-gray-400 mb-2"
               >CHỌN CHƯƠNG MUỐN VIẾT TIẾP</label
             >
@@ -122,6 +125,7 @@
                 type="text"
                 id="book-title"
                 class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold"
+                placeholder="Ví dụ: Khi nắng ghé qua cửa sổ..."
               />
             </div>
             <div>
@@ -132,6 +136,7 @@
                 type="text"
                 id="book-author"
                 class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold text-orange-600"
+                placeholder="Ví dụ: Mạc Hà..."
               />
             </div>
           </div>
@@ -143,6 +148,7 @@
             <textarea
               id="book-desc"
               class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none h-28 resize-none"
+              placeholder="Viết giới thiệu ngắn..."
             ></textarea>
           </div>
         </div>
@@ -189,6 +195,7 @@
               type="text"
               id="story-title"
               class="w-full p-2 border rounded font-bold shadow-sm"
+              placeholder="Tên chương"
             />
           </div>
         </div>
@@ -199,11 +206,36 @@
         <textarea
           id="story-body"
           class="editor-input w-full min-h-[45vh] text-lg leading-relaxed font-story resize-none border p-4 rounded-xl shadow-inner"
+          placeholder="Thỏa sức sáng tác nội dung tại đây..."
         ></textarea>
       </div>
     </main>
 
     <script>
+      // ================= KHU VỰC BẢO MẬT KHÓA TRANG TRUYỆN =================
+      const MY_SECRET_PASSWORD = "060506";
+
+      function checkAdminAccess() {
+        const passwordPrompt = prompt(
+          "🔒 Đây là phòng làm việc riêng của tác giả. Cậu vui lòng nhập mật mã để tiếp tục sáng tác nhé:",
+        );
+
+        if (passwordPrompt === MY_SECRET_PASSWORD) {
+          // Nhập đúng mật khẩu, cho phép hiển thị trang
+          document.getElementById("editor-body").classList.remove("opacity-0");
+          loadExistingStories(); // Chạy hàm nạp truyện
+        } else {
+          // Nhập sai hoặc bấm Hủy, đá văng về trang chủ lập tức
+          alert(
+            "❌ Mật mã không chính xác! Cậu quay lại trang chủ đọc truyện nha.",
+          );
+          window.location.href = "index.html";
+        }
+      }
+      // Kích hoạt kiểm tra ngay khi trang web vừa tải xong
+      window.addEventListener("DOMContentLoaded", checkAdminAccess);
+      // =========================================================================
+
       const firebaseConfig = {
         apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
         authDomain: "web-read-story.firebaseapp.com",
@@ -237,27 +269,20 @@
             }
           });
       }
-      window.addEventListener("DOMContentLoaded", loadExistingStories);
 
-      // Xử lý khi chọn bộ truyện
       function handleStorySelection() {
         const mode = document.getElementById("story-mode-select").value;
         const metaGroup = document.getElementById("meta-fields-group");
-        const chapGroup = document.getElementById("chapter-select-group");
         const chapSelect = document.getElementById("chapter-mode-select");
 
-        // Reset ô chọn chương về mặc định
         chapSelect.innerHTML = `<option value="new_chap">➕ Viết một chương mới tinh</option>`;
 
         if (mode === "new") {
           metaGroup.classList.remove("hidden");
-          chapGroup.classList.add("hidden");
           resetFormFields();
         } else {
           metaGroup.classList.add("hidden");
-          chapGroup.classList.remove("hidden");
 
-          // Đổ danh sách chương đang có của bộ truyện này vào ô chọn chương
           const chapters = loadedStories[mode].chapters;
           if (chapters) {
             Object.keys(chapters).forEach((chKey) => {
@@ -268,11 +293,9 @@
             });
           }
         }
-        // Đồng bộ dữ liệu trống ban đầu cho phòng viết
         handleChapterSelection();
       }
 
-      // XỬ LÝ LƯU TRỮ VÀ HÚT NGƯỢC DỮ LIỆU ĐANG VIẾT DỞ LÊN MÀN HÌNH
       function handleChapterSelection() {
         const storyMode = document.getElementById("story-mode-select").value;
         const chapMode = document.getElementById("chapter-mode-select").value;
@@ -282,19 +305,17 @@
         const chBodyInput = document.getElementById("story-body");
 
         if (storyMode !== "new" && chapMode !== "new_chap") {
-          // Hút dữ liệu từ bộ nhớ Firebase đổ ngược vào ô nhập liệu
           const chapterData =
             loadedStories[storyMode].chapters["chuong_" + chapMode];
           if (chapterData) {
             chIdInput.value = chapterData.id;
-            chIdInput.disabled = true; // Khóa ô số chương lại để tránh sửa nhầm cấu trúc ID
+            chIdInput.disabled = true;
             chTitleInput.value = chapterData.title;
             chBodyInput.value = chapterData.content;
             return;
           }
         }
 
-        // Nếu viết chương mới tinh thì mở khóa và để trống ô gõ
         chIdInput.value = "";
         chIdInput.disabled = false;
         chTitleInput.value = "";
@@ -408,7 +429,7 @@
               alert("Lỗi: " + error.message);
             } else {
               alert(
-                `🎉 Thành công! Dữ liệu chương ${chId} đã được đồng bộ và lưu trữ an toàn.`,
+                `🎉 Thành công! Dữ liệu chương ${chId} đã được đồng bộ khóa bảo mật.`,
               );
               window.location.href = "index.html";
             }
