@@ -29,9 +29,23 @@
         
         <div id="story-container" class="hidden">
             <h1 id="render-title" class="text-3xl font-bold mb-2 text-center md:text-left text-orange-600"></h1>
-            <p id="render-date" class="text-sm text-gray-400 mb-8 text-center md:text-left"></p>
+            <p id="render-date" class="text-sm text-gray-400 mb-4 text-center md:text-left"></p>
             
-            <article id="render-content" class="font-story text-xl leading-relaxed space-y-6 whitespace-pre-line border-t pt-6 text-justify">
+            <div class="bg-white p-3 rounded-xl border shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-gray-600">
+                <div class="flex items-center gap-2">
+                    <span>Cỡ chữ:</span>
+                    <button onclick="changeFontSize(-2)" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold">A-</button>
+                    <span id="font-size-display" class="w-12 text-center font-bold text-orange-600">20px</span>
+                    <button onclick="changeFontSize(2)" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold">A+</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span>Giãn dòng:</span>
+                    <button onclick="changeLineHeight(-0.2)" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold">↕-</button>
+                    <span id="line-height-display" class="w-12 text-center font-bold text-orange-600">1.8</span>
+                    <button onclick="changeLineHeight(0.2)" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold">↕+</button>
+                </div>
+            </div>
+            <article id="render-content" class="font-story text-justify leading-relaxed space-y-6 whitespace-pre-line border-t pt-6" style="font-size: 20px; line-height: 1.8;">
             </article>
 
             <div class="mt-12 flex justify-between items-center border-t pt-8">
@@ -61,8 +75,36 @@
         const storyId = urlParams.get('id');
         let currentChapter = parseInt(urlParams.get('ch')) || 1;
 
+        // Khởi tạo các thông số style mặc định ban đầu
+        let currentFontSize = 20;
+        let currentLineHeight = 1.8;
+
         if(storyId) {
             document.getElementById('back-to-detail').href = `detail.html?id=${storyId}`;
+        }
+
+        // HÀM TĂNG GIẢM CỠ CHỮ
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            // Giới hạn cỡ chữ nhỏ nhất là 16px và lớn nhất là 32px cho đẹp giao diện
+            if(currentFontSize < 16) currentFontSize = 16;
+            if(currentFontSize > 32) currentFontSize = 32;
+            
+            const article = document.getElementById('render-content');
+            article.style.fontSize = currentFontSize + 'px';
+            document.getElementById('font-size-display').innerText = currentFontSize + 'px';
+        }
+
+        // HÀM TĂNG GIẢM GIÃN DÒNG
+        function changeLineHeight(delta) {
+            currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
+            // Giới hạn giãn dòng từ 1.4 đến 2.4
+            if(currentLineHeight < 1.4) currentLineHeight = 1.4;
+            if(currentLineHeight > 2.4) currentLineHeight = 2.4;
+
+            const article = document.getElementById('render-content');
+            article.style.lineHeight = currentLineHeight;
+            document.getElementById('line-height-display').innerText = currentLineHeight;
         }
 
         function loadChapter(chNum) {
