@@ -37,14 +37,14 @@
                 <label class="block text-xs font-bold text-gray-400 mb-2">CHẾ ĐỘ SÁNG TÁC</label>
                 <select id="story-mode-select" onchange="toggleStoryMode()" class="w-full p-3 border rounded-xl outline-none bg-white font-medium text-gray-700 focus:border-orange-500">
                     <option value="new">🆕 Tạo một bộ truyện mới hoàn toàn</option>
-                    </select>
+                </select>
             </div>
 
             <div id="meta-fields-group" class="space-y-6">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-2">ẢNH BÌA TRUYỆN</label>
                     <input type="file" id="book-cover-file" accept="image/*" class="hidden" onchange="previewImage(this)">
-                    <div onclick="document.getElementById('book-cover-file').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/30 transition min-h-[160px] bg-gray-50 overflow-hidden relative">
+                    <div onclick="document.getElementById('book-cover-file').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/30 transition min-h-[180px] bg-gray-50 overflow-hidden relative">
                         <img id="cover-preview" class="hidden absolute inset-0 w-full h-full object-contain z-10 bg-white" src="" alt="Preview">
                         <div id="upload-instruction" class="text-center">
                             <span class="text-4xl block mb-2">🖼️</span>
@@ -82,12 +82,12 @@
 
             <div class="flex gap-4 mb-4">
                 <div class="w-1/3">
-                    <label class="block text-xs text-gray-400 font-bold mb-1">SỐ CHƯƠNG TIẾP THEO</label>
-                    <input type="number" id="chapter-id" class="w-full p-2 border rounded font-bold text-center text-orange-600" placeholder="Chương số" min="1">
+                    <label class="block text-xs text-gray-400 font-bold mb-1">SỐ CHƯƠNG (Chỉ điền số)</label>
+                    <input type="number" id="chapter-id" class="w-full p-2 border rounded font-bold text-center text-orange-600" placeholder="Ví dụ: 1" min="1">
                 </div>
                 <div class="w-2/3">
-                    <label class="block text-xs text-gray-400 font-bold mb-1">TIÊU ĐỀ CỦA CHƯƠNG NÀY</label>
-                    <input type="text" id="story-title" class="w-full p-2 border rounded font-bold" placeholder="Ví dụ: Chương 1: Thư viện không tên...">
+                    <label class="block text-xs text-gray-400 font-bold mb-1">TÊN CHƯƠNG (Không cần gõ chữ Chương)</label>
+                    <input type="text" id="story-title" class="w-full p-2 border rounded font-bold" placeholder="Ví dụ: Thư viện không tên">
                 </div>
             </div>
             
@@ -113,7 +113,6 @@
         let base64ImageString = "";
         let loadedStories = {};
 
-        // Tải danh sách truyện đang có trên mạng để phục vụ tính năng "Viết tiếp"
         function loadExistingStories() {
             database.ref('stories').once('value').then((snapshot) => {
                 const data = snapshot.val();
@@ -123,7 +122,7 @@
                     Object.keys(data).forEach((id) => {
                         const option = document.createElement('option');
                         option.value = id;
-                        option.innerText = `✍️ Viết tiếp bộ: ${data[id].story_info.title} (Tác giả: ${data[id].story_info.author || 'Khuyết danh'})`;
+                        option.innerText = `✍️ Viết tiếp bộ: ${data[id].story_info.title}`;
                         select.appendChild(option);
                     });
                 }
@@ -143,7 +142,6 @@
                 document.getElementById('upload-instruction').classList.remove('hidden');
                 base64ImageString = "";
             } else {
-                // Nếu chọn truyện cũ, ẩn bảng cấu hình đi vì đã có sẵn thông tin rồi
                 metaGroup.classList.add('hidden');
             }
         }
@@ -192,7 +190,7 @@
             const mode = document.getElementById('story-mode-select').value;
             const chId = document.getElementById('chapter-id').value;
             const chTitle = document.getElementById('story-title').value.trim();
-            const chBody = document.getElementById('story-body').value;
+            const chBody = document.getElementById('story-body').value.trim(); // Thêm .trim() tránh check lỗi ký tự trống
 
             if(!chId || !chTitle || !chBody) {
                 alert("Cậu bổ sung số chương, tên chương và nội dung giùm tớ nha!");
@@ -203,7 +201,6 @@
             let targetStoryId = mode;
 
             if (mode === 'new') {
-                // Tạo ID ngẫu nhiên không trùng lặp cho truyện mới
                 targetStoryId = 'story_' + Math.random().toString(36).substr(2, 9);
                 const bTitle = document.getElementById('book-title').value.trim();
                 const bAuthor = document.getElementById('book-author').value.trim();
@@ -219,7 +216,7 @@
                 });
             }
 
-            // Lưu chương mới vào mục riêng, không bao giờ ảnh hưởng đến chương cũ
+            // Lưu trực tiếp phần thô lên mạng để các trang đọc tự cấu trúc chuỗi ghép chữ
             database.ref(`stories/${targetStoryId}/chapters/chuong_${chId}`).set({
                 id: chId,
                 title: chTitle,
@@ -229,7 +226,7 @@
                 if (error) {
                     alert("Lỗi: " + error.message);
                 } else {
-                    alert(`🎉 Xuất sắc! Chương ${chId} của bộ truyện đã được xuất bản lên mạng thành công!`);
+                    alert(`🎉 Xuất sắc! Chương ${chId} đã xuất bản thành công!`);
                     window.location.href = "index.html";
                 }
             });

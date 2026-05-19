@@ -1,79 +1,4 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Truyện - My Wattpad</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></head>
-<body class="bg-gray-50">
-
-    <nav class="bg-white border-b sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black text-orange-600 tracking-tighter">WATTPAD-CLONE</a>
-            <a href="index.html" class="text-gray-600 hover:text-orange-600 font-medium">← Quay lại trang chủ</a>
-        </div>
-    </nav>
-
-    <div class="w-full bg-gray-900 h-64 md:h-80 relative overflow-hidden flex items-center justify-center">
-        <div id="bg-blur" class="absolute inset-0 bg-cover bg-center filter blur-xl opacity-40 scale-110"></div>
-        <div class="relative z-10 text-center text-white px-4">
-            <h2 id="story-title" class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">Đang tải truyện...</h2>
-            <p id="story-author" class="text-orange-400 font-medium mt-2 text-lg drop-shadow-sm"></p>
-        </div>
-    </div>
-
-    <main class="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 -mt-16 relative z-20">
-        <div class="md:col-span-1 flex justify-center md:block">
-            <img id="story-cover" src="" alt="Cover" class="w-48 h-72 md:w-full md:h-auto object-cover rounded-2xl shadow-2xl border-4 border-white bg-gray-200">
-        </div>
-
-        <div class="md:col-span-2 space-y-8">
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border">
-                <h3 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">📖 Tóm tắt tác phẩm</h3>
-                <p id="story-desc" class="text-gray-600 leading-relaxed text-base whitespace-pre-line">Đang tải nội dung tóm tắt cốt truyện...</p>
-            </section>
-
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border">
-                <h3 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">📌 Mục lục các chương</h3>
-                <div id="chapters-list" class="space-y-3">
-                    </div>
-            </section>
-        </div>
-    </main>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
-            authDomain: "web-read-story.firebaseapp.com",
-            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
-            projectId: "web-read-story",
-            storageBucket: "web-read-story.firebasestorage.app",
-            messagingSenderId: "627619633534",
-            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const storyId = urlParams.get('id');
-
-        if(storyId) {
-            // 1. Tải thông tin chung của truyện
-            database.ref(`stories/${storyId}/story_info`).once('value').then((snapshot) => {
-                const info = snapshot.val();
-                if(info) {
-                    document.getElementById('story-title').innerText = info.title;
-                    document.getElementById('story-author').innerText = "Tác giả: " + (info.author || "Khuyết danh");
-                    document.getElementById('story-desc').innerText = info.description || "Truyện này chưa có tóm tắt.";
-                    document.getElementById('story-cover').src = info.cover;
-                    document.getElementById('bg-blur').style.backgroundImage = `url('${info.cover}')`;
-                }
-            });
-
-            // 2. Tải danh sách chương thật của truyện đó
+// SỬA LẠI ĐOẠN ĐỌC DANH SÁCH CHƯƠNG TRONG DETAIL.HTML
             database.ref(`stories/${storyId}/chapters`).on('value', (snapshot) => {
                 const listContainer = document.getElementById('chapters-list');
                 listContainer.innerHTML = "";
@@ -84,8 +9,12 @@
                     return;
                 }
 
-                Object.keys(chapters).forEach((chKey) => {
+                // Sắp xếp chương theo số thứ tự chính xác
+                const sortedKeys = Object.keys(chapters).sort((a,b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
+
+                sortedKeys.forEach((chKey) => {
                     const ch = chapters[chKey];
+                    // Tự động ghép nối "Chương + Số chương + : + Tên chương" ở đây
                     const row = `
                         <a href="read.html?id=${storyId}&ch=${ch.id}" class="flex justify-between items-center p-4 bg-gray-50 hover:bg-orange-50 border rounded-xl transition font-medium text-gray-700 hover:text-orange-600">
                             <span>Chương ${ch.id}: ${ch.title}</span>
@@ -95,7 +24,3 @@
                     listContainer.innerHTML += row;
                 });
             });
-        }
-    </script>
-</body>
-</html>
