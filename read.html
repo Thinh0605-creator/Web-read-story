@@ -1,274 +1,336 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đọc Truyện - Trạm Nắng</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-      .font-story {
-        font-family: "Merriweather", serif;
-      }
-      .dark-mode {
-        background-color: #1a1a1a;
-        color: #e0e0e0;
-      }
-      .dark-mode .bg-white {
-        background-color: #2d2d2d;
-        color: #f0f0f0;
-      }
+        .font-story { font-family: 'Merriweather', serif; }
+        
+        /* Cấu trúc thụt lề đầu dòng cho văn bản cuộn dọc thông thường */
+        .story-content-wrapper p {
+            text-indent: 28px;
+            margin-bottom: 1.5rem;
+        }
 
-      .story-content-wrapper p {
-        text-indent: 28px;
-        margin-bottom: 1.5rem;
-      }
+        /* CHẾ ĐỘ LẬT TRANG NGANG NÂNG CAO - ĐÃ FIX LỖI TRỐNG TRANG */
+        .horizontal-mode {
+            display: block !important;
+            column-width: 100vw; /* Chiều rộng mỗi trang bằng đúng chiều rộng khung hiển thị */
+            column-gap: 40px;    /* Khoảng cách giữa các trang sách */
+            height: 76vh;        /* 💡 Tăng chiều cao lên 76vh để tối ưu hóa không gian hiển thị, lấp đầy trang */
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        .horizontal-mode p {
+            scroll-snap-align: start;
+            break-inside: auto; /* 💡 Đổi thành auto để chữ tràn hết trang mới ngắt đoạn sang trang sau, không để lại khoảng trống */
+            text-indent: 28px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Ẩn thanh cuộn scrollbar xấu xí để tạo cảm giác giống trang sách */
+        .horizontal-mode::-webkit-scrollbar {
+            display: none;
+        }
     </style>
-  </head>
-  <body
-    class="bg-stone-50 text-stone-900 transition-colors duration-300"
-    id="body"
-  >
-    <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-10">
-      <div
-        class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center"
-      >
-        <a
-          href="index.html"
-          class="text-xl font-bold text-amber-600 tracking-tighter"
-          >☀️ TRẠM NẮNG</a
-        >
-        <div class="flex items-center gap-3">
-          <button
-            onclick="
-              document.getElementById('body').classList.toggle('dark-mode')
-            "
-            class="p-2 bg-stone-100 dark:bg-stone-800 rounded-full text-sm"
-          >
-            🌓 Đổi màu nền
-          </button>
-          <a
-            id="back-to-detail"
-            href="index.html"
-            class="text-sm text-stone-500 hover:text-amber-600"
-            >Mục lục</a
-          >
+</head>
+<body class="bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col" id="body">
+
+    <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300" id="nav-bar">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold text-amber-600 tracking-tighter" id="nav-logo">☀️ TRẠM NẮNG</a>
+            <div class="flex items-center gap-3">
+                
+                <div class="bg-stone-100 px-2.5 py-1.5 rounded-xl border border-stone-200 text-xs font-bold flex items-center gap-1" id="menu-select-wrapper">
+                    <span class="text-stone-500" id="text-mode-lbl">Dạng đọc:</span>
+                    <select id="inline-reading-mode" onchange="changeReadingModeAndSave(this.value)" class="bg-transparent text-amber-600 outline-none cursor-pointer">
+                        <option value="vertical">📜 Cuộn dọc</option>
+                        <option value="horizontal">↔️ Lật ngang</option>
+                    </select>
+                </div>
+
+                <button onclick="toggleGlobalDarkMode()" class="p-2 bg-stone-100 rounded-full text-sm font-medium text-stone-700 transition" id="btn-darkmode">🌓 Đổi màu nền</button>
+                <a id="back-to-detail" href="index.html" class="text-sm text-stone-500 hover:text-amber-600 transition font-medium">Mục lục</a>
+            </div>
         </div>
-      </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-4 py-10">
-      <div id="loading" class="text-center text-stone-400 py-10">
-        ⏳ Đang lấy nội dung chương...
-      </div>
+    <main class="max-w-2xl mx-auto px-4 py-10 flex-1 w-full flex flex-col justify-between">
+        <div id="loading" class="text-center text-stone-400 py-10 flex-1">⏳ Đang lấy nội dung chương từ hệ thống...</div>
+        
+        <div id="story-container" class="hidden flex-1 flex flex-col justify-between w-full">
+            <div>
+                <h1 id="render-title" class="text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story"></h1>
+                <p id="render-date" class="text-sm text-stone-400 mb-4 text-center md:text-left"></p>
+                
+                <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600 transition-colors duration-300" id="control-panel">
+                    <div class="flex items-center gap-2">
+                        <span>Cỡ chữ:</span>
+                        <button onclick="changeFontSize(-2)" class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700" id="btn-font-minus">A-</button>
+                        <span id="font-size-display" class="w-12 text-center font-bold text-amber-600">20px</span>
+                        <button onclick="changeFontSize(2)" class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700" id="btn-font-plus">A+</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>Giãn dòng:</span>
+                        <button onclick="changeLineHeight(-0.2)" class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700" id="btn-line-minus">↕-</button>
+                        <span id="line-height-display" class="w-12 text-center font-bold text-amber-600">1.6</span>
+                        <button onclick="changeLineHeight(0.2)" class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700" id="btn-line-plus">↕+</button>
+                    </div>
+                    <div class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold" id="badge-mode">📜 Chế độ cuộn dọc</div>
+                </div>
+                
+                <div class="w-full overflow-hidden">
+                    <article id="render-content" class="story-content-wrapper font-story text-justify border-t border-stone-200 pt-6 transition-all duration-300" style="font-size: 20px; line-height: 1.6;">
+                    </article>
+                </div>
+            </div>
 
-      <div id="story-container" class="hidden">
-        <h1
-          id="render-title"
-          class="text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story"
-        ></h1>
-        <p
-          id="render-date"
-          class="text-sm text-stone-400 mb-4 text-center md:text-left"
-        ></p>
-
-        <div
-          class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600"
-        >
-          <div class="flex items-center gap-2">
-            <span>Cỡ chữ:</span>
-            <button
-              onclick="changeFontSize(-2)"
-              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
-            >
-              A-
-            </button>
-            <span
-              id="font-size-display"
-              class="w-12 text-center font-bold text-amber-600"
-              >20px</span
-            >
-            <button
-              onclick="changeFontSize(2)"
-              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
-            >
-              A+
-            </button>
-          </div>
-          <div class="flex items-center gap-2">
-            <span>Giãn dòng:</span>
-            <button
-              onclick="changeLineHeight(-0.2)"
-              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
-            >
-              ↕-
-            </button>
-            <span
-              id="line-height-display"
-              class="w-12 text-center font-bold text-amber-600"
-              >1.8</span
-            >
-            <button
-              onclick="changeLineHeight(0.2)"
-              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
-            >
-              ↕+
-            </button>
-          </div>
+            <div class="mt-12 flex justify-between items-center border-t border-stone-200 pt-8" id="navigation-footer">
+                <button onclick="navigatePageOrChapter(-1)" id="btn-prev" class="px-5 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-sm font-semibold text-stone-700 transition">← Chương trước</button>
+                <span id="current-ch-display" class="font-bold text-amber-600">Chương 1</span>
+                <button onclick="navigatePageOrChapter(1)" id="btn-next" class="px-5 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-semibold transition">Chương sau →</button>
+            </div>
         </div>
-
-        <article
-          id="render-content"
-          class="story-content-wrapper font-story text-justify leading-relaxed border-t border-stone-200 pt-6"
-          style="font-size: 20px; line-height: 1.8"
-        ></article>
-
-        <div
-          class="mt-12 flex justify-between items-center border-t border-stone-200 pt-8"
-        >
-          <button
-            onclick="navigateChapter(-1)"
-            id="btn-prev"
-            class="px-5 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-sm font-semibold text-stone-700"
-          >
-            ← Chương trước
-          </button>
-          <span id="current-ch-display" class="font-bold text-amber-600"
-            >Chương 1</span
-          >
-          <button
-            onclick="navigateChapter(1)"
-            id="btn-next"
-            class="px-5 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-semibold"
-          >
-            Chương sau →
-          </button>
-        </div>
-      </div>
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
-        authDomain: "web-read-story.firebaseapp.com",
-        databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
-        projectId: "web-read-story",
-        storageBucket: "web-read-story.firebasestorage.app",
-        messagingSenderId: "627619633534",
-        appId: "1:627619633534:web:428659f610e2eb7c45bb2f",
-      };
-      firebase.initializeApp(firebaseConfig);
-      const database = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const storyId = urlParams.get("id");
-      let currentChapter = parseInt(urlParams.get("ch")) || 1;
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+        let currentChapter = parseInt(urlParams.get('ch')) || 1;
 
-      let currentFontSize = 20;
-      let currentLineHeight = 1.8;
+        let currentFontSize = 20;
+        let currentLineHeight = 1.6;
+        let isDarkMode = false;
+        
+        let readingMode = localStorage.getItem('tramnang_default_reading_mode') || 'vertical'; 
+        let currentHorizPage = 0;
 
-      if (storyId) {
-        document.getElementById("back-to-detail").href =
-          `detail.html?id=${storyId}`;
-      }
+        if(storyId) {
+            document.getElementById('back-to-detail').href = `detail.html?id=${storyId}`;
+        }
 
-      function changeFontSize(delta) {
-        currentFontSize += delta;
-        if (currentFontSize < 16) currentFontSize = 16;
-        if (currentFontSize > 32) currentFontSize = 32;
-        const article = document.getElementById("render-content");
-        article.style.fontSize = currentFontSize + "px";
-        document.getElementById("font-size-display").innerText =
-          currentFontSize + "px";
-      }
+        function changeReadingModeAndSave(mode) {
+            readingMode = mode;
+            localStorage.setItem('tramnang_default_reading_mode', mode);
+            applyReadingModeSettings();
+        }
 
-      function changeLineHeight(delta) {
-        currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
-        if (currentLineHeight < 1.4) currentLineHeight = 1.4;
-        if (currentLineHeight > 2.4) currentLineHeight = 2.4;
-        const article = document.getElementById("render-content");
-        article.style.lineHeight = currentLineHeight;
-        document.getElementById("line-height-display").innerText =
-          currentLineHeight;
-      }
+        function applyReadingModeSettings() {
+            const contentBox = document.getElementById('render-content');
+            const badge = document.getElementById('badge-mode');
+            
+            document.getElementById('inline-reading-mode').value = readingMode;
 
-      function loadChapter(chNum) {
-        if (!storyId) return;
-        document.getElementById("loading").classList.remove("hidden");
-        document.getElementById("story-container").classList.add("hidden");
-        document.getElementById("current-ch-display").innerText =
-          "Chương " + chNum;
+            if (readingMode === 'horizontal') {
+                contentBox.classList.add('horizontal-mode');
+                badge.innerText = "↔️ Chế độ lật ngang";
+                badge.className = "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
+                
+                currentHorizPage = 0;
+                contentBox.scrollLeft = 0;
+                
+                setTimeout(updateHorizontalNavigation, 100);
+            } else {
+                contentBox.classList.remove('horizontal-mode');
+                badge.innerText = "📜 Chế độ cuộn dọc";
+                badge.className = "text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold";
+                document.getElementById('btn-prev').innerText = "← Chương trước";
+                document.getElementById('btn-next').innerText = "Chương sau →";
+            }
+        }
 
-        if (parseInt(chNum) === 1) {
-          database
-            .ref(`stories/${storyId}/story_info/views`)
-            .transaction((views) => {
-              return (views || 0) + 1;
+        function navigatePageOrChapter(direction) {
+            const contentBox = document.getElementById('render-content');
+            
+            if (readingMode === 'horizontal') {
+                const pageWidth = contentBox.clientWidth + 40; 
+                const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
+                
+                if (direction === 1) {
+                    if (contentBox.scrollLeft >= maxScrollLeft - 5) {
+                        navigateChapter(1);
+                        return;
+                    }
+                    contentBox.scrollLeft += pageWidth;
+                } else {
+                    if (contentBox.scrollLeft <= 5) {
+                        navigateChapter(-1);
+                        return;
+                    }
+                    contentBox.scrollLeft -= pageWidth;
+                }
+                
+                setTimeout(updateHorizontalNavigation, 250);
+            } else {
+                navigateChapter(direction);
+            }
+        }
+
+        function updateHorizontalNavigation() {
+            const contentBox = document.getElementById('render-content');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            
+            if (!contentBox.classList.contains('horizontal-mode')) return;
+
+            const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
+            
+            btnPrev.innerText = contentBox.scrollLeft <= 5 ? "← Chương trước" : "← Trang trước";
+            btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 5 ? "Chương sau →" : "Trang sau →";
+        }
+
+        document.getElementById('render-content').addEventListener('scroll', () => {
+            if (readingMode === 'horizontal') {
+                updateHorizontalNavigation();
+            }
+        });
+
+        function toggleGlobalDarkMode() {
+            isDarkMode = !isDarkMode;
+            const body = document.getElementById('body');
+            const nav = document.getElementById('nav-bar');
+            const logo = document.getElementById('nav-logo');
+            const menuLink = document.getElementById('back-to-detail');
+            const controlPanel = document.getElementById('control-panel');
+            const btnDarkMode = document.getElementById('btn-darkmode');
+            const footer = document.getElementById('navigation-footer');
+            const btnPrev = document.getElementById('btn-prev');
+            const menuSelect = document.getElementById('menu-select-wrapper');
+            const lblMode = document.getElementById('text-mode-lbl');
+
+            const controlButtons = [
+                document.getElementById('btn-font-minus'),
+                document.getElementById('btn-font-plus'),
+                document.getElementById('btn-line-minus'),
+                document.getElementById('btn-line-plus')
+            ];
+
+            if (isDarkMode) {
+                body.className = "bg-stone-900 text-stone-100 transition-colors duration-300 min-h-screen flex flex-col";
+                nav.className = "bg-stone-800 shadow-sm border-b border-stone-700 sticky top-0 z-50 transition-colors duration-300";
+                logo.className = "text-xl font-bold text-amber-500 tracking-tighter";
+                menuLink.className = "text-sm text-stone-400 hover:text-amber-400 transition font-medium";
+                controlPanel.className = "bg-stone-800 p-3 rounded-xl border border-stone-700 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-300 transition-colors duration-300";
+                btnDarkMode.className = "p-2 bg-stone-700 hover:bg-stone-600 rounded-full text-sm font-medium text-stone-100 transition";
+                footer.className = "mt-12 flex justify-between items-center border-t border-stone-700 pt-8";
+                btnPrev.className = "px-5 py-2 bg-stone-800 hover:bg-stone-700 rounded-lg text-sm font-semibold text-stone-200 transition";
+                menuSelect.className = "bg-stone-700 px-2.5 py-1.5 rounded-xl border border-stone-600 text-xs font-bold flex items-center gap-1";
+                lblMode.className = "text-stone-400";
+                
+                controlButtons.forEach(btn => {
+                    if(btn) btn.className = "w-8 h-8 bg-stone-700 hover:bg-stone-600 rounded-lg font-bold transition text-stone-100";
+                });
+            } else {
+                body.className = "bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col";
+                nav.className = "bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300";
+                logo.className = "text-xl font-bold text-amber-600 tracking-tighter";
+                menuLink.className = "text-sm text-stone-500 hover:text-amber-600 transition font-medium";
+                controlPanel.className = "bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600 transition-colors duration-300";
+                btnDarkMode.className = "p-2 bg-stone-100 rounded-full text-sm font-medium text-stone-700 transition";
+                footer.className = "mt-12 flex justify-between items-center border-t border-stone-200 pt-8";
+                btnPrev.className = "px-5 py-2 bg-stone-200 hover:bg-stone-300 rounded-lg text-sm font-semibold text-stone-700 transition";
+                menuSelect.className = "bg-stone-100 px-2.5 py-1.5 rounded-xl border border-stone-200 text-xs font-bold flex items-center gap-1";
+                lblMode.className = "text-stone-500";
+                
+                controlButtons.forEach(btn => {
+                    if(btn) btn.className = "w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700";
+                });
+            }
+        }
+
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            if(currentFontSize < 16) currentFontSize = 16;
+            if(currentFontSize > 32) currentFontSize = 32;
+            const article = document.getElementById('render-content');
+            article.style.fontSize = currentFontSize + 'px';
+            document.getElementById('font-size-display').innerText = currentFontSize + 'px';
+            if (readingMode === 'horizontal') applyReadingModeSettings();
+        }
+
+        function changeLineHeight(delta) {
+            currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
+            if(currentLineHeight < 1.4) currentLineHeight = 1.4;
+            if(currentLineHeight > 2.4) currentLineHeight = 2.4;
+            const article = document.getElementById('render-content');
+            article.style.lineHeight = currentLineHeight;
+            document.getElementById('line-height-display').innerText = currentLineHeight;
+            if (readingMode === 'horizontal') applyReadingModeSettings();
+        }
+
+        function loadChapter(chNum) {
+            if(!storyId) return;
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('story-container').classList.add('hidden');
+            document.getElementById('current-ch-display').innerText = "Chương " + chNum;
+
+            if (parseInt(chNum) === 1) { 
+                database.ref(`stories/${storyId}/story_info/views`).transaction((views) => {
+                    return (views || 0) + 1;
+                });
+            }
+
+            const readingHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
+            readingHistory[storyId] = { chapter: parseInt(chNum), time: new Date().getTime() };
+            localStorage.setItem('wattpad_reading_history', JSON.stringify(readingHistory));
+
+            database.ref(`stories/${storyId}/chapters/chuong_${chNum}`).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('story-container').classList.remove('hidden');
+
+                if (data) {
+                    document.getElementById('render-title').innerText = `Chương ${data.id}: ${data.title}`;
+                    document.getElementById('render-date').innerText = "Ngày cập nhật: " + (data.date || 'Hôm nay');
+                    
+                    const rawContent = data.content || "";
+                    const paragraphs = rawContent.split('\n').filter(p => p.trim() !== "");
+                    const articleElement = document.getElementById('render-content');
+                    articleElement.innerHTML = "";
+                    
+                    paragraphs.forEach((pText) => {
+                        const pTag = document.createElement('p');
+                        pTag.innerText = pText;
+                        articleElement.appendChild(pTag);
+                    });
+
+                    applyReadingModeSettings();
+                } else {
+                    document.getElementById('render-title').innerText = "Chương chưa ra mắt";
+                    document.getElementById('render-date').innerText = "";
+                    document.getElementById('render-content').innerHTML = "<p>Tác giả vẫn đang vắt óc suy nghĩ hoặc chưa viết tiếp chương này, cậu quay lại sau nhé! 😉</p>";
+                }
             });
         }
 
-        const readingHistory =
-          JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
-        readingHistory[storyId] = {
-          chapter: parseInt(chNum),
-          time: new Date().getTime(),
-        };
-        localStorage.setItem(
-          "wattpad_reading_history",
-          JSON.stringify(readingHistory),
-        );
+        function navigateChapter(direction) {
+            currentChapter += direction;
+            if(currentChapter < 1) currentChapter = 1;
+            window.history.pushState({}, '', `?id=${storyId}&ch=${currentChapter}`);
+            loadChapter(currentChapter);
+        }
 
-        database
-          .ref(`stories/${storyId}/chapters/chuong_${chNum}`)
-          .once("value")
-          .then((snapshot) => {
-            const data = snapshot.val();
-            document.getElementById("loading").classList.add("hidden");
-            document
-              .getElementById("story-container")
-              .classList.remove("hidden");
-
-            if (data) {
-              document.getElementById("render-title").innerText =
-                `Chương ${data.id}: ${data.title}`;
-              document.getElementById("render-date").innerText =
-                "Ngày cập nhật: " + (data.date || "Hôm nay");
-
-              const rawContent = data.content || "";
-              const paragraphs = rawContent
-                .split("\n")
-                .filter((p) => p.trim() !== "");
-              const articleElement = document.getElementById("render-content");
-              articleElement.innerHTML = "";
-
-              paragraphs.forEach((pText) => {
-                const pTag = document.createElement("p");
-                pTag.innerText = pText;
-                articleElement.appendChild(pTag);
-              });
-            } else {
-              document.getElementById("render-title").innerText =
-                "Chương chưa ra mắt";
-              document.getElementById("render-date").innerText = "";
-              document.getElementById("render-content").innerHTML =
-                "<p>Bản thảo đang được tác giả cập nhật, cậu quay lại sau nhé! 😉</p>";
-            }
-          });
-      }
-
-      function navigateChapter(direction) {
-        currentChapter += direction;
-        if (currentChapter < 1) currentChapter = 1;
-        window.history.pushState({}, "", `?id=${storyId}&ch=${currentChapter}`);
         loadChapter(currentChapter);
-      }
-
-      loadChapter(currentChapter);
     </script>
-  </body>
+</body>
 </html>
