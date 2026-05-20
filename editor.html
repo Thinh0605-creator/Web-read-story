@@ -209,21 +209,33 @@
     </main>
 
     <script>
-      // ================= KHU VỰC BẢO MẬT KHÓA TRANG TRUYỆN =================
+      // ================= KHU VỰC BẢO MẬT PHIÊN LÀM VIỆC CẤP CAO =================
       const MY_SECRET_PASSWORD = "060506";
 
       function checkAdminAccess() {
+        // Kiểm tra xem trình duyệt đã lưu "tấm vé thông hành" từ trước chưa
+        const sessionAuth = sessionStorage.getItem("tramnang_admin_session");
+
+        if (sessionAuth === "authenticated") {
+          // Đã mở khóa từ trước trong phiên này rồi -> cho qua luôn không hỏi lại
+          document.getElementById("editor-body").classList.remove("opacity-0");
+          loadExistingStories();
+          return;
+        }
+
+        // Nếu chưa có vé -> bắt đầu hiện bảng hỏi mã PIN
         const passwordPrompt = prompt(
-          "🔒 Đây là phòng làm việc riêng của tác giả. Cậu vui lòng nhập mật mã để tiếp tục sáng tác nhé:",
+          "🔒 Đây là phòng làm việc riêng của tác giả. Cậu vui lòng nhập mật mã để mở khóa phiên làm việc:",
         );
 
         if (passwordPrompt === MY_SECRET_PASSWORD) {
+          // Nhập đúng -> Cấp vé thông hành vào Session trình duyệt
+          sessionStorage.setItem("tramnang_admin_session", "authenticated");
           document.getElementById("editor-body").classList.remove("opacity-0");
           loadExistingStories();
         } else {
-          alert(
-            "❌ Mật mã không chính xác! Cậu quay lại trang chủ đọc truyện nha.",
-          );
+          // Nhập sai -> đá văng
+          alert("❌ Mật mã không chính xác! Cậu quay lại trang chủ nha.");
           window.location.href = "index.html";
         }
       }
