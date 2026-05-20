@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Studio Sáng Tác - Khu Vực Bảo Mật</title>
+    <title>Studio Sáng Tác - Trạm Nắng</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@400&display=swap"
@@ -24,17 +24,17 @@
     </style>
   </head>
   <body
-    class="bg-gray-50 text-gray-900 opacity-0 transition-opacity duration-300"
+    class="bg-stone-50 text-stone-900 opacity-0 transition-opacity duration-300"
     id="editor-body"
   >
     <nav
-      class="bg-white border-b sticky top-0 z-50 px-6 py-3 flex justify-between items-center shadow-sm"
+      class="bg-white border-b border-stone-200 sticky top-0 z-50 px-6 py-3 flex justify-between items-center shadow-sm"
     >
       <div class="flex items-center gap-4">
-        <a href="index.html" class="text-gray-500 hover:text-gray-700"
+        <a href="index.html" class="text-stone-500 hover:text-stone-700"
           >← Rời khỏi</a
         >
-        <span id="save-status" class="text-sm text-orange-500 font-medium"
+        <span id="save-status" class="text-sm text-amber-600 font-medium"
           >Bước 1: Thiết lập cấu trúc</span
         >
       </div>
@@ -42,7 +42,7 @@
         <button
           id="btn-publish"
           onclick="publishToFirebase()"
-          class="hidden bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow transition"
+          class="hidden bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-full font-bold text-sm shadow transition"
         >
           🚀 Đăng tải lên mạng
         </button>
@@ -52,33 +52,35 @@
     <main class="max-w-3xl mx-auto px-4 py-10">
       <div
         id="step-1-container"
-        class="bg-white rounded-2xl shadow-sm border p-8 md:p-12 space-y-6"
+        class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 md:p-12 space-y-6"
       >
-        <h2 class="text-2xl font-bold text-orange-600 border-b pb-3">
-          ✍️ Khu Vực Quản Lý Sáng Tác (Đã khóa)
+        <h2
+          class="text-2xl font-bold text-amber-600 border-b border-stone-100 pb-3 font-story"
+        >
+          ☀️ Khu Vực Quản Lý Sáng Tác (Đã khóa)
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-2"
+            <label class="block text-xs font-bold text-stone-400 mb-2"
               >CHỌN BỘ TRUYỆN</label
             >
             <select
               id="story-mode-select"
               onchange="handleStorySelection()"
-              class="w-full p-3 border rounded-xl outline-none bg-white font-medium text-gray-700 focus:border-orange-500"
+              class="w-full p-3 border border-stone-200 rounded-xl outline-none bg-white font-medium text-stone-700 focus:border-amber-500"
             >
               <option value="new">🆕 Tạo một bộ truyện mới hoàn toàn</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-2"
+            <label class="block text-xs font-bold text-stone-400 mb-2"
               >CHỌN CHƯƠNG MUỐN VIẾT TIẾP</label
             >
             <select
               id="chapter-mode-select"
               onchange="handleChapterSelection()"
-              class="w-full p-3 border rounded-xl outline-none bg-white font-medium text-orange-600 focus:border-orange-500"
+              class="w-full p-3 border border-stone-200 rounded-xl outline-none bg-white font-medium text-amber-600 focus:border-amber-500"
             >
               <option value="new_chap">➕ Viết một chương mới tinh</option>
             </select>
@@ -87,7 +89,7 @@
 
         <div id="meta-fields-group" class="space-y-6">
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-2"
+            <label class="block text-xs font-bold text-stone-400 mb-2"
               >ẢNH BÌA TRUYỆN</label
             >
             <input
@@ -99,7 +101,7 @@
             />
             <div
               onclick="document.getElementById('book-cover-file').click()"
-              class="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/30 transition min-h-[180px] bg-gray-50 overflow-hidden relative"
+              class="border-2 border-dashed border-stone-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-amber-500 hover:bg-amber-50/30 transition min-h-[180px] bg-stone-50 overflow-hidden relative"
             >
               <img
                 id="cover-preview"
@@ -109,7 +111,7 @@
               />
               <div id="upload-instruction" class="text-center">
                 <span class="text-4xl block mb-2">🖼️</span>
-                <p class="text-sm font-semibold text-gray-600">
+                <p class="text-sm font-semibold text-stone-600">
                   Bấm vào để tải ảnh từ máy tính
                 </p>
               </div>
@@ -118,36 +120,36 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-gray-400 mb-2"
+              <label class="block text-xs font-bold text-stone-400 mb-2"
                 >TÊN TRUYỆN TỔNG THỂ</label
               >
               <input
                 type="text"
                 id="book-title"
-                class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold"
+                class="w-full p-3 border border-stone-200 rounded-xl focus:border-amber-500 outline-none font-bold"
                 placeholder="Ví dụ: Khi nắng ghé qua cửa sổ..."
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-400 mb-2"
+              <label class="block text-xs font-bold text-stone-400 mb-2"
                 >TÊN TÁC GIẢ (BÚT DANH)</label
               >
               <input
                 type="text"
                 id="book-author"
-                class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none font-bold text-orange-600"
+                class="w-full p-3 border border-stone-200 rounded-xl focus:border-amber-500 outline-none font-bold text-amber-600"
                 placeholder="Ví dụ: Mạc Hà..."
               />
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-gray-400 mb-2"
+            <label class="block text-xs font-bold text-stone-400 mb-2"
               >TÓM TẮT / GIỚI THIỆU TRUYỆN</label
             >
             <textarea
               id="book-desc"
-              class="w-full p-3 border rounded-xl focus:border-orange-500 outline-none h-28 resize-none"
+              class="w-full p-3 border border-stone-200 rounded-xl focus:border-amber-500 outline-none h-28 resize-none"
               placeholder="Viết giới thiệu ngắn..."
             ></textarea>
           </div>
@@ -156,7 +158,7 @@
         <div class="pt-4">
           <button
             onclick="goToStep2()"
-            class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-bold shadow transition"
+            class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-bold shadow transition"
           >
             Tiếp tục: Vào phòng viết bài →
           </button>
@@ -165,36 +167,36 @@
 
       <div
         id="step-2-container"
-        class="hidden bg-white rounded-2xl shadow-sm border p-8 md:p-12 min-h-[70vh]"
+        class="hidden bg-white rounded-2xl shadow-sm border border-stone-200 p-8 md:p-12 min-h-[70vh]"
       >
         <button
           onclick="goToStep1()"
-          class="text-sm text-gray-400 hover:text-orange-500 mb-4 inline-block"
+          class="text-sm text-stone-400 hover:text-amber-500 mb-4 inline-block"
         >
           ← Quay lại cấu hình
         </button>
 
         <div class="flex gap-4 mb-4">
           <div class="w-1/3">
-            <label class="block text-xs text-gray-400 font-bold mb-1"
+            <label class="block text-xs text-stone-400 font-bold mb-1"
               >SỐ CHƯƠNG</label
             >
             <input
               type="number"
               id="chapter-id"
-              class="w-full p-2 border rounded font-bold text-center text-orange-600 shadow-sm"
+              class="w-full p-2 border border-stone-200 rounded font-bold text-center text-amber-600 shadow-sm"
               placeholder="Số"
               min="1"
             />
           </div>
           <div class="w-2/3">
-            <label class="block text-xs text-gray-400 font-bold mb-1"
+            <label class="block text-xs text-stone-400 font-bold mb-1"
               >TÊN CHƯƠNG</label
             >
             <input
               type="text"
               id="story-title"
-              class="w-full p-2 border rounded font-bold shadow-sm"
+              class="w-full p-2 border border-stone-200 rounded font-bold shadow-sm"
               placeholder="Tên chương"
             />
           </div>
@@ -205,7 +207,7 @@
         >
         <textarea
           id="story-body"
-          class="editor-input w-full min-h-[45vh] text-lg leading-relaxed font-story resize-none border p-4 rounded-xl shadow-inner"
+          class="editor-input w-full min-h-[45vh] text-lg leading-relaxed font-story resize-none border border-stone-200 p-4 rounded-xl shadow-inner"
           placeholder="Thỏa sức sáng tác nội dung tại đây..."
         ></textarea>
       </div>
@@ -221,18 +223,15 @@
         );
 
         if (passwordPrompt === MY_SECRET_PASSWORD) {
-          // Nhập đúng mật khẩu, cho phép hiển thị trang
           document.getElementById("editor-body").classList.remove("opacity-0");
-          loadExistingStories(); // Chạy hàm nạp truyện
+          loadExistingStories();
         } else {
-          // Nhập sai hoặc bấm Hủy, đá văng về trang chủ lập tức
           alert(
             "❌ Mật mã không chính xác! Cậu quay lại trang chủ đọc truyện nha.",
           );
           window.location.href = "index.html";
         }
       }
-      // Kích hoạt kiểm tra ngay khi trang web vừa tải xong
       window.addEventListener("DOMContentLoaded", checkAdminAccess);
       // =========================================================================
 
@@ -371,7 +370,7 @@
         document.getElementById("save-status").innerText =
           "Bước 2: Viết nội dung chương";
         document.getElementById("save-status").className =
-          "text-sm text-green-500 font-medium";
+          "text-sm text-green-600 font-medium";
       }
 
       function goToStep1() {
@@ -381,7 +380,7 @@
         document.getElementById("save-status").innerText =
           "Bước 1: Thiết lập cấu trúc";
         document.getElementById("save-status").className =
-          "text-sm text-orange-500 font-medium";
+          "text-sm text-amber-600 font-medium";
       }
 
       function publishToFirebase() {
@@ -429,7 +428,7 @@
               alert("Lỗi: " + error.message);
             } else {
               alert(
-                `🎉 Thành công! Dữ liệu chương ${chId} đã được đồng bộ khóa bảo mật.`,
+                `🎉 Thành công! Dữ liệu chương ${chId} đã được đồng bộ hóa an toàn.`,
               );
               window.location.href = "index.html";
             }
