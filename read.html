@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đọc Truyện - Giao Diện Tối Giản</title>
+    <title>Đọc Truyện - Trạm Nắng</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap"
@@ -22,37 +22,38 @@
         color: #f0f0f0;
       }
 
-      /* 💡 ĐOẠN CODE THẦN THÁNH: Giúp tự động thụt lề đầu dòng cho mỗi đoạn văn */
       .story-content-wrapper p {
-        text-indent: 28px; /* Độ thụt vào của chữ đầu dòng, cậu có thể chỉnh tùy ý */
-        margin-bottom: 1.5rem; /* Khoảng cách thông thoáng giữa các đoạn */
+        text-indent: 28px;
+        margin-bottom: 1.5rem;
       }
     </style>
   </head>
   <body
-    class="bg-gray-50 text-gray-900 transition-colors duration-300"
+    class="bg-stone-50 text-stone-900 transition-colors duration-300"
     id="body"
   >
-    <nav class="bg-white shadow-sm sticky top-0 z-10">
+    <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-10">
       <div
         class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center"
       >
-        <a href="index.html" class="text-xl font-bold text-orange-600"
-          >WATTPAD-CLONE</a
+        <a
+          href="index.html"
+          class="text-xl font-bold text-amber-600 tracking-tighter"
+          >☀️ TRẠM NẮNG</a
         >
         <div class="flex items-center gap-3">
           <button
             onclick="
               document.getElementById('body').classList.toggle('dark-mode')
             "
-            class="p-2 bg-gray-100 rounded-full text-sm"
+            class="p-2 bg-stone-100 dark:bg-stone-800 rounded-full text-sm"
           >
-            🌙 Đổi màu nền
+            🌓 Đổi màu nền
           </button>
           <a
             id="back-to-detail"
             href="index.html"
-            class="text-sm text-gray-500 hover:text-orange-500"
+            class="text-sm text-stone-500 hover:text-amber-600"
             >Mục lục</a
           >
         </div>
@@ -60,39 +61,39 @@
     </nav>
 
     <main class="max-w-2xl mx-auto px-4 py-10">
-      <div id="loading" class="text-center text-gray-400 py-10">
+      <div id="loading" class="text-center text-stone-400 py-10">
         ⏳ Đang lấy nội dung chương...
       </div>
 
       <div id="story-container" class="hidden">
         <h1
           id="render-title"
-          class="text-3xl font-bold mb-2 text-center md:text-left text-orange-600"
+          class="text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story"
         ></h1>
         <p
           id="render-date"
-          class="text-sm text-gray-400 mb-4 text-center md:text-left"
+          class="text-sm text-stone-400 mb-4 text-center md:text-left"
         ></p>
 
         <div
-          class="bg-white p-3 rounded-xl border shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-gray-600"
+          class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600"
         >
           <div class="flex items-center gap-2">
             <span>Cỡ chữ:</span>
             <button
               onclick="changeFontSize(-2)"
-              class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold"
+              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
             >
               A-
             </button>
             <span
               id="font-size-display"
-              class="w-12 text-center font-bold text-orange-600"
+              class="w-12 text-center font-bold text-amber-600"
               >20px</span
             >
             <button
               onclick="changeFontSize(2)"
-              class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold"
+              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
             >
               A+
             </button>
@@ -101,18 +102,18 @@
             <span>Giãn dòng:</span>
             <button
               onclick="changeLineHeight(-0.2)"
-              class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold"
+              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
             >
               ↕-
             </button>
             <span
               id="line-height-display"
-              class="w-12 text-center font-bold text-orange-600"
+              class="w-12 text-center font-bold text-amber-600"
               >1.8</span
             >
             <button
               onclick="changeLineHeight(0.2)"
-              class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold"
+              class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold"
             >
               ↕+
             </button>
@@ -121,25 +122,27 @@
 
         <article
           id="render-content"
-          class="story-content-wrapper font-story text-justify leading-relaxed border-t pt-6"
+          class="story-content-wrapper font-story text-justify leading-relaxed border-t border-stone-200 pt-6"
           style="font-size: 20px; line-height: 1.8"
         ></article>
 
-        <div class="mt-12 flex justify-between items-center border-t pt-8">
+        <div
+          class="mt-12 flex justify-between items-center border-t border-stone-200 pt-8"
+        >
           <button
             onclick="navigateChapter(-1)"
             id="btn-prev"
-            class="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-sm font-semibold"
+            class="px-5 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-sm font-semibold text-stone-700"
           >
             ← Chương trước
           </button>
-          <span id="current-ch-display" class="font-bold text-orange-500"
+          <span id="current-ch-display" class="font-bold text-amber-600"
             >Chương 1</span
           >
           <button
             onclick="navigateChapter(1)"
             id="btn-next"
-            class="px-5 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-semibold"
+            class="px-5 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-semibold"
           >
             Chương sau →
           </button>
@@ -178,7 +181,6 @@
         currentFontSize += delta;
         if (currentFontSize < 16) currentFontSize = 16;
         if (currentFontSize > 32) currentFontSize = 32;
-
         const article = document.getElementById("render-content");
         article.style.fontSize = currentFontSize + "px";
         document.getElementById("font-size-display").innerText =
@@ -189,7 +191,6 @@
         currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
         if (currentLineHeight < 1.4) currentLineHeight = 1.4;
         if (currentLineHeight > 2.4) currentLineHeight = 2.4;
-
         const article = document.getElementById("render-content");
         article.style.lineHeight = currentLineHeight;
         document.getElementById("line-height-display").innerText =
@@ -236,16 +237,14 @@
               document.getElementById("render-title").innerText =
                 `Chương ${data.id}: ${data.title}`;
               document.getElementById("render-date").innerText =
-                "Ngày đăng: " + (data.date || "Hôm nay");
+                "Ngày cập nhật: " + (data.date || "Hôm nay");
 
-              // Xử lý tách văn bản thô từ Firebase thành từng thẻ <p> để CSS thực hiện thụt đầu dòng chuẩn xác
               const rawContent = data.content || "";
               const paragraphs = rawContent
                 .split("\n")
                 .filter((p) => p.trim() !== "");
-
               const articleElement = document.getElementById("render-content");
-              articleElement.innerHTML = ""; // Xóa nội dung cũ đi
+              articleElement.innerHTML = "";
 
               paragraphs.forEach((pText) => {
                 const pTag = document.createElement("p");
@@ -257,7 +256,7 @@
                 "Chương chưa ra mắt";
               document.getElementById("render-date").innerText = "";
               document.getElementById("render-content").innerHTML =
-                "<p>Tác giả vẫn đang vắt óc suy nghĩ hoặc chưa viết tiếp chương này, cậu quay lại sau nhé! 😉</p>";
+                "<p>Bản thảo đang được tác giả cập nhật, cậu quay lại sau nhé! 😉</p>";
             }
           });
       }

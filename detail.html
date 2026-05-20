@@ -3,53 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Truyện - My Wattpad</title>
+    <title>Chi Tiết Tác Phẩm - Trạm Nắng</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .font-story { font-family: 'Merriweather', serif; }
         .blur-bg { filter: blur(20px); transform: scale(1.1); }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-stone-50 text-stone-800">
 
-    <nav class="bg-white border-b sticky top-0 z-50">
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black text-orange-600 tracking-tighter">WATTPAD-CLONE</a>
-            <a href="index.html" class="text-gray-600 hover:text-orange-600 font-medium">← Quay lại trang chủ</a>
+            <a href="index.html" class="text-2xl font-black text-amber-600 tracking-tighter">☀️ TRẠM NẮNG</a>
+            <a href="index.html" class="text-stone-500 hover:text-amber-600 font-medium">← Quay lại sảnh chung</a>
         </div>
     </nav>
 
-    <div class="w-full bg-gray-900 h-64 md:h-80 relative overflow-hidden flex items-center justify-center">
-        <div id="bg-blur" class="absolute inset-0 bg-cover bg-center filter blur-xl opacity-40 scale-110"></div>
+    <div class="w-full bg-stone-900 h-64 md:h-80 relative overflow-hidden flex items-center justify-center">
+        <div id="bg-blur" class="absolute inset-0 bg-cover bg-center filter blur-xl opacity-30 scale-110"></div>
         <div class="relative z-10 text-center text-white px-4">
-            <h2 id="story-title" class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">Đang tải truyện...</h2>
-            <p id="story-author" class="text-orange-400 font-medium mt-2 text-lg drop-shadow-sm"></p>
+            <h2 id="story-title" class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md font-story">Đang mở kệ sách...</h2>
+            <p id="story-author" class="text-amber-400 font-medium mt-2 text-lg drop-shadow-sm italic"></p>
         </div>
     </div>
 
     <main class="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 -mt-16 relative z-20">
         <div class="md:col-span-1 flex justify-center md:block">
-            <img id="story-cover" src="" alt="Cover" class="w-48 h-72 md:w-full md:h-auto object-cover rounded-2xl shadow-2xl border-4 border-white bg-gray-200">
+            <img id="story-cover" src="" alt="Cover" class="w-48 h-72 md:w-full md:h-auto object-cover rounded-2xl shadow-2xl border-4 border-white bg-stone-200">
         </div>
 
         <div class="md:col-span-2 space-y-8">
             <div class="flex gap-4 justify-center md:justify-start">
-                <a id="btn-read-now" href="read.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105 shadow text-center">
-                    🚀 Đọc ngay
+                <a id="btn-read-now" href="read.html" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105 shadow text-center">
+                    📖 Đọc tác phẩm
                 </a>
-                <button onclick="deleteStory()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-bold transition transform hover:scale-105 shadow flex items-center gap-1">
-                    🗑️ Xóa truyện
+                <button onclick="deleteStory()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-bold transition transform hover:scale-105 shadow flex items-center gap-1">
+                    🗑️ Hủy bản thảo
                 </button>
             </div>
 
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border">
-                <h3 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">📖 Tóm tắt tác phẩm</h3>
-                <p id="story-desc" class="text-gray-600 leading-relaxed text-base whitespace-pre-line">Đang tải nội dung tóm tắt...</p>
+            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
+                <h3 class="text-xl font-bold mb-4 text-stone-800 border-b border-stone-100 pb-2 font-story">📝 Tóm tắt nội dung</h3>
+                <p id="story-desc" class="text-stone-600 leading-relaxed text-base whitespace-pre-line">Đang đọc dữ liệu cốt truyện...</p>
             </section>
 
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border">
-                <h3 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">📌 Mục lục các chương</h3>
+            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
+                <h3 class="text-xl font-bold mb-4 text-stone-800 border-b border-stone-100 pb-2 font-story">📌 Danh mục các chương</h3>
                 <div id="chapters-list" class="space-y-3"></div>
             </section>
         </div>
@@ -81,7 +82,7 @@
                 if(info) {
                     document.getElementById('story-title').innerText = info.title;
                     document.getElementById('story-author').innerText = "Tác giả: " + (info.author || "Khuyết danh");
-                    document.getElementById('story-desc').innerText = info.description || "Truyện này chưa có tóm tắt.";
+                    document.getElementById('story-desc').innerText = info.description || "Tác phẩm chưa có tóm tắt giới thiệu.";
                     document.getElementById('story-cover').src = info.cover;
                     document.getElementById('bg-blur').style.backgroundImage = `url('${info.cover}')`;
                 }
@@ -92,16 +93,16 @@
                 listContainer.innerHTML = "";
                 const chapters = snapshot.val();
                 if(!chapters) {
-                    listContainer.innerHTML = `<p class="text-gray-400 italic text-sm">Tác giả đang chuẩn bị bản thảo cho chương đầu tiên.</p>`;
+                    listContainer.innerHTML = `<p class="text-stone-400 italic text-sm">Chưa có chương nào được phát hành.</p>`;
                     return;
                 }
                 const sortedKeys = Object.keys(chapters).sort((a,b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
                 sortedKeys.forEach((chKey) => {
                     const ch = chapters[chKey];
                     const row = `
-                        <a href="read.html?id=${storyId}&ch=${ch.id}" class="flex justify-between items-center p-4 bg-gray-50 hover:bg-orange-50 border rounded-xl transition font-medium text-gray-700 hover:text-orange-600">
+                        <a href="read.html?id=${storyId}&ch=${ch.id}" class="flex justify-between items-center p-4 bg-stone-50 hover:bg-amber-50/50 border border-stone-200 rounded-xl transition font-medium text-stone-700 hover:text-amber-700">
                             <span>Chương ${ch.id}: ${ch.title}</span>
-                            <span class="text-gray-400 text-xs">${ch.date || ''}</span>
+                            <span class="text-stone-400 text-xs">${ch.date || ''}</span>
                         </a>
                     `;
                     listContainer.innerHTML += row;
@@ -111,23 +112,18 @@
 
         function deleteStory() {
             if(!storyId) return;
-            const check = confirm("⚠️ Cậu có chắc chắn muốn XÓA HOÀN TOÀN bộ truyện này cùng tất cả các chương trên hệ thống không? Hành động này không thể hoàn tác!");
-            
+            const check = confirm("⚠️ Cậu có chắc muốn gỡ bỏ hoàn toàn bản thảo này cùng mọi chương truyện không?");
             if(check) {
-                // 1. Xóa trên cơ sở dữ liệu Firebase
                 database.ref(`stories/${storyId}`).remove().then(() => {
-                    
-                    // 2. Dọn dẹp luôn lịch sử đọc dở trên trình duyệt máy cậu nếu có
                     const localHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
                     if(localHistory[storyId]) {
                         delete localHistory[storyId];
                         localStorage.setItem('wattpad_reading_history', JSON.stringify(localHistory));
                     }
-
-                    alert("🗑️ Đã xóa sạch bộ truyện thành công khỏi hệ thống!");
-                    window.location.href = "index.html"; // Đá về trang chủ mượt mà
+                    alert("🗑️ Đã dọn dẹp và hủy bản thảo thành công!");
+                    window.location.href = "index.html";
                 }).catch((error) => {
-                    alert("Lỗi xóa truyện: " + error.message);
+                    alert("Lỗi: " + error.message);
                 });
             }
         }
