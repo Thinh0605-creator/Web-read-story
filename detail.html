@@ -39,7 +39,7 @@
                 <a id="btn-read-now" href="read.html" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105 shadow text-center">
                     📖 Đọc tác phẩm
                 </a>
-                <button onclick="deleteStory()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-bold transition transform hover:scale-105 shadow flex items-center gap-1">
+                <button onclick="deleteStoryWithPassword()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-bold transition transform hover:scale-105 shadow flex items-center gap-1">
                     🗑️ Hủy bản thảo
                 </button>
             </div>
@@ -73,6 +73,9 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const storyId = urlParams.get('id');
+
+        // Khai báo mật mã tác giả dùng chung cho hệ thống
+        const MY_SECRET_PASSWORD = "060506";
 
         if(storyId) {
             document.getElementById('btn-read-now').href = `read.html?id=${storyId}&ch=1`;
@@ -110,21 +113,33 @@
             });
         }
 
-        function deleteStory() {
+        // ĐÃ NÂNG CẤP: HÀM XÓA TRUYỆN CÓ KHÓA MẬT MÃ BẢO VỆ
+        function deleteStoryWithPassword() {
             if(!storyId) return;
-            const check = confirm("⚠️ Cậu có chắc muốn gỡ bỏ hoàn toàn bản thảo này cùng mọi chương truyện không?");
-            if(check) {
+
+            // Bước 1: Xác nhận lại ý muốn
+            const firstCheck = confirm("⚠️ Cậu có chắc chắn muốn gỡ bỏ hoàn toàn bản thảo này cùng mọi chương truyện không?");
+            if (!firstCheck) return;
+
+            // Bước 2: Bắt buộc nhập mật mã phòng sáng tác
+            const passwordPrompt = prompt("🔒 Tính năng tối cao! Vui lòng gõ mã PIN tác giả để xác thực quyền gỡ bỏ truyện:");
+            
+            if (passwordPrompt === MY_SECRET_PASSWORD) {
+                // Nhập đúng pass mới tiến hành xóa trên Firebase
                 database.ref(`stories/${storyId}`).remove().then(() => {
                     const localHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
                     if(localHistory[storyId]) {
                         delete localHistory[storyId];
                         localStorage.setItem('wattpad_reading_history', JSON.stringify(localHistory));
                     }
-                    alert("🗑️ Đã dọn dẹp và hủy bản thảo thành công!");
+                    alert("🗑️ Đã xác thực thành công. Bản thảo đã được dọn dẹp sạch sẽ!");
                     window.location.href = "index.html";
                 }).catch((error) => {
-                    alert("Lỗi: " + error.message);
+                    alert("Lỗi hệ thống: " + error.message);
                 });
+            } else {
+                // Nhập sai hoặc nhấn hủy
+                alert("❌ Mã PIN không chính xác! Hành vi hủy bản thảo đã bị chặn đứng để bảo vệ an toàn dữ liệu.");
             }
         }
     </script>

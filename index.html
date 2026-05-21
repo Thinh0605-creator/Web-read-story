@@ -1,226 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trạm Nắng - Không Gian Đọc Truyện Chữa Lành</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      .font-story {
-        font-family: "Merriweather", serif;
-      }
-      .book-card:hover img {
-        transform: scale(1.05);
-        transition: 0.3s;
-      }
+        body { font-family: 'Inter', sans-serif; }
+        .font-story { font-family: 'Merriweather', serif; }
+        .book-card:hover img { transform: scale(1.05); transition: 0.3s; }
     </style>
-  </head>
-  <body class="bg-stone-50 text-stone-800">
-    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
-      <div
-        class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center"
-      >
-        <a
-          href="index.html"
-          class="text-2xl font-black text-amber-600 tracking-tighter flex items-center gap-1"
-          >☀️ TRẠM NẮNG</a
-        >
-        <div
-          class="hidden md:flex space-x-6 text-stone-600 font-medium items-center"
-        >
-          <a href="index.html" class="hover:text-amber-600">Khám phá</a>
-          <a href="editor.html" class="hover:text-amber-600">Sáng tác</a>
+</head>
+<body class="bg-stone-50 text-stone-800">
 
-          <div
-            class="flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-xl border text-xs"
-          >
-            <span class="text-stone-500 font-bold">Chế độ đọc:</span>
-            <select
-              id="global-reading-mode"
-              onchange="saveGlobalReadingMode(this.value)"
-              class="bg-transparent font-bold text-amber-700 outline-none cursor-pointer"
-            >
-              <option value="vertical">📜 Cuộn Dọc</option>
-              <option value="horizontal">↔️ Lật Ngang</option>
-            </select>
-          </div>
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap gap-3 justify-between items-center">
+            <a href="index.html" class="text-2xl font-black text-amber-600 tracking-tighter flex items-center gap-1">☀️ TRẠM NẮNG</a>
+            
+            <div class="flex space-x-4 text-sm text-stone-600 font-semibold items-center">
+                <a href="index.html" class="hover:text-amber-600">Khám phá</a>
+                <a href="editor.html" class="hover:text-amber-600">Sáng tác</a>
+                
+                <div class="flex items-center gap-1 bg-stone-100 px-2 py-1 rounded-xl border text-[11px] md:text-xs">
+                    <span class="text-stone-500 hidden sm:inline">Dạng đọc:</span>
+                    <select id="global-reading-mode" onchange="saveGlobalReadingMode(this.value)" class="bg-transparent font-bold text-amber-700 outline-none cursor-pointer">
+                        <option value="vertical">📜 Cuộn dọc</option>
+                        <option value="horizontal">↔️ Lật ngang</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div>
+                <a href="editor.html" class="bg-amber-600 text-white px-4 py-2 rounded-full font-bold hover:bg-amber-700 transition shadow-sm text-xs md:text-sm inline-block">
+                    ✍️ Viết tiếp
+                </a>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
-          <a
-            href="editor.html"
-            class="bg-amber-600 text-white px-5 py-2 rounded-full font-bold hover:bg-amber-700 transition shadow-sm text-sm"
-          >
-            ✍️ Viết tiếp bản thảo
-          </a>
-        </div>
-      </div>
     </nav>
 
-    <header
-      class="bg-gradient-to-r from-amber-500 to-amber-700 py-16 text-white text-center shadow-inner"
-    >
-      <h2 class="text-4xl font-bold mb-4 font-story">
-        Nơi những vệt nắng sưởi lành tâm hồn
-      </h2>
-      <p class="text-lg opacity-90">
-        Góc nhỏ lưu giữ những câu chuyện thành thật và thầm lặng.
-      </p>
+    <header class="bg-gradient-to-r from-amber-500 to-amber-700 py-16 text-white text-center shadow-inner">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 font-story px-4">Nơi những vệt nắng sưởi lành tâm hồn</h2>
+        <p class="text-sm md:text-lg opacity-90 px-4">Góc nhỏ lưu giữ những câu chuyện thành thật và thầm lặng.</p>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-10 space-y-12">
-      <div id="reading-history-section" class="hidden">
-        <h3 class="text-2xl font-bold mb-6 flex items-center font-story">
-          <span class="bg-amber-500 w-2 h-8 mr-3 rounded-full"></span>
-          📚 Đọc tiếp
-        </h3>
-        <div
-          id="history-list-grid"
-          class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"
-        ></div>
-      </div>
-
-      <div>
-        <h3 class="text-2xl font-bold mb-6 flex items-center font-story">
-          <span class="bg-amber-500 w-2 h-8 mr-3 rounded-full"></span>
-          Tác phẩm mới trên kệ sách
-        </h3>
-        <div
-          id="story-list-grid"
-          class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"
-        >
-          <div class="col-span-full text-center text-stone-400 py-10">
-            ⏳ Đang kết nối vũ trụ lấy bản thảo về...
-          </div>
+        
+        <div id="reading-history-section" class="hidden">
+            <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center font-story">
+                <span class="bg-amber-500 w-2 h-7 mr-3 rounded-full"></span>
+                📚 Bản thảo cậu đang đọc dở
+            </h3>
+            <div id="history-list-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"></div>
         </div>
-      </div>
+
+        <div>
+            <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center font-story">
+                <span class="bg-amber-500 w-2 h-7 mr-3 rounded-full"></span>
+                Tác phẩm mới trên kệ sách
+            </h3>
+            <div id="story-list-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                <div class="col-span-full text-center text-stone-400 py-10">⏳ Đang kết nối vũ trụ lấy bản thảo về...</div>
+            </div>
+        </div>
     </main>
 
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
-        authDomain: "web-read-story.firebaseapp.com",
-        databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
-        projectId: "web-read-story",
-        storageBucket: "web-read-story.firebasestorage.app",
-        messagingSenderId: "627619633534",
-        appId: "1:627619633534:web:428659f610e2eb7c45bb2f",
-      };
-      firebase.initializeApp(firebaseConfig);
-      const database = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+            authDomain: "web-read-story.firebaseapp.com",
+            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+            projectId: "web-read-story",
+            storageBucket: "web-read-story.firebasestorage.app",
+            messagingSenderId: "627619633534",
+            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-      // Hàm xử lý lưu cấu hình đọc truyện mặc định xuống máy độc giả
-      function saveGlobalReadingMode(val) {
-        localStorage.setItem("tramnang_default_reading_mode", val);
-      }
-
-      // Tự động đồng bộ trạng thái của thanh chọn khi vừa tải trang chủ
-      window.addEventListener("DOMContentLoaded", () => {
-        const savedMode =
-          localStorage.getItem("tramnang_default_reading_mode") || "vertical";
-        document.getElementById("global-reading-mode").value = savedMode;
-      });
-
-      function renderReadingHistory(allStories) {
-        const historySection = document.getElementById(
-          "reading-history-section",
-        );
-        const historyGrid = document.getElementById("history-list-grid");
-        const localHistory =
-          JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
-
-        if (Object.keys(localHistory).length === 0 || !allStories) {
-          historySection.classList.add("hidden");
-          return;
+        function saveGlobalReadingMode(val) {
+            localStorage.setItem('tramnang_default_reading_mode', val);
         }
 
-        let hasValidHistory = false;
-        historyGrid.innerHTML = "";
-
-        Object.keys(localHistory).forEach((storyId) => {
-          if (allStories[storyId] && allStories[storyId].story_info) {
-            hasValidHistory = true;
-            const story = allStories[storyId].story_info;
-            const lastCh = localHistory[storyId].chapter;
-            const coverImg =
-              story.cover ||
-              "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
-
-            const card = `
-                        <a href="read.html?id=${storyId}&ch=${lastCh}" class="book-card group cursor-pointer block relative">
-                            <span class="absolute top-2 left-2 bg-amber-600 text-white font-bold text-xs px-2 py-1 rounded-md z-30 shadow">Đọc tiếp Ch. ${lastCh}</span>
-                            <div class="overflow-hidden rounded-lg shadow-md aspect-[2/3] mb-3 bg-stone-100">
-                                <img src="${coverImg}" alt="Cover" class="w-full h-full object-cover opacity-90 transition duration-300">
-                            </div>
-                            <h4 class="font-bold text-stone-800 group-hover:text-amber-600 line-clamp-1">${story.title}</h4>
-                            <p class="text-xs text-amber-600 font-semibold">Bấm để đọc tiếp →</p>
-                        </a>
-                    `;
-            historyGrid.innerHTML += card;
-          }
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedMode = localStorage.getItem('tramnang_default_reading_mode') || 'vertical';
+            document.getElementById('global-reading-mode').value = savedMode;
         });
 
-        if (hasValidHistory) {
-          historySection.classList.remove("hidden");
-        } else {
-          historySection.classList.add("hidden");
+        function renderReadingHistory(allStories) {
+            const historySection = document.getElementById('reading-history-section');
+            const historyGrid = document.getElementById('history-list-grid');
+            const localHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
+            
+            if (Object.keys(localHistory).length === 0 || !allStories) {
+                historySection.classList.add('hidden'); return;
+            }
+
+            let hasValidHistory = false;
+            historyGrid.innerHTML = "";
+
+            Object.keys(localHistory).forEach((storyId) => {
+                if (allStories[storyId] && allStories[storyId].story_info) {
+                    hasValidHistory = true;
+                    const story = allStories[storyId].story_info;
+                    const lastCh = localHistory[storyId].chapter;
+                    const coverImg = story.cover || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+                    
+                    const card = `
+                        <a href="read.html?id=${storyId}&ch=${lastCh}" class="book-card group cursor-pointer block relative">
+                            <span class="absolute top-2 left-2 bg-amber-600 text-white font-bold text-[10px] px-2 py-0.5 rounded z-30 shadow">Ch. ${lastCh}</span>
+                            <div class="overflow-hidden rounded-lg shadow-md aspect-[2/3] mb-2 bg-stone-100">
+                                <img src="${coverImg}" alt="Cover" class="w-full h-full object-cover opacity-90 transition duration-300">
+                            </div>
+                            <h4 class="font-bold text-stone-800 text-sm group-hover:text-amber-600 line-clamp-1">${story.title}</h4>
+                            <p class="text-[11px] text-amber-600 font-semibold">Đọc tiếp →</p>
+                        </a>
+                    `;
+                    historyGrid.innerHTML += card;
+                }
+            });
+
+            if (hasValidHistory) { historySection.classList.remove('hidden'); }
+            else { historySection.classList.add('hidden'); }
         }
-      }
 
-      database.ref("stories").on("value", (snapshot) => {
-        const grid = document.getElementById("story-list-grid");
-        grid.innerHTML = "";
-        const allStories = snapshot.val();
+        database.ref('stories').on('value', (snapshot) => {
+            const grid = document.getElementById('story-list-grid');
+            grid.innerHTML = "";
+            const allStories = snapshot.val();
+            
+            renderReadingHistory(allStories);
 
-        renderReadingHistory(allStories);
-
-        if (!allStories) {
-          grid.innerHTML = `
+            if (!allStories) {
+                grid.innerHTML = `
                     <a href="editor.html" class="book-card group cursor-pointer block border-2 border-dashed border-stone-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:border-amber-500 transition aspect-[2/3] bg-white">
                         <span class="text-3xl mb-2 text-stone-400">➕</span>
                         <h4 class="font-bold text-stone-500 text-sm">Kệ sách trống trơn</h4>
-                        <p class="text-xs text-stone-400 mt-1">Bấm vào đây để thêm truyện mới!</p>
+                        <p class="text-xs text-stone-400 mt-1">Bấm vào đây để thêm bản thảo đầu tay!</p>
                     </a>`;
-          return;
-        }
+                return;
+            }
 
-        Object.keys(allStories).forEach((storyId) => {
-          const story = allStories[storyId].story_info;
-          if (story) {
-            const coverImg =
-              story.cover ||
-              "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
-            const htmlCard = `
+            Object.keys(allStories).forEach((storyId) => {
+                const story = allStories[storyId].story_info;
+                if(story) {
+                    const coverImg = story.cover || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+                    const htmlCard = `
                         <a href="detail.html?id=${storyId}" class="book-card group cursor-pointer block">
-                            <div class="overflow-hidden rounded-lg shadow-md aspect-[2/3] mb-3 bg-stone-100">
+                            <div class="overflow-hidden rounded-lg shadow-md aspect-[2/3] mb-2 bg-stone-100">
                                 <img src="${coverImg}" alt="Cover" class="w-full h-full object-cover transition duration-300">
                             </div>
-                            <h4 class="font-bold text-stone-800 group-hover:text-amber-600 line-clamp-1">${story.title}</h4>
-                            <p class="text-sm text-stone-500 italic line-clamp-1">Tác giả: ${story.author || "Khuyết danh"}</p>
-                            <div class="flex items-center mt-2 text-xs text-stone-400">
-                                <span class="mr-2">👁️ ${story.views || 0} lượt xem</span>
+                            <h4 class="font-bold text-stone-800 text-sm group-hover:text-amber-600 line-clamp-1">${story.title}</h4>
+                            <p class="text-xs text-stone-500 italic line-clamp-1">Tác giả: ${story.author || 'Khuyết danh'}</p>
+                            <div class="flex items-center mt-1 text-[11px] text-stone-400">
+                                <span class="mr-2">👁️ ${story.views || 0}</span>
                             </div>
                         </a>
                     `;
-            grid.innerHTML += htmlCard;
-          }
-        });
+                    grid.innerHTML += htmlCard;
+                }
+            });
 
-        grid.innerHTML += `
+            grid.innerHTML += `
                 <a href="editor.html" class="book-card group cursor-pointer block border-2 border-dashed border-stone-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:border-amber-500 transition aspect-[2/3] bg-white">
-                    <span class="text-3xl mb-2 text-stone-400 group-hover:text-amber-500 transition">➕</span>
-                    <h4 class="font-bold text-stone-500 group-hover:text-amber-500 transition text-sm">Thêm bản thảo</h4>
-                    <p class="text-xs text-stone-400 mt-1">Sáng tác truyện mới nhanh chóng</p>
+                    <span class="text-2xl mb-1 text-stone-400 group-hover:text-amber-500 transition">➕</span>
+                    <h4 class="font-bold text-stone-500 group-hover:text-amber-500 transition text-xs">Thêm truyện</h4>
                 </a>`;
-      });
+        });
     </script>
-  </body>
+</body>
 </html>
