@@ -9,36 +9,65 @@
     <style>
         .font-story { font-family: 'Merriweather', serif; }
         
-        /* Cấu trúc thụt lề đầu dòng cho văn bản cuộn dọc thông thường */
+        /* Chế độ cuộn dọc truyền thống cho cả 2 thiết bị */
         .story-content-wrapper p {
             text-indent: 28px;
             margin-bottom: 1.5rem;
         }
 
-        /* 👑 CHẾ ĐỘ LẬT TRANG NGANG HOÀN HẢO - LẤP ĐẦY TRANG & CÓ PADDING CHO ĐIỆN THOẠI */
-        .horizontal-mode {
-            display: block !important;
-            column-width: calc(100vw - 32px); /* Trừ đi phần padding 2 bên để chia cột chuẩn khít màn hình */
-            column-gap: 32px;    /* Khoảng cách giữa các trang sách */
-            height: 72vh;        /* Độ cao vừa vặn ôm khít khung đọc trên cả mobile và máy tính */
-            overflow-x: auto !important;
-            overflow-y: hidden !important;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            padding: 0 16px;     /* 💡 Đệm lề trái phải: Giúp chữ cách đều viền điện thoại cực thoáng, không bị bóp mép */
-            box-sizing: border-box;
-        }
-        
-        .horizontal-mode p {
-            scroll-snap-align: start;
-            break-inside: auto;  /* 💡 Cho phép các đoạn văn dài ngắt đôi tràn chữ mượt mà xuống đáy trang rồi chạy tiếp sang trang sau */
-            text-indent: 28px;
-            margin-bottom: 1.2rem;
+        /* ======================================================= */
+        /* 📱 1. CHẾ ĐỘ LẬT NGANG DÀNH RIÊNG CHO ĐIỆN THOẠI (Màn hình nhỏ dưới 768px) */
+        @media (max-width: 767px) {
+            .horizontal-mode {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                scroll-snap-type: x mandatory !important;
+                scroll-behavior: smooth;
+                width: 100% !important;
+                gap: 0px !important;
+            }
+            .horizontal-mode p {
+                scroll-snap-align: start !important;
+                flex: 0 0 100% !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 20px !important; 
+                box-sizing: border-box !important;
+                text-indent: 28px;
+                margin-bottom: 0rem !important;
+                white-space: normal !important;
+                display: block !important;
+            }
         }
 
-        /* Ẩn thanh cuộn scrollbar để tạo cảm giác giống trang sách */
+        /* ======================================================= */
+        /* 💻 2. CHẾ ĐỘ LẬT NGANG DÀNH RIÊNG CHO LAPTOP/MÁY TÍNH (Màn hình lớn từ 768px trở lên) */
+        @media (min-width: 768px) {
+            .horizontal-mode {
+                display: block !important;
+                column-width: calc(100vw - 40px); 
+                column-gap: 40px;    
+                height: 70vh;        
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                box-sizing: border-box;
+            }
+            .horizontal-mode p {
+                scroll-snap-align: start;
+                break-inside: auto;  
+                text-indent: 28px;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        /* Ẩn thanh cuộn scrollbar trên mọi thiết bị */
         .horizontal-mode::-webkit-scrollbar {
-            display: none;
+            display: none !important;
         }
     </style>
 </head>
@@ -63,7 +92,7 @@
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-0 md:px-4 py-6 md:py-10 flex-1 w-full flex flex-col justify-between overflow-hidden">
+    <main class="max-w-2xl mx-auto px-0 py-6 md:py-10 flex-1 w-full flex flex-col justify-between overflow-hidden">
         <div id="loading" class="text-center text-stone-400 py-10 flex-1">⏳ Đang lấy nội dung chương từ hệ thống...</div>
         
         <div id="story-container" class="hidden flex-1 flex flex-col justify-between w-full">
@@ -88,8 +117,8 @@
                 </div>
             </div>
             
-            <div class="w-full overflow-hidden flex-1">
-                <article id="render-content" class="story-content-wrapper font-story text-justify border-t border-stone-200 pt-6 transition-all duration-300 mx-auto" style="font-size: 20px; line-height: 1.6;">
+            <div class="w-full overflow-hidden flex-1 flex items-center">
+                <article id="render-content" class="story-content-wrapper font-story text-justify border-t border-stone-200 pt-6 transition-all duration-300 w-full" style="font-size: 20px; line-height: 1.6;">
                 </article>
             </div>
 
@@ -148,7 +177,7 @@
                 badge.className = "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
                 contentBox.scrollLeft = 0;
                 
-                setTimeout(updateHorizontalNavigation, 150);
+                setTimeout(updateHorizontalNavigation, 100);
             } else {
                 contentBox.classList.remove('horizontal-mode');
                 badge.innerText = "📜 Chế độ cuộn dọc";
@@ -162,8 +191,9 @@
             const contentBox = document.getElementById('render-content');
             
             if (readingMode === 'horizontal') {
-                // Tính toán chính xác độ rộng bước lật bao gồm cả phần gap 32px
-                const pageWidth = contentBox.clientWidth + 32; 
+                // Tự động tính bước nhảy dựa theo chiều rộng thực tế của khung đọc thiết bị đó
+                const isMobile = window.innerWidth < 768;
+                const pageWidth = isMobile ? contentBox.clientWidth : (contentBox.clientWidth + 40); 
                 const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
                 
                 if (direction === 1) {
@@ -180,7 +210,7 @@
                     contentBox.scrollLeft -= pageWidth;
                 }
                 
-                setTimeout(updateHorizontalNavigation, 250);
+                setTimeout(updateHorizontalNavigation, 200);
             } else {
                 navigateChapter(direction);
             }
@@ -194,9 +224,10 @@
             if (!contentBox.classList.contains('horizontal-mode')) return;
 
             const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
+            const isMobile = window.innerWidth < 768;
             
-            btnPrev.innerText = contentBox.scrollLeft <= 15 ? "← Chương trước" : "← Trang trước";
-            btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 15 ? "Chương sau →" : "Trang sau →";
+            btnPrev.innerText = contentBox.scrollLeft <= 15 ? "← Chương trước" : (isMobile ? "← Đoạn trước" : "← Trang trước");
+            btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 15 ? "Chương sau →" : (isMobile ? "Đoạn sau →" : "Trang sau →");
         }
 
         document.getElementById('render-content').addEventListener('scroll', () => {
@@ -265,7 +296,6 @@
             const article = document.getElementById('render-content');
             article.style.fontSize = currentFontSize + 'px';
             document.getElementById('font-size-display').innerText = currentFontSize + 'px';
-            if (readingMode === 'horizontal') applyReadingModeSettings();
         }
 
         function changeLineHeight(delta) {
@@ -275,7 +305,6 @@
             const article = document.getElementById('render-content');
             article.style.lineHeight = currentLineHeight;
             document.getElementById('line-height-display').innerText = currentLineHeight;
-            if (readingMode === 'horizontal') applyReadingModeSettings();
         }
 
         function loadChapter(chNum) {
@@ -318,7 +347,7 @@
                 } else {
                     document.getElementById('render-title').innerText = "Chương chưa ra mắt";
                     document.getElementById('render-date').innerText = "";
-                    document.getElementById('render-content').innerHTML = "<p>Bản thảo đang được tác giả cập nhật, cậu quay lại sau nhé! 😉</p>";
+                    document.getElementById('render-content').innerHTML = "<p class='px-4'>Bản thảo đang được tác giả cập nhật, cậu quay lại sau nhé! 😉</p>";
                 }
             });
         }
