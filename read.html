@@ -9,34 +9,34 @@
     <style>
         .font-story { font-family: 'Merriweather', serif; }
         
+        /* Cấu trúc thụt lề đầu dòng cho văn bản cuộn dọc thông thường */
         .story-content-wrapper p {
             text-indent: 28px;
             margin-bottom: 1.5rem;
         }
 
-        /* 👑 CHẾ ĐỘ LẬT TRANG NGANG CAO CẤP - FIX LỖI ĐIỆN THOẠI */
+        /* 👑 CHẾ ĐỘ LẬT TRANG NGANG HOÀN HẢO - LẤP ĐẦY TRANG & CÓ PADDING CHO ĐIỆN THOẠI */
         .horizontal-mode {
-            display: flex !important;
-            flex-direction: row !important;
+            display: block !important;
+            column-width: calc(100vw - 32px); /* Trừ đi phần padding 2 bên để chia cột chuẩn khít màn hình */
+            column-gap: 32px;    /* Khoảng cách giữa các trang sách */
+            height: 72vh;        /* Độ cao vừa vặn ôm khít khung đọc trên cả mobile và máy tính */
             overflow-x: auto !important;
             overflow-y: hidden !important;
-            scroll-snap-type: x mandatory !important;
+            scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            width: 100% !important;
+            padding: 0 16px;     /* 💡 Đệm lề trái phải: Giúp chữ cách đều viền điện thoại cực thoáng, không bị bóp mép */
+            box-sizing: border-box;
         }
         
-        /* Biến mỗi đoạn văn thành một cụm vừa khít 1 màn hình độc lập */
         .horizontal-mode p {
-            scroll-snap-align: start !important;
-            flex: 0 0 100% !important;
-            width: 100% !important;
-            min-width: 100% !important;
-            padding: 0 8px; /* Giúp chữ không bao giờ bị dính sát mép viền điện thoại */
+            scroll-snap-align: start;
+            break-inside: auto;  /* 💡 Cho phép các đoạn văn dài ngắt đôi tràn chữ mượt mà xuống đáy trang rồi chạy tiếp sang trang sau */
             text-indent: 28px;
-            margin-bottom: 0rem !important;
-            white-space: normal !important;
+            margin-bottom: 1.2rem;
         }
 
+        /* Ẩn thanh cuộn scrollbar để tạo cảm giác giống trang sách */
         .horizontal-mode::-webkit-scrollbar {
             display: none;
         }
@@ -49,7 +49,7 @@
             <a href="index.html" class="text-xl font-bold text-amber-600 tracking-tighter" id="nav-logo">☀️ TRẠM NẮNG</a>
             <div class="flex items-center gap-2 md:gap-3">
                 
-                <div class="bg-stone-100 px-2 py-1.5 rounded-xl border border-stone-200 text-xs font-bold flex items-center gap-1" id="menu-select-wrapper">
+                <div class="bg-stone-100 px-2.5 py-1.5 rounded-xl border border-stone-200 text-xs font-bold flex items-center gap-1" id="menu-select-wrapper">
                     <span class="text-stone-500 hidden sm:inline" id="text-mode-lbl">Dạng đọc:</span>
                     <select id="inline-reading-mode" onchange="changeReadingModeAndSave(this.value)" class="bg-transparent text-amber-600 outline-none cursor-pointer">
                         <option value="vertical">📜 Cuộn dọc</option>
@@ -63,15 +63,15 @@
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-4 py-10 flex-1 w-full flex flex-col justify-between">
+    <main class="max-w-2xl mx-auto px-0 md:px-4 py-6 md:py-10 flex-1 w-full flex flex-col justify-between overflow-hidden">
         <div id="loading" class="text-center text-stone-400 py-10 flex-1">⏳ Đang lấy nội dung chương từ hệ thống...</div>
         
         <div id="story-container" class="hidden flex-1 flex flex-col justify-between w-full">
-            <div>
+            <div class="px-4 md:px-0">
                 <h1 id="render-title" class="text-2xl md:text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story"></h1>
                 <p id="render-date" class="text-sm text-stone-400 mb-4 text-center md:text-left"></p>
                 
-                <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-4 items-center justify-center md:justify-start text-xs md:text-sm mb-8 font-medium text-stone-600 transition-colors duration-300" id="control-panel">
+                <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-4 items-center justify-center md:justify-start text-xs md:text-sm mb-6 font-medium text-stone-600 transition-colors duration-300" id="control-panel">
                     <div class="flex items-center gap-2">
                         <span>Cỡ chữ:</span>
                         <button onclick="changeFontSize(-2)" class="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-lg font-bold transition text-stone-700" id="btn-font-minus">A-</button>
@@ -86,14 +86,14 @@
                     </div>
                     <div class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold" id="badge-mode">📜 Chế độ cuộn dọc</div>
                 </div>
-                
-                <div class="w-full overflow-hidden">
-                    <article id="render-content" class="story-content-wrapper font-story text-justify border-t border-stone-200 pt-6 transition-all duration-300" style="font-size: 20px; line-height: 1.6;">
-                    </article>
-                </div>
+            </div>
+            
+            <div class="w-full overflow-hidden flex-1">
+                <article id="render-content" class="story-content-wrapper font-story text-justify border-t border-stone-200 pt-6 transition-all duration-300 mx-auto" style="font-size: 20px; line-height: 1.6;">
+                </article>
             </div>
 
-            <div class="mt-12 flex justify-between items-center border-t border-stone-200 pt-8" id="navigation-footer">
+            <div class="mt-8 mx-4 md:mx-0 flex justify-between items-center border-t border-stone-200 pt-6" id="navigation-footer">
                 <button onclick="navigatePageOrChapter(-1)" id="btn-prev" class="px-4 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-xs md:text-sm font-semibold text-stone-700 transition">← Chương trước</button>
                 <span id="current-ch-display" class="font-bold text-amber-600 text-sm md:text-base">Chương 1</span>
                 <button onclick="navigatePageOrChapter(1)" id="btn-next" class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs md:text-sm font-semibold transition">Chương sau →</button>
@@ -148,7 +148,7 @@
                 badge.className = "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
                 contentBox.scrollLeft = 0;
                 
-                setTimeout(updateHorizontalNavigation, 100);
+                setTimeout(updateHorizontalNavigation, 150);
             } else {
                 contentBox.classList.remove('horizontal-mode');
                 badge.innerText = "📜 Chế độ cuộn dọc";
@@ -162,17 +162,18 @@
             const contentBox = document.getElementById('render-content');
             
             if (readingMode === 'horizontal') {
-                const pageWidth = contentBox.clientWidth; 
+                // Tính toán chính xác độ rộng bước lật bao gồm cả phần gap 32px
+                const pageWidth = contentBox.clientWidth + 32; 
                 const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
                 
                 if (direction === 1) {
-                    if (contentBox.scrollLeft >= maxScrollLeft - 10) {
+                    if (contentBox.scrollLeft >= maxScrollLeft - 15) {
                         navigateChapter(1);
                         return;
                     }
                     contentBox.scrollLeft += pageWidth;
                 } else {
-                    if (contentBox.scrollLeft <= 10) {
+                    if (contentBox.scrollLeft <= 15) {
                         navigateChapter(-1);
                         return;
                     }
@@ -194,8 +195,8 @@
 
             const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
             
-            btnPrev.innerText = contentBox.scrollLeft <= 10 ? "← Chương trước" : "← Trang trước";
-            btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 10 ? "Chương sau →" : "Trang sau →";
+            btnPrev.innerText = contentBox.scrollLeft <= 15 ? "← Chương trước" : "← Trang trước";
+            btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 15 ? "Chương sau →" : "Trang sau →";
         }
 
         document.getElementById('render-content').addEventListener('scroll', () => {
@@ -229,9 +230,9 @@
                 nav.className = "bg-stone-800 shadow-sm border-b border-stone-700 sticky top-0 z-50 transition-colors duration-300";
                 logo.className = "text-xl font-bold text-amber-500 tracking-tighter";
                 menuLink.className = "text-sm text-stone-400 hover:text-amber-400 transition font-medium";
-                controlPanel.className = "bg-stone-800 p-3 rounded-xl border border-stone-700 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-300 transition-colors duration-300";
+                controlPanel.className = "bg-stone-800 p-3 rounded-xl border border-stone-700 shadow-sm flex flex-wrap gap-4 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-300 transition-colors duration-300";
                 btnDarkMode.className = "p-2 bg-stone-700 hover:bg-stone-600 rounded-full text-sm font-medium text-stone-100 transition";
-                footer.className = "mt-12 flex justify-between items-center border-t border-stone-700 pt-8";
+                footer.className = "mt-8 mx-4 md:mx-0 flex justify-between items-center border-t border-stone-700 pt-6";
                 btnPrev.className = "px-4 py-2 bg-stone-800 hover:bg-stone-700 rounded-lg text-xs md:text-sm font-semibold text-stone-200 transition";
                 menuSelect.className = "bg-stone-700 px-2.5 py-1.5 rounded-xl border border-stone-600 text-xs font-bold flex items-center gap-1";
                 if(lblMode) lblMode.className = "text-stone-400";
@@ -244,9 +245,9 @@
                 nav.className = "bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300";
                 logo.className = "text-xl font-bold text-amber-600 tracking-tighter";
                 menuLink.className = "text-sm text-stone-500 hover:text-amber-600 transition font-medium";
-                controlPanel.className = "bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-6 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600 transition-colors duration-300";
+                controlPanel.className = "bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex flex-wrap gap-4 items-center justify-center md:justify-start text-sm mb-8 font-medium text-stone-600 transition-colors duration-300";
                 btnDarkMode.className = "p-2 bg-stone-100 rounded-full text-sm font-medium text-stone-700 transition";
-                footer.className = "mt-12 flex justify-between items-center border-t border-stone-200 pt-8";
+                footer.className = "mt-8 mx-4 md:mx-0 flex justify-between items-center border-t border-stone-200 pt-6";
                 btnPrev.className = "px-4 py-2 bg-stone-200 hover:bg-stone-300 rounded-lg text-xs md:text-sm font-semibold text-stone-700 transition";
                 menuSelect.className = "bg-stone-100 px-2.5 py-1.5 rounded-xl border border-stone-200 text-xs font-bold flex items-center gap-1";
                 if(lblMode) lblMode.className = "text-stone-500";
