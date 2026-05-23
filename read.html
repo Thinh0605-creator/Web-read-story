@@ -39,9 +39,88 @@
         .horizontal-mode::-webkit-scrollbar {
             display: none !important;
         }
+
+        /* ── TÍNH NĂNG 3: PROGRESS BAR ── */
+        #reading-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* ── TÍNH NĂNG 4: NÚT BACK TO TOP ── */
+        #btn-back-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #d97706;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(12px);
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 200;
+        }
+        #btn-back-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        #btn-back-top:hover {
+            background: #b45309;
+        }
+
+        /* ── TOOLTIP PHÍM TẮT ── */
+        #keyboard-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(28,25,23,0.85);
+            color: #e7e5e4;
+            font-size: 11px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 201;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+        }
+        #keyboard-hint.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col" id="body">
+
+    <!-- TÍNH NĂNG 3: Progress bar -->
+    <div id="reading-progress-bar"></div>
+
+    <!-- TÍNH NĂNG 4: Back to top -->
+    <button id="btn-back-top" onclick="scrollToTop()" title="Về đầu trang (T)">2191</button>
+
+    <!-- Tooltip phím tắt -->
+    <div id="keyboard-hint">2190 2192 chuyển trang &nbsp;00b7&nbsp; D nền tối &nbsp;00b7&nbsp; F toàn màn hình &nbsp;00b7&nbsp; T về đầu</div>
 
     <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300" id="nav-bar">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -119,11 +198,12 @@
         const storyId = urlParams.get('id');
         let currentChapter = parseInt(urlParams.get('ch')) || 1;
 
-        let currentFontSize = 20;
-        let currentLineHeight = 1.6;
-        let isDarkMode = false;
+        // ── TÍNH NĂNG 1: Load font size & line height từ localStorage ──
+        let currentFontSize = parseInt(localStorage.getItem('tramnang_font_size')) || 20;
+        let currentLineHeight = parseFloat(localStorage.getItem('tramnang_line_height')) || 1.6;
+        let isDarkMode = localStorage.getItem('tramnang_dark_mode') === 'true';
         
-        let readingMode = localStorage.getItem('tramnang_default_reading_mode') || 'vertical'; 
+        let readingMode = localStorage.getItem('tramnang_default_reading_mode') || 'vertical';
 
         if(storyId) {
             document.getElementById('back-to-detail').href = `detail.html?id=${storyId}`;
@@ -205,6 +285,11 @@
 
         function toggleGlobalDarkMode() {
             isDarkMode = !isDarkMode;
+            localStorage.setItem('tramnang_dark_mode', isDarkMode); // ── LƯU ──
+            applyDarkModeClasses();
+        }
+
+        function applyDarkModeClasses() {
             const body = document.getElementById('body');
             const nav = document.getElementById('nav-bar');
             const logo = document.getElementById('nav-logo');
@@ -256,6 +341,97 @@
             }
         }
 
+        // ── TÍNH NĂNG 3: PROGRESS BAR ──
+        function updateProgressBar() {
+            const bar = document.getElementById('reading-progress-bar');
+            const content = document.getElementById('render-content');
+            if (!bar) return;
+
+            if (readingMode === 'horizontal') {
+                const maxScroll = content.scrollWidth - content.clientWidth;
+                const pct = maxScroll > 0 ? (content.scrollLeft / maxScroll) * 100 : 0;
+                bar.style.width = pct + '%';
+            } else {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                bar.style.width = pct + '%';
+            }
+        }
+
+        // ── TÍNH NĂNG 4: BACK TO TOP ──
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateBackToTop() {
+            const btn = document.getElementById('btn-back-top');
+            if (!btn) return;
+            if (readingMode === 'vertical' && window.scrollY > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+
+        // ── TÍNH NĂNG 2: PHÍM TẮT BÀN PHÍM ──
+        let hintTimer = null;
+        function showKeyboardHint() {
+            const hint = document.getElementById('keyboard-hint');
+            if (!hint) return;
+            hint.classList.add('show');
+            clearTimeout(hintTimer);
+            hintTimer = setTimeout(() => hint.classList.remove('show'), 2500);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            // Không kích hoạt khi đang gõ vào input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    e.preventDefault();
+                    navigatePageOrChapter(1);
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    navigatePageOrChapter(-1);
+                    break;
+                case 'd':
+                case 'D':
+                    toggleGlobalDarkMode();
+                    break;
+                case 'f':
+                case 'F':
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    } else {
+                        document.exitFullscreen().catch(() => {});
+                    }
+                    break;
+                case 't':
+                case 'T':
+                    scrollToTop();
+                    break;
+                case '?':
+                    showKeyboardHint();
+                    break;
+            }
+        });
+
+        // Gắn scroll listener cho progress bar và back-to-top
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateBackToTop();
+        });
+
+        // Gắn listener cho horizontal scroll (trên content box)
+        document.getElementById('render-content').addEventListener('scroll', () => {
+            updateProgressBar();
+        });
+
         function changeFontSize(delta) {
             currentFontSize += delta;
             if(currentFontSize < 16) currentFontSize = 16;
@@ -263,6 +439,7 @@
             const article = document.getElementById('render-content');
             article.style.fontSize = currentFontSize + 'px';
             document.getElementById('font-size-display').innerText = currentFontSize + 'px';
+            localStorage.setItem('tramnang_font_size', currentFontSize); // ── LƯU ──
         }
 
         function changeLineHeight(delta) {
@@ -272,6 +449,7 @@
             const article = document.getElementById('render-content');
             article.style.lineHeight = currentLineHeight;
             document.getElementById('line-height-display').innerText = currentLineHeight;
+            localStorage.setItem('tramnang_line_height', currentLineHeight); // ── LƯU ──
         }
 
         function loadChapter(chNum) {
@@ -310,6 +488,12 @@
                         articleElement.appendChild(pTag);
                     });
 
+                    // ── TÍNH NĂNG 1: Áp dụng font/line-height đã lưu ──
+                    articleElement.style.fontSize = currentFontSize + 'px';
+                    articleElement.style.lineHeight = currentLineHeight;
+                    document.getElementById('font-size-display').innerText = currentFontSize + 'px';
+                    document.getElementById('line-height-display').innerText = currentLineHeight;
+
                     applyReadingModeSettings();
                 } else {
                     document.getElementById('render-title').innerText = "Chương chưa ra mắt";
@@ -324,6 +508,17 @@
             if(currentChapter < 1) currentChapter = 1;
             window.history.pushState({}, '', `?id=${storyId}&ch=${currentChapter}`);
             loadChapter(currentChapter);
+        }
+
+        // ── KHỞI ĐỘNG: Restore dark mode & hiện hint lần đầu ──
+        if (isDarkMode) applyDarkModeClasses();
+        
+        // Hiện tooltip phím tắt lần đầu mở trang (chỉ 1 lần)
+        if (!localStorage.getItem('tramnang_hint_shown')) {
+            setTimeout(() => {
+                showKeyboardHint();
+                localStorage.setItem('tramnang_hint_shown', '1');
+            }, 1800);
         }
 
         loadChapter(currentChapter);
