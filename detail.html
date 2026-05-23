@@ -7,141 +7,162 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-story { font-family: 'Merriweather', serif; }
-        .blur-bg { filter: blur(20px); transform: scale(1.1); }
+        :root {
+            --cream: #FDFCF9;
+            --cream-2: #F5F3EE;
+            --ink: #1A1814;
+            --ink-2: #4A4640;
+            --ink-3: #8C877F;
+            --amber: #C27B2A;
+            --amber-light: #F5E6D0;
+            --border: #E8E4DC;
+            --danger: #C0392B;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); margin: 0; }
+        .font-lora { font-family: 'Lora', serif; }
+ 
+        nav { background: var(--cream); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+        .nav-logo { font-family: 'Lora', serif; font-weight: 600; color: var(--ink); font-size: 18px; text-decoration: none; }
+        .nav-back { font-size: 13px; color: var(--ink-3); text-decoration: none; font-weight: 500; transition: color .2s; }
+        .nav-back:hover { color: var(--ink); }
+ 
+        .hero-banner { width: 100%; height: 280px; position: relative; overflow: hidden; background: var(--ink); display: flex; align-items: flex-end; }
+        .hero-blur { position: absolute; inset: 0; background-size: cover; background-position: center; filter: blur(28px); transform: scale(1.15); opacity: .35; }
+        .hero-content { position: relative; z-index: 2; padding: 32px; }
+        .hero-title { font-family: 'Lora', serif; font-size: 30px; font-weight: 600; color: white; line-height: 1.25; margin-bottom: 6px; }
+        .hero-author { font-size: 14px; color: rgba(255,255,255,.65); font-style: italic; }
+ 
+        .main-layout { max-width: 960px; margin: 0 auto; padding: 0 24px 64px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-top: -80px; position: relative; z-index: 10; }
+ 
+        .cover-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 10px; box-shadow: 0 16px 48px rgba(0,0,0,.2); border: 3px solid white; display: block; background: var(--cream-2); }
+ 
+        .content-col { padding-top: 88px; }
+ 
+        .action-row { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
+        .btn-read { background: var(--ink); color: white; font-size: 13px; font-weight: 600; padding: 10px 24px; border-radius: 7px; text-decoration: none; transition: background .2s; }
+        .btn-read:hover { background: var(--ink-2); }
+        .btn-delete { background: transparent; color: var(--danger); font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 7px; border: 1px solid #e8b4b0; cursor: pointer; transition: background .2s; font-family: 'Inter', sans-serif; }
+        .btn-delete:hover { background: #fdf2f1; }
+ 
+        .card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+        .card-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .card-body { font-size: 14px; color: var(--ink-2); line-height: 1.75; white-space: pre-line; }
+ 
+        .chapter-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; border-radius: 7px; background: var(--cream); border: 1px solid var(--border); text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; transition: background .2s, border-color .2s; margin-bottom: 8px; }
+        .chapter-row:hover { background: var(--amber-light); border-color: var(--amber); color: var(--ink); }
+        .chapter-date { font-size: 11px; color: var(--ink-3); }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body>
 
-    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black text-amber-600 tracking-tighter">☀️ TRẠM NẮNG</a>
-            <a href="index.html" class="text-stone-500 hover:text-amber-600 font-medium">← Quay lại sảnh chung</a>
+    <nav>
+    <div style="max-width: 960px; margin: 0 auto; padding: 0 24px; height: 54px; display: flex; align-items: center; justify-content: space-between;">
+        <a href="index.html" class="nav-logo">Trạm Nắng</a>
+        <a href="index.html" class="nav-back">← Quay lại</a>
+    </div>
+</nav>
+ 
+<div class="hero-banner">
+    <div id="bg-blur" class="hero-blur"></div>
+    <div class="hero-content">
+        <h1 id="story-title" class="hero-title">Đang tải...</h1>
+        <p id="story-author" class="hero-author"></p>
+    </div>
+</div>
+
+    <div class="main-layout">
+    <div>
+        <img id="story-cover" src="" alt="Bìa truyện" class="cover-img">
+    </div>
+ 
+    <div class="content-col">
+        <div class="action-row">
+            <a id="btn-read-now" href="read.html" class="btn-read">Đọc tác phẩm</a>
+            <button onclick="deleteStoryWithPassword()" class="btn-delete">Xóa bản thảo</button>
         </div>
-    </nav>
-
-    <div class="w-full bg-stone-900 h-64 md:h-80 relative overflow-hidden flex items-center justify-center">
-        <div id="bg-blur" class="absolute inset-0 bg-cover bg-center filter blur-xl opacity-30 scale-110"></div>
-        <div class="relative z-10 text-center text-white px-4">
-            <h2 id="story-title" class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md font-story">Đang mở kệ sách...</h2>
-            <p id="story-author" class="text-amber-400 font-medium mt-2 text-lg drop-shadow-sm italic"></p>
+ 
+        <div class="card">
+            <div class="card-title">Tóm tắt nội dung</div>
+            <p id="story-desc" class="card-body">Đang tải...</p>
+        </div>
+ 
+        <div class="card">
+            <div class="card-title">Danh mục chương</div>
+            <div id="chapters-list"></div>
         </div>
     </div>
-
-    <main class="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 -mt-16 relative z-20">
-        <div class="md:col-span-1 flex justify-center md:block">
-            <img id="story-cover" src="" alt="Cover" class="w-48 h-72 md:w-full md:h-auto object-cover rounded-2xl shadow-2xl border-4 border-white bg-stone-200">
-        </div>
-
-        <div class="md:col-span-2 space-y-8">
-            <div class="flex gap-4 justify-center md:justify-start">
-                <a id="btn-read-now" href="read.html" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-bold transition transform hover:scale-105 shadow text-center">
-                    📖 Đọc tác phẩm
-                </a>
-                <button onclick="deleteStoryWithPassword()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-bold transition transform hover:scale-105 shadow flex items-center gap-1">
-                    🗑️ Hủy bản thảo
-                </button>
-            </div>
-
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
-                <h3 class="text-xl font-bold mb-4 text-stone-800 border-b border-stone-100 pb-2 font-story">📝 Tóm tắt nội dung</h3>
-                <p id="story-desc" class="text-stone-600 leading-relaxed text-base whitespace-pre-line">Đang đọc dữ liệu cốt truyện...</p>
-            </section>
-
-            <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
-                <h3 class="text-xl font-bold mb-4 text-stone-800 border-b border-stone-100 pb-2 font-story">📌 Danh mục các chương</h3>
-                <div id="chapters-list" class="space-y-3"></div>
-            </section>
-        </div>
-    </main>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
-            authDomain: "web-read-story.firebaseapp.com",
-            databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
-            projectId: "web-read-story",
-            storageBucket: "web-read-story.firebasestorage.app",
-            messagingSenderId: "627619633534",
-            appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const storyId = urlParams.get('id');
-
-        // Khai báo mật mã tác giả dùng chung cho hệ thống
-        const MY_SECRET_PASSWORD = "060506";
-
-        if(storyId) {
-            document.getElementById('btn-read-now').href = `read.html?id=${storyId}&ch=1`;
-
-            database.ref(`stories/${storyId}/story_info`).once('value').then((snapshot) => {
-                const info = snapshot.val();
-                if(info) {
-                    document.getElementById('story-title').innerText = info.title;
-                    document.getElementById('story-author').innerText = "Tác giả: " + (info.author || "Khuyết danh");
-                    document.getElementById('story-desc').innerText = info.description || "Tác phẩm chưa có tóm tắt giới thiệu.";
-                    document.getElementById('story-cover').src = info.cover;
-                    document.getElementById('bg-blur').style.backgroundImage = `url('${info.cover}')`;
-                }
-            });
-
-            database.ref(`stories/${storyId}/chapters`).on('value', (snapshot) => {
-                const listContainer = document.getElementById('chapters-list');
-                listContainer.innerHTML = "";
-                const chapters = snapshot.val();
-                if(!chapters) {
-                    listContainer.innerHTML = `<p class="text-stone-400 italic text-sm">Chưa có chương nào được phát hành.</p>`;
-                    return;
-                }
-                const sortedKeys = Object.keys(chapters).sort((a,b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
-                sortedKeys.forEach((chKey) => {
-                    const ch = chapters[chKey];
-                    const row = `
-                        <a href="read.html?id=${storyId}&ch=${ch.id}" class="flex justify-between items-center p-4 bg-stone-50 hover:bg-amber-50/50 border border-stone-200 rounded-xl transition font-medium text-stone-700 hover:text-amber-700">
-                            <span>Chương ${ch.id}: ${ch.title}</span>
-                            <span class="text-stone-400 text-xs">${ch.date || ''}</span>
-                        </a>
-                    `;
-                    listContainer.innerHTML += row;
-                });
-            });
-        }
-
-        // ĐÃ NÂNG CẤP: HÀM XÓA TRUYỆN CÓ KHÓA MẬT MÃ BẢO VỆ
-        function deleteStoryWithPassword() {
-            if(!storyId) return;
-
-            // Bước 1: Xác nhận lại ý muốn
-            const firstCheck = confirm("⚠️ Cậu có chắc chắn muốn gỡ bỏ hoàn toàn bản thảo này cùng mọi chương truyện không?");
-            if (!firstCheck) return;
-
-            // Bước 2: Bắt buộc nhập mật mã phòng sáng tác
-            const passwordPrompt = prompt("🔒 Tính năng tối cao! Vui lòng gõ mã PIN tác giả để xác thực quyền gỡ bỏ truyện:");
-            
-            if (passwordPrompt === MY_SECRET_PASSWORD) {
-                // Nhập đúng pass mới tiến hành xóa trên Firebase
-                database.ref(`stories/${storyId}`).remove().then(() => {
-                    const localHistory = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
-                    if(localHistory[storyId]) {
-                        delete localHistory[storyId];
-                        localStorage.setItem('wattpad_reading_history', JSON.stringify(localHistory));
-                    }
-                    alert("🗑️ Đã xác thực thành công. Bản thảo đã được dọn dẹp sạch sẽ!");
-                    window.location.href = "index.html";
-                }).catch((error) => {
-                    alert("Lỗi hệ thống: " + error.message);
-                });
-            } else {
-                // Nhập sai hoặc nhấn hủy
-                alert("❌ Mã PIN không chính xác! Hành vi hủy bản thảo đã bị chặn đứng để bảo vệ an toàn dữ liệu.");
+</div>
+ 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
+        authDomain: "web-read-story.firebaseapp.com",
+        databaseURL: "https://web-read-story-default-rtdb.firebaseio.com/",
+        projectId: "web-read-story",
+        storageBucket: "web-read-story.firebasestorage.app",
+        messagingSenderId: "627619633534",
+        appId: "1:627619633534:web:428659f610e2eb7c45bb2f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+ 
+    const urlParams = new URLSearchParams(window.location.search);
+    const storyId = urlParams.get('id');
+    const MY_SECRET_PASSWORD = "060506";
+ 
+    if (storyId) {
+        document.getElementById('btn-read-now').href = `read.html?id=${storyId}&ch=1`;
+ 
+        database.ref(`stories/${storyId}/story_info`).once('value').then((snapshot) => {
+            const info = snapshot.val();
+            if (info) {
+                document.getElementById('story-title').innerText = info.title;
+                document.getElementById('story-author').innerText = 'Tác giả: ' + (info.author || 'Khuyết danh');
+                document.getElementById('story-desc').innerText = info.description || 'Tác phẩm chưa có tóm tắt.';
+                document.getElementById('story-cover').src = info.cover;
+                document.getElementById('bg-blur').style.backgroundImage = `url('${info.cover}')`;
             }
+        });
+ 
+        database.ref(`stories/${storyId}/chapters`).on('value', (snapshot) => {
+            const container = document.getElementById('chapters-list');
+            container.innerHTML = '';
+            const chapters = snapshot.val();
+            if (!chapters) {
+                container.innerHTML = '<p style="font-size:13px;color:var(--ink-3);font-style:italic;">Chưa có chương nào.</p>';
+                return;
+            }
+            const sorted = Object.keys(chapters).sort((a, b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
+            sorted.forEach((key) => {
+                const ch = chapters[key];
+                container.innerHTML += `
+                <a href="read.html?id=${storyId}&ch=${ch.id}" class="chapter-row">
+                    <span>Chương ${ch.id}: ${ch.title}</span>
+                    <span class="chapter-date">${ch.date || ''}</span>
+                </a>`;
+            });
+        });
+    }
+ 
+    function deleteStoryWithPassword() {
+        if (!storyId) return;
+        if (!confirm('Xóa hoàn toàn bản thảo này và tất cả chương?')) return;
+        const pin = prompt('Nhập mã PIN tác giả để xác thực:');
+        if (pin === MY_SECRET_PASSWORD) {
+            database.ref(`stories/${storyId}`).remove().then(() => {
+                const history = JSON.parse(localStorage.getItem('wattpad_reading_history')) || {};
+                delete history[storyId];
+                localStorage.setItem('wattpad_reading_history', JSON.stringify(history));
+                alert('Đã xóa bản thảo.');
+                window.location.href = 'index.html';
+            }).catch((e) => alert('Lỗi: ' + e.message));
+        } else {
+            alert('Mã PIN không đúng. Hành động bị hủy.');
         }
-    </script>
+    }
+</script>
 </body>
 </html>
