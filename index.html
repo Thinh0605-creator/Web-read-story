@@ -37,24 +37,54 @@
 
         .section-label { font-size: 11px; font-weight: 600; color: var(--ink-3); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 20px; }
 
-        .book-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+        .book-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; align-items: start; }
         @media (max-width: 900px) { .book-grid { grid-template-columns: repeat(3, 1fr); } }
 
-        .book-card { text-decoration: none; display: block; cursor: pointer; }
-        .book-cover { aspect-ratio: 2/3; border-radius: 8px; overflow: hidden; margin-bottom: 10px; background: var(--cream-2); border: 1px solid var(--border); position: relative; transition: box-shadow .25s, transform .25s; }
+        .book-card { text-decoration: none; display: block; cursor: pointer; width: 100%; }
+        
+        /* 👑 THUẬT TOÁN "KÉO DÀI CHÂN" ĐỒNG BỘ 100% CHO TOÀN BỘ WEBSITE */
+        .book-cover { 
+            width: 100% !important;
+            height: 340px !important; /* Ép cứng chiều cao khủng để các truyện khác cao lớn bằng bộ hồng */
+            border-radius: 8px; 
+            overflow: hidden; 
+            margin-bottom: 10px; 
+            background: var(--cream-2); 
+            border: 1px solid var(--border); 
+            position: relative; 
+            transition: box-shadow .25s, transform .25s; 
+        }
         .book-card:hover .book-cover { box-shadow: 0 8px 24px rgba(0,0,0,.1); transform: translateY(-2px); }
-        .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .book-badge { position: absolute; bottom: 7px; left: 7px; background: rgba(26,24,20,.65); backdrop-filter: blur(6px); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
-        .book-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .book-author { font-size: 11px; color: var(--ink-3); }
 
-        .history-badge { position: absolute; top: 7px; left: 7px; background: var(--amber); color: white; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-        .history-label { font-size: 11px; color: var(--amber); font-weight: 600; margin-top: 3px; }
+        /* Ép ảnh lấp đầy tuyệt đối và cắt cúp thông minh bên trong */
+        .book-cover img { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover !important; 
+            display: block; 
+        }
 
-        .add-card { aspect-ratio: 2/3; border-radius: 8px; border: 1.5px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: border-color .2s, background .2s; text-decoration: none; }
+        /* Ép luôn cái nút "Thêm truyện" nét đứt cao bằng đống ảnh bìa */
+        .add-card { 
+            width: 100%;
+            height: 340px !important;
+            border-radius: 8px; 
+            border: 1.5px dashed var(--border); 
+            position: relative;
+            cursor: pointer; 
+            transition: border-color .2s, background .2s; 
+            text-decoration: none; 
+        }
         .add-card:hover { border-color: var(--amber); background: var(--amber-light); }
+        .add-content { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
         .add-icon { font-size: 20px; color: var(--ink-3); }
         .add-text { font-size: 11px; color: var(--ink-3); font-weight: 500; }
+
+        .book-badge { position: absolute; bottom: 7px; left: 7px; background: rgba(26,24,20,.65); backdrop-filter: blur(6px); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; z-index: 10; }
+        .history-badge { position: absolute; top: 7px; left: 7px; background: var(--amber); color: white; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; z-index: 10; }
+        .history-label { font-size: 11px; color: var(--amber); font-weight: 600; margin-top: 3px; }
 
         .reading-mode-pill { display: flex; align-items: center; gap: 6px; background: var(--cream-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 11px; }
         .reading-mode-pill select { background: transparent; border: none; outline: none; color: var(--ink-2); font-weight: 600; cursor: pointer; font-size: 11px; }
@@ -124,6 +154,7 @@
         document.getElementById('global-reading-mode').value = savedMode;
     });
 
+    // 👑 SỬA ĐỒNG BỘ: HÀM HIỂN THỊ TRUYỆN ĐANG ĐỌC DỞ CŨNG ĐƯỢC ÁP DỤNG KHUÔN 340PX
     function renderReadingHistory(allStories) {
         const section = document.getElementById('reading-history-section');
         const grid = document.getElementById('history-list-grid');
@@ -138,11 +169,17 @@
                 const story = allStories[storyId].story_info;
                 const lastCh = localHistory[storyId].chapter;
                 const cover = story.cover || 'https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500';
+                
+                // Tính toán chính xác tổng số chương hiện có của truyện đó
+                const chapters = allStories[storyId].chapters;
+                const chCount = chapters ? Object.keys(chapters).length : 0;
+
                 grid.innerHTML += `
                 <a href="read.html?id=${storyId}&ch=${lastCh}" class="book-card">
                     <div class="book-cover">
                         <img src="${cover}" alt="">
-                        <div class="history-badge">Ch.${lastCh}</div>
+                        <div class="history-badge">Đang đọc: Ch.${lastCh}</div>
+                        <div class="book-badge">${chCount} chương</div>
                     </div>
                     <div class="book-title">${story.title}</div>
                     <div class="history-label">Đọc tiếp →</div>
@@ -152,63 +189,34 @@
         section.style.display = hasValid ? 'block' : 'none';
     }
 
-    // Listener realtime số chương từng truyện
-    const chapterListeners = {};
+    database.ref('stories').on('value', (snapshot) => {
+        const grid = document.getElementById('story-list-grid');
+        grid.innerHTML = '';
+        const allStories = snapshot.val();
+        renderReadingHistory(allStories);
 
-    function renderStoryCard(storyId, story, chCount) {
-        const cover = story.cover || 'https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500';
-        const html = `
-            <a href="detail.html?id=${storyId}" class="book-card" id="card-${storyId}">
+        if (!allStories) {
+            grid.innerHTML = `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện đầu tay</div></div></a>`;
+            return;
+        }
+        Object.keys(allStories).forEach((storyId) => {
+            const story = allStories[storyId].story_info;
+            if (!story) return;
+            const cover = story.cover || 'https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500';
+            const chapters = allStories[storyId].chapters;
+            const chCount = chapters ? Object.keys(chapters).length : 0;
+            grid.innerHTML += `
+            <a href="detail.html?id=${storyId}" class="book-card">
                 <div class="book-cover">
-                    <img src="${cover}" alt="" onerror="this.style.opacity='0'">
+                    <img src="${cover}" alt="">
                     <div class="book-badge">${chCount} chương</div>
                 </div>
                 <div class="book-title">${story.title}</div>
                 <div class="book-author">${story.author || 'Khuyết danh'}</div>
             </a>`;
-        const existing = document.getElementById('card-' + storyId);
-        if (existing) {
-            existing.outerHTML = html;
-        } else {
-            const addBtn = document.getElementById('add-story-btn');
-            if (addBtn) addBtn.insertAdjacentHTML('beforebegin', html);
-        }
-    }
-
-    database.ref('stories').on('value', (snapshot) => {
-        const grid = document.getElementById('story-list-grid');
-        const allStories = snapshot.val();
-        renderReadingHistory(allStories);
-
-        // Hủy listener cũ
-        Object.keys(chapterListeners).forEach(id => {
-            database.ref('stories/' + id + '/chapters').off('value', chapterListeners[id]);
-            delete chapterListeners[id];
         });
-
-        grid.innerHTML = '';
-
-        if (!allStories) {
-            grid.innerHTML = '<a href="editor.html" class="add-card"><div class="add-icon">+</div><div class="add-text">Thêm truyện đầu tay</div></a>';
-            return;
-        }
-
-        // Render placeholder + lắng nghe số chương realtime
-        Object.keys(allStories).forEach((storyId) => {
-            const story = allStories[storyId].story_info;
-            if (!story) return;
-            const initCount = allStories[storyId].chapters ? Object.keys(allStories[storyId].chapters).length : 0;
-            renderStoryCard(storyId, story, initCount);
-            const listener = database.ref('stories/' + storyId + '/chapters').on('value', (chSnap) => {
-                const chCount = chSnap.val() ? Object.keys(chSnap.val()).length : 0;
-                renderStoryCard(storyId, story, chCount);
-            });
-            chapterListeners[storyId] = listener;
-        });
-
-        grid.innerHTML += '<a href="editor.html" class="add-card" id="add-story-btn" style="margin-bottom:10px;"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></a>';
+        grid.innerHTML += `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></div></a>`;
     });
--e 
 </script>
 </body>
 </html>
