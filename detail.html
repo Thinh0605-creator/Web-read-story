@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi Tiết Tác Phẩm - Trạm Nắng</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --cream: #FDFCF9;
@@ -29,15 +29,25 @@
  
         .hero-banner { width: 100%; height: 280px; position: relative; overflow: hidden; background: var(--ink); display: flex; align-items: flex-end; }
         .hero-blur { position: absolute; inset: 0; background-size: cover; background-position: center; filter: blur(28px); transform: scale(1.15); opacity: .35; }
-        .hero-content { position: relative; z-index: 2; padding: 32px; }
+        
+        /* ⚡ FIX: Tách biệt nội dung chữ, căn lề trái rộng 240px để chừa chỗ trống cho ảnh bìa nhô lên không bị chạm nhau */
+        .hero-content { position: relative; z-index: 2; padding: 32px 32px 105px 32px; max-width: 960px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        @media (min-width: 768px) {
+            .hero-content { padding-left: 240px; } 
+        }
         .hero-title { font-family: 'Lora', serif; font-size: 30px; font-weight: 600; color: white; line-height: 1.25; margin-bottom: 6px; }
         .hero-author { font-size: 14px; color: rgba(255,255,255,.65); font-style: italic; }
  
         .main-layout { max-width: 960px; margin: 0 auto; padding: 0 24px 64px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-top: -80px; position: relative; z-index: 10; }
+        @media (max-width: 767px) {
+            .main-layout { grid-template-columns: 1fr; gap: 24px; margin-top: -40px; justify-items: start; }
+            .hero-content { padding-left: 32px; padding-bottom: 60px; }
+        }
  
         .cover-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 10px; box-shadow: 0 16px 48px rgba(0,0,0,.2); border: 3px solid white; display: block; background: var(--cream-2); }
  
-        .content-col { padding-top: 88px; }
+        .content-col { padding-top: 105px; width: 100%; }
+        @media (max-width: 767px) { .content-col { padding-top: 10px; } }
  
         .action-row { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
         .btn-read { background: var(--ink); color: white; font-size: 13px; font-weight: 600; padding: 10px 24px; border-radius: 7px; text-decoration: none; transition: background .2s; }
@@ -56,7 +66,7 @@
 </head>
 <body>
 
-    <nav>
+<nav>
     <div style="max-width: 960px; margin: 0 auto; padding: 0 24px; height: 54px; display: flex; align-items: center; justify-content: space-between;">
         <a href="index.html" class="nav-logo">Trạm Nắng</a>
         <a href="index.html" class="nav-back">← Quay lại</a>
@@ -71,7 +81,7 @@
     </div>
 </div>
 
-    <div class="main-layout">
+<div class="main-layout">
     <div>
         <img id="story-cover" src="" alt="Bìa truyện" class="cover-img">
     </div>
