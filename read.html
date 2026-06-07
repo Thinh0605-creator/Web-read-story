@@ -35,13 +35,13 @@
             }
         }
 
-        /* 📱 CHẾ ĐỘ LẬT NGANG SIÊU TỐI ƯU TRÊN ĐIỆN THOẠI (FIX THEO VIDEO) */
+        /* 📱 CHẾ ĐỘ LẬT NGANG SIÊU TỐI ƯU TRÊN ĐIỆN THOẠI */
         @media (max-width: 767px) {
             .horizontal-mode {
                 display: block !important;
-                column-width: calc(100vw - 32px) !important; /* Khít vùng nhìn di động */
+                column-width: calc(100vw - 32px) !important;
                 column-gap: 32px !important;
-                height: 62vh !important; /* Khóa độ cao cố định, không cho chữ tràn xuống đáy */
+                height: 62vh !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
                 scroll-snap-type: x mandatory;
@@ -56,7 +56,6 @@
             }
         }
 
-        /* Ẩn thanh cuộn scrollbar */
         .horizontal-mode::-webkit-scrollbar {
             display: none !important;
         }
@@ -64,18 +63,13 @@
 </head>
 <body class="bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden" id="body">
 
-    <!-- Thanh điều hướng thông minh (Laptop rộng rãi, Điện thoại siêu mỏng nhẹ) -->
+    <!-- Thanh điều hướng thông minh -->
     <nav class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300" id="nav-bar">
         <div class="max-w-4xl mx-auto px-4 py-2 md:py-3 flex justify-between items-center">
-            <!-- Logo chỉ hiện trên Laptop, ẩn trên Điện thoại để tiết kiệm không gian -->
             <a href="index.html" class="text-lg md:text-xl font-bold text-amber-600 tracking-tighter hidden md:inline" id="nav-logo">☀️ TRẠM NẮNG</a>
-            
-            <!-- Tiêu đề chương ngắn gọn thay thế logo trên điện thoại -->
             <span id="nav-mobile-title" class="text-xs font-semibold text-stone-500 md:hidden max-w-[150px] truncate">Đang tải...</span>
             
             <div class="flex items-center gap-1.5 md:gap-3 w-full md:w-auto justify-end">
-                
-                <!-- Thanh chọn dạng đọc: Trực quan hơn -->
                 <div class="bg-stone-100 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg border border-stone-200 text-[11px] md:text-xs font-bold flex items-center gap-1" id="menu-select-wrapper">
                     <span class="text-stone-500 hidden md:inline">Dạng đọc:</span>
                     <select id="inline-reading-mode" onchange="changeReadingModeAndSave(this.value)" class="bg-transparent text-amber-600 outline-none cursor-pointer font-bold">
@@ -83,7 +77,6 @@
                         <option value="horizontal">↔️ Lật ngang</option>
                     </select>
                 </div>
-
                 <button onclick="toggleGlobalDarkMode()" class="px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-700 transition" id="btn-darkmode">🌓 Màu nền</button>
                 <a id="back-to-detail" href="index.html" class="px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-500 hover:text-amber-600 transition text-decoration-none">📑 Mục lục</a>
             </div>
@@ -96,11 +89,10 @@
         
         <div id="story-container" class="hidden flex-1 flex flex-col justify-between w-full">
             <div>
-                <!-- Tiêu đề chương lớn (Chỉ hiện ở bản PC, bản Mobile đã có thanh mỏng ở trên) -->
                 <h1 id="render-title" class="text-2xl md:text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story hidden md:block"></h1>
                 <p id="render-date" class="text-sm text-stone-400 mb-4 text-center md:text-left hidden md:block"></p>
                 
-                <!-- THANH ĐIỀU KHIỂN CỠ CHỮ (Chỉ hiện trên PC để tránh vướng víu điện thoại) -->
+                <!-- THANH ĐIỀU KHIỂN CỠ CHỮ -->
                 <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-xs md:text-sm mb-8 font-medium text-stone-600 transition-colors duration-300" id="control-panel">
                     <div class="flex items-center gap-2">
                         <span>Cỡ chữ:</span>
@@ -117,14 +109,14 @@
                     <div class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold" id="badge-mode">📜 Chế độ cuộn dọc</div>
                 </div>
                 
-                <!-- VÙNG HIỂN THỊ CHỮ (Đã tinh chỉnh chiều cao cố định chống tràn lướt trên Mobile) -->
+                <!-- VÙNG HIỂN THỊ CHỮ -->
                 <div class="w-full overflow-hidden">
                     <article id="render-content" class="story-content-wrapper font-story text-justify md:border-t md:border-stone-200 md:pt-6 transition-all duration-300" style="font-size: 19px; line-height: 1.6;">
                     </article>
                 </div>
             </div>
 
-            <!-- THANH ĐIỀU HƯỚNG CỐ ĐỊNH Ở ĐÁY MÀN HÌNH TRÊN ĐIỆN THOẠI -->
+            <!-- THANH ĐIỀU HƯỚNG CỐ ĐỊNH Ở ĐÁY MÀN HÌNH -->
             <div class="fixed bottom-0 left-0 right-0 md:relative bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-200 md:border-t md:border-stone-200 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300" id="navigation-footer">
                 <button onclick="navigatePageOrChapter(-1)" id="btn-prev" class="px-4 py-2.5 md:py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-xs md:text-sm font-bold text-stone-700 transition min-w-[110px]">← Trước</button>
                 <span id="current-ch-display" class="font-bold text-amber-600 text-xs md:text-base">Chương 1</span>
@@ -152,7 +144,7 @@
         const storyId = urlParams.get('id');
         let currentChapter = parseInt(urlParams.get('ch')) || 1;
 
-        let currentFontSize = window.innerWidth < 768 ? 18 : 20; // Tự tối ưu cỡ chữ đẹp sẵn cho Mobile
+        let currentFontSize = window.innerWidth < 768 ? 18 : 20; 
         let currentLineHeight = 1.6;
         let isDarkMode = false;
         
@@ -197,7 +189,6 @@
             const contentBox = document.getElementById('render-content');
             
             if (readingMode === 'horizontal') {
-                // Tự tính toán độ rộng trang khớp theo màn hình Laptop/Điện thoại đang mở
                 const pageWidth = contentBox.clientWidth + (window.innerWidth < 768 ? 32 : 40); 
                 const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
                 
@@ -309,7 +300,6 @@
             database.ref(`stories/${storyId}/chapters/chuong_${chNum}`).once('value').then((snapshot) => {
                 const data = snapshot.val();
                 document.getElementById('loading').classList.add('hidden');
-                document.getElementById('story-container').append;
                 document.getElementById('story-container').classList.remove('hidden');
 
                 if (data) {
@@ -322,18 +312,21 @@
                     const articleElement = document.getElementById('render-content');
                     articleElement.innerHTML = "";
                     
+                    // 👑 ĐỒNG BỘ: Bộ lọc Markdown giữ nguyên chữ nghiêng * và chữ đậm ** của cậu
                     paragraphs.forEach((pText) => {
+                        let formattedText = pText
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
                         const pTag = document.createElement('p');
-                        pTag.innerText = pText;
+                        pTag.innerHTML = formattedText;
                         articleElement.appendChild(pTag);
                     });
 
-                    // Khởi tạo cỡ chữ dựa theo thiết bị hiện tại
                     document.getElementById('render-content').style.fontSize = currentFontSize + 'px';
 
                     applyReadingModeSettings();
                     
-                    // Nếu đọc dọc thì cuộn lên đầu trang, nếu lật ngang thì đưa về trang 1
                     if (readingMode !== 'horizontal') {
                         window.scrollTo(0, 0);
                     } else {
