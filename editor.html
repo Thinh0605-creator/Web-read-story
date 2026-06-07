@@ -934,45 +934,39 @@
 
         if (mode === "new") {
           targetId = "story_" + Math.random().toString(36).substr(2, 9);
-          database
-            .ref(`stories/${targetId}/story_info`)
-            .set({
-              title: bTitle,
-              author: bAuthor,
-              cover,
-              description: bDesc,
-              views: 0,
-            });
+          database.ref(`stories/${targetId}/story_info`).set({
+            title: bTitle,
+            author: bAuthor,
+            cover,
+            description: bDesc,
+            views: 0,
+          });
         } else {
-          database
-            .ref(`stories/${targetId}/story_info`)
-            .update({
-              title: bTitle,
-              author: bAuthor,
-              cover,
-              description: bDesc,
-            });
+          database.ref(`stories/${targetId}/story_info`).update({
+            title: bTitle,
+            author: bAuthor,
+            cover,
+            description: bDesc,
+          });
         }
 
-        database
-          .ref(`stories/${targetId}/chapters/chuong_${chId}`)
-          .set(
-            {
-              id: chId,
-              title: chTitle,
-              content: chBody,
-              date: new Date().toLocaleDateString("vi-VN"),
-            },
-            (err) => {
-              if (err) {
-                alert("Lỗi: " + err.message);
-              } else {
-                localStorage.removeItem("tramnang_draft");
-                alert(`Chương ${chId} đã được đăng tải!`);
-                window.location.href = "index.html";
-              }
-            },
-          );
+        database.ref(`stories/${targetId}/chapters/chuong_${chId}`).set(
+          {
+            id: chId,
+            title: chTitle,
+            content: chBody,
+            date: new Date().toLocaleDateString("vi-VN"),
+          },
+          (err) => {
+            if (err) {
+              alert("Lỗi: " + err.message);
+            } else {
+              localStorage.removeItem("tramnang_draft");
+              alert(`Chương ${chId} đã được đăng tải!`);
+              window.location.href = "index.html";
+            }
+          },
+        );
       }
 
       // Autosave
