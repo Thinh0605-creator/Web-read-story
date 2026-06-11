@@ -6,7 +6,7 @@
     <title>Chạm — Không gian đọc truyện</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -112,10 +112,9 @@
         width: 100%;
       }
 
-      /* 👑 THUẬT TOÁN RESPONSIVE ĐỘC QUYỀN: Laptop cao 340px, Điện thoại tự co về 240px cực kỳ vừa vặn! */
       .book-cover {
         width: 100% !important;
-        height: 240px !important; /* Mặc định trên điện thoại */
+        height: 240px !important;
         border-radius: 8px;
         overflow: hidden;
         margin-bottom: 10px;
@@ -129,7 +128,7 @@
       @media (min-width: 768px) {
         .book-cover {
           height: 340px !important;
-        } /* Trên Laptop tự cao lên */
+        }
       }
       .book-card:hover .book-cover {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -144,18 +143,22 @@
         display: block;
       }
 
+      /* Nhãn hiển thị số chương và lượt xem */
       .book-badge {
         position: absolute;
         bottom: 7px;
         left: 7px;
-        background: rgba(26, 24, 20, 0.65);
+        background: rgba(26, 24, 20, 0.75);
         backdrop-filter: blur(6px);
         color: #fff;
         font-size: 10px;
         font-weight: 600;
-        padding: 2px 7px;
-        border-radius: 4px;
+        padding: 3px 8px;
+        border-radius: 5px;
         z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
       .history-badge {
         position: absolute;
@@ -175,6 +178,7 @@
         font-weight: 600;
         margin-top: 3px;
       }
+
       .book-title {
         font-size: 13px;
         font-weight: 600;
@@ -183,13 +187,15 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
       .book-author {
         font-size: 11px;
         color: var(--ink-3);
       }
 
-      /* Khung thêm truyện nét đứt tự động co giãn chiều cao theo thiết bị */
       .add-card {
         width: 100%;
         height: 240px !important;
@@ -249,12 +255,44 @@
         cursor: pointer;
         font-size: 11px;
       }
+
+      /* 🔔 STYLE HỘP THOẠI THÔNG BÁO THẢ XUỐNG */
+      .noti-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 42px;
+        width: 300px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(26, 24, 20, 0.08);
+        z-index: 100;
+        overflow: hidden;
+      }
+      .noti-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--cream-2);
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: var(--ink-2);
+      }
+      .noti-item:last-child {
+        border-bottom: none;
+      }
+      .noti-date {
+        font-size: 10px;
+        color: var(--ink-3);
+        font-weight: 600;
+        margin-top: 4px;
+        display: block;
+      }
     </style>
   </head>
   <body>
     <nav style="position: sticky; top: 0; z-index: 50">
       <div
-        class="max-w-[1100px] mx-auto px-4 md:px-6 h-[54px] flex items-center justify-between"
+        class="max-w-[1100px] mx-auto px-4 md:px-6 h-[54px] flex items-center justify-between relative"
       >
         <a
           href="index.html"
@@ -262,7 +300,7 @@
           style="font-size: 18px; text-decoration: none"
           >Chạm</a
         >
-        <div style="display: flex; align-items: center; gap: 20px">
+        <div style="display: flex; align-items: center; gap: 16px; gap: 20px">
           <a href="index.html" class="nav-link hidden md:inline">Khám phá</a>
           <a href="editor.html" class="nav-link">Sáng tác</a>
           <div class="reading-mode-pill hidden md:flex">
@@ -275,6 +313,35 @@
               <option value="horizontal">Lật ngang</option>
             </select>
           </div>
+
+          <!-- 🔔 ICON CHUÔNG THÔNG BÁO REAL-TIME -->
+          <div class="relative flex items-center">
+            <button
+              onclick="toggleNotificationDropdown(event)"
+              class="relative p-1.5 rounded-full hover:bg-stone-100 transition text-stone-700 outline-none"
+              id="btn-noti-bell"
+            >
+              <span class="text-xl">🔔</span>
+              <span
+                id="noti-badge"
+                class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white hidden"
+              ></span>
+            </button>
+
+            <div id="noti-box" class="noti-dropdown">
+              <div
+                class="px-4 py-2.5 bg-stone-50 border-b border-stone-200 text-[10px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                Thông báo từ Chạm
+              </div>
+              <div id="noti-content-list" class="max-h-[320px] overflow-y-auto">
+                <div class="text-center py-6 text-xs text-stone-400 italic">
+                  Chạm chưa có thông báo mới...
+                </div>
+              </div>
+            </div>
+          </div>
+
           <a href="editor.html" class="btn-primary">Viết tiếp</a>
         </div>
       </div>
@@ -284,9 +351,9 @@
       <div style="max-width: 1100px; margin: 0 auto">
         <div class="hero-eyebrow">Kệ sách chữa lành</div>
         <h1 class="hero-title text-2xl md:text-3xl">
-          Nơi những câu truyện thú vị<br />được quan sát qua nhiều vũ trụ khác nhau
+          Nơi những câu truyện thú vị<br />được quan sát qua nhiều vũ trụ khác
+          nhau
         </h1>
-        <p class="hero-sub text-xs md:text-sm"></p>
       </div>
     </div>
 
@@ -297,7 +364,6 @@
         class="mb-10 md:mb-14"
       >
         <div class="section-label">Đang đọc dở</div>
-        <!-- ⚡ THẦN CHÚ RESPONSIVE: Mặc định điện thoại đi 2 cột, laptop đi 5 cột -->
         <div
           class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 items-start"
           id="history-list-grid"
@@ -306,7 +372,6 @@
 
       <div>
         <div class="section-label">Tất cả tác phẩm</div>
-        <!-- ⚡ THẦN CHÚ RESPONSIVE: Mặc định điện thoại đi 2 cột, laptop đi 5 cột -->
         <div
           class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 items-start"
           id="story-list-grid"
@@ -350,6 +415,62 @@
         if (globalSelect) globalSelect.value = savedMode;
       });
 
+      function toggleNotificationDropdown(e) {
+        e.stopPropagation();
+        const notiBox = document.getElementById("noti-box");
+        const badge = document.getElementById("noti-badge");
+
+        if (notiBox.style.display === "block") {
+          notiBox.style.display = "none";
+        } else {
+          notiBox.style.display = "block";
+          badge.classList.add("hidden");
+          localStorage.setItem("tramnang_last_seen_noti", new Date().getTime());
+        }
+      }
+
+      document.addEventListener("click", () => {
+        document.getElementById("noti-box").style.display = "none";
+      });
+
+      database.ref("announcements").on("value", (snapshot) => {
+        const listContainer = document.getElementById("noti-content-list");
+        const badge = document.getElementById("noti-badge");
+        const data = snapshot.val();
+
+        if (!data) {
+          listContainer.innerHTML =
+            '<div class="text-center py-6 text-xs text-stone-400 italic">Trạm chưa có thông báo mới...</div>';
+          return;
+        }
+
+        listContainer.innerHTML = "";
+        const sortedIds = Object.keys(data).sort(
+          (a, b) =>
+            parseInt(b.replace("id_", "")) - parseInt(a.replace("id_", "")),
+        );
+
+        let hasNewNoti = false;
+        const lastSeen = localStorage.getItem("tramnang_last_seen_noti") || 0;
+
+        sortedIds.forEach((id) => {
+          const item = data[id];
+          listContainer.innerHTML += `
+                <div class="noti-item">
+                    <div class="font-medium text-stone-800">${item.content}</div>
+                    <span class="noti-date">🕒 ${item.date || "Vừa xong"}</span>
+                </div>
+            `;
+          if (item.timestamp && item.timestamp > lastSeen) {
+            hasNewNoti = true;
+          }
+        });
+
+        if (hasNewNoti) {
+          badge.classList.remove("hidden");
+        }
+      });
+
       function renderReadingHistory(allStories) {
         const section = document.getElementById("reading-history-section");
         const grid = document.getElementById("history-list-grid");
@@ -372,15 +493,24 @@
               "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
             const chapters = allStories[storyId].chapters;
             const chCount = chapters ? Object.keys(chapters).length : 0;
+            const viewsCount = story.views || 0;
+
+            let statusLabel =
+              story.status === "completed"
+                ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
+                : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳Chưa hoàn thành</span>';
 
             grid.innerHTML += `
-                <a href="read.html?id=${storyId}&ch=${lastCh}" class="book-card">
+                <a href="truyen.html?id=${storyId}&ch=${lastCh}" class="book-card">
                     <div class="book-cover">
                         <img src="${cover}" alt="">
-                        <div class="history-badge">Ch.${lastCh}</div>
-                        <div class="book-badge">${chCount} chương</div>
+                        
+                        <div class="book-badge">
+                            
+                            <span>👁️ ${viewsCount}</span>
+                        </div>
                     </div>
-                    <div class="book-title">${story.title}</div>
+                    <div  <span class="truncate">${story.title}</span></div>
                     <div class="history-label">Đọc tiếp →</div>
                 </a>`;
           }
@@ -406,13 +536,24 @@
             "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
           const chapters = allStories[storyId].chapters;
           const chCount = chapters ? Object.keys(chapters).length : 0;
+          const viewsCount = story.views || 0;
+
+          let statusLabel =
+            story.status === "completed"
+              ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
+              : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳ Dài</span>';
+
           grid.innerHTML += `
-            <a href="detail.html?id=${storyId}" class="book-card">
+            <a href="truyen.html?id=${storyId}" class="book-card">
                 <div class="book-cover">
                     <img src="${cover}" alt="">
-                    <div class="book-badge">${chCount} chương</div>
+                    <div class="book-badge">
+                        <span>${chCount} chương</span>
+                        <span style="opacity:0.5;">|</span>
+                        <span>👁️ ${viewsCount}</span>
+                    </div>
                 </div>
-                <div class="book-title">${story.title}</div>
+                <div class="book-title">${statusLabel} <span class="truncate">${story.title}</span></div>
                 <div class="book-author">${story.author || "Khuyết danh"}</div>
             </a>`;
         });

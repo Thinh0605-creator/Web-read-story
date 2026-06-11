@@ -339,9 +339,7 @@
         color: var(--ink);
       }
 
-      /* ──────────────────────────────────────────────
-           THANH ĐỊNH DẠNG (FORMATTING TOOLBAR)
-           ────────────────────────────────────────────── */
+      /* THANH ĐỊNH DẠNG */
       .format-toolbar {
         display: flex;
         align-items: center;
@@ -403,18 +401,6 @@
         padding: 0 4px;
         letter-spacing: 0.05em;
       }
-      .fmt-select {
-        background: var(--cream);
-        border: 1px solid var(--border);
-        border-radius: 5px;
-        padding: 3px 7px;
-        font-size: 12px;
-        color: var(--ink-2);
-        outline: none;
-        cursor: pointer;
-        font-family: "Inter", sans-serif;
-        font-weight: 600;
-      }
 
       /* Story body textarea */
       #story-body {
@@ -451,7 +437,6 @@
     </style>
   </head>
   <body id="editor-body">
-    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
       <div class="modal-box">
         <div class="modal-icon">🔑</div>
@@ -483,16 +468,15 @@
         "
       >
         <a href="index.html" class="nav-back">←</a>
-        <a href="index.html" class="nav-logo">Trạm Nắng</a>
+        <a href="index.html" class="nav-logo">Chạm</a>
         <span id="save-status" class="nav-status" style="flex: 1"
           >Bước 1 — Cấu hình</span
         >
-        <button id="btn-publish" onclick="publishToFirebase()">Đăng tải</button>
+        <button id="btn-publish" class="btn-publish" onclick="publishToFirebase()">Đăng tải</button>
       </div>
     </nav>
 
     <div class="page">
-      <!-- STEP 1 -->
       <div id="step-1-container">
         <div class="card">
           <div class="card-title">Khu vực sáng tác</div>
@@ -565,13 +549,23 @@
             </div>
           </div>
 
+          <div class="field-group">
+            <label class="field-label">Trạng thái tác phẩm</label>
+            <select
+              id="story-status"
+              class="field-select font-semibold"
+            >
+              <option value="ongoing">⏳ Chưa hoàn thành</option>
+              <option value="completed">✅ Đã hoàn thành</option>
+            </select>
+          </div>
+
           <button onclick="goToStep2()" class="btn-continue">
             Tiếp tục: Vào phòng viết →
           </button>
         </div>
       </div>
 
-      <!-- STEP 2 -->
       <div id="step-2-container" style="display: none">
         <button class="btn-back-step" onclick="goToStep1()">
           ← Quay lại cấu hình
@@ -605,7 +599,6 @@
               >Nội dung chương</label
             >
 
-            <!-- ── THANH ĐỊNH DẠNG ── -->
             <div class="format-toolbar" id="format-toolbar">
               <span class="fmt-label">Định dạng</span>
               <div class="fmt-divider"></div>
@@ -807,6 +800,7 @@
             document.getElementById("book-title").value = info.title || "";
             document.getElementById("book-author").value = info.author || "";
             document.getElementById("book-desc").value = info.description || "";
+            document.getElementById("story-status").value = info.status || "ongoing";
             if (info.cover) {
               base64ImageString = info.cover;
               const img = document.getElementById("cover-preview");
@@ -854,6 +848,7 @@
         document.getElementById("book-title").value = "";
         document.getElementById("book-author").value = "";
         document.getElementById("book-desc").value = "";
+        document.getElementById("story-status").value = "ongoing";
         document.getElementById("cover-preview").style.display = "none";
         document.getElementById("upload-instruction").style.display = "flex";
         base64ImageString = "";
@@ -892,7 +887,7 @@
         const status = document.getElementById("save-status");
         status.innerText = "Bước 2 — Viết nội dung";
         status.className = "nav-status active";
-        // Load autosave nếu có
+        
         const draft = localStorage.getItem("tramnang_draft");
         if (draft && !document.getElementById("story-body").value) {
           if (
@@ -928,6 +923,7 @@
         const bTitle = document.getElementById("book-title").value.trim();
         const bAuthor = document.getElementById("book-author").value.trim();
         const bDesc = document.getElementById("book-desc").value.trim();
+        const bStatus = document.getElementById("story-status").value;
         const cover =
           base64ImageString ||
           "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
@@ -937,6 +933,7 @@
           database.ref(`stories/${targetId}/story_info`).set({
             title: bTitle,
             author: bAuthor,
+            status: bStatus,
             cover,
             description: bDesc,
             views: 0,
@@ -945,25 +942,43 @@
           database.ref(`stories/${targetId}/story_info`).update({
             title: bTitle,
             author: bAuthor,
+            status: bStatus,
             cover,
             description: bDesc,
           });
         }
+
+        // Tạo ngày định dạng chuẩn hiển thị
+        const today = new Date();
+        const dateStr = today.toLocaleDateString("vi-VN");
+        const currentTimeMillis = today.getTime();
 
         database.ref(`stories/${targetId}/chapters/chuong_${chId}`).set(
           {
             id: chId,
             title: chTitle,
             content: chBody,
-            date: new Date().toLocaleDateString("vi-VN"),
+            date: dateStr,
           },
           (err) => {
             if (err) {
               alert("Lỗi: " + err.message);
+              document.getElementById("save-status").innerText = "Bước 2 — Viết nội dung";
             } else {
               localStorage.removeItem("tramnang_draft");
-              alert(`Chương ${chId} đã được đăng tải!`);
-              window.location.href = "index.html";
+
+              // 👑 HỆ THỐNG PHÁT THÔNG BÁO TỰ ĐỘNG THỜI GIAN THỰC ĐƯỢC CÀI Ở ĐÂY:
+              const notiId = "id_" + currentTimeMillis; // ID ngẫu nhiên không trùng lập dựa theo thời gian chạy
+              const notiMessage = `📚 Tác phẩm "${bTitle}" vừa được cập nhật Chương ${chId}: ${chTitle} nhen cậu ơi!`;
+              
+              database.ref(`announcements/${notiId}`).set({
+                content: notiMessage,
+                date: dateStr,
+                timestamp: currentTimeMillis
+              }).then(() => {
+                alert(`Chương ${chId} đã được đăng tải và thông báo tự động tới độc giả thành công!`);
+                window.location.href = "index.html";
+              });
             }
           },
         );
@@ -998,7 +1013,6 @@
       }
 
       // ── THANH ĐỊNH DẠNG ──
-      // Hàm chèn text vào vị trí con trỏ trong textarea
       function insertAtCursor(textarea, before, after, placeholder) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -1011,17 +1025,9 @@
           textarea.value.substring(0, start) +
           insert +
           textarea.value.substring(end);
-        // Đặt lại con trỏ
-        const newPos =
-          selected.length > 0
-            ? start + insert.length
-            : start + before.length + placeholder.length;
-        const selStart =
-          selected.length > 0 ? start + before.length : start + before.length;
-        const selEnd =
-          selected.length > 0
-            ? start + before.length + selected.length
-            : start + before.length + placeholder.length;
+        
+        const selStart = start + before.length;
+        const selEnd = selected.length > 0 ? start + before.length + selected.length : start + before.length + placeholder.length;
         textarea.setSelectionRange(selStart, selEnd);
         textarea.focus();
         updateWordCount();
@@ -1092,7 +1098,6 @@
         updateWordCount();
       }
 
-      // Phím tắt Ctrl+B / Ctrl+I / Ctrl+U
       document.getElementById("story-body").addEventListener("keydown", (e) => {
         if (e.ctrlKey || e.metaKey) {
           switch (e.key) {
@@ -1112,7 +1117,6 @@
         }
       });
 
-      // Cảnh báo khi rời editor có nội dung chưa lưu
       window.addEventListener("beforeunload", (e) => {
         const body = document.getElementById("story-body")?.value;
         if (
