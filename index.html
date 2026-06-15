@@ -314,7 +314,6 @@
             </select>
           </div>
 
-          <!-- 🔔 ICON CHUÔNG THÔNG BÁO REAL-TIME -->
           <div class="relative flex items-center">
             <button
               onclick="toggleNotificationDropdown(event)"
@@ -351,8 +350,8 @@
       <div style="max-width: 1100px; margin: 0 auto">
         <div class="hero-eyebrow">Kệ sách chữa lành</div>
         <h1 class="hero-title text-2xl md:text-3xl">
-          Nơi những câu truyện thú vị<br />được quan sát qua nhiều vũ trụ khác
-          nhau
+          Nơi những câu truyện thú vị<br />được quan sát qua nhiều câu chuyện
+          khách nhau
         </h1>
       </div>
     </div>
@@ -440,7 +439,7 @@
 
         if (!data) {
           listContainer.innerHTML =
-            '<div class="text-center py-6 text-xs text-stone-400 italic">Trạm chưa có thông báo mới...</div>';
+            '<div class="text-center py-6 text-xs text-stone-400 italic">Chạm chưa có thông báo mới...</div>';
           return;
         }
 
@@ -493,24 +492,22 @@
               "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
             const chapters = allStories[storyId].chapters;
             const chCount = chapters ? Object.keys(chapters).length : 0;
-            const viewsCount = story.views || 0;
 
             let statusLabel =
               story.status === "completed"
                 ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
-                : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳Chưa hoàn thành</span>';
+                : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">Chưa hoàn thành</span>';
 
             grid.innerHTML += `
-                <a href="read.html?id=${storyId}&ch=${lastCh}" class="book-card">
+                <a href="truyen.html?id=${storyId}&ch=${lastCh}" class="book-card">
                     <div class="book-cover">
                         <img src="${cover}" alt="">
-                        
+                        <div class="history-badge">Ch.${lastCh}</div>
                         <div class="book-badge">
-                            
-                            <span>👁️ ${viewsCount}</span>
+                            <span>${chCount} chương</span>
                         </div>
                     </div>
-                    <div  <span class="truncate">${story.title}</span></div>
+                    <div <span class="truncate">${story.title}</span></div>
                     <div class="history-label">Đọc tiếp →</div>
                 </a>`;
           }
@@ -544,7 +541,7 @@
               : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">Chưa hoàn thành</span>';
 
           grid.innerHTML += `
-            <a href="detail.html?id=${storyId}" class="book-card">
+            <a href="truyen.html?id=${storyId}" class="book-card">
                 <div class="book-cover">
                     <img src="${cover}" alt="">
                     <div class="book-badge">
