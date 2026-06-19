@@ -9,6 +9,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&family=Lora:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
       :root {
         --cream: #fdfcf9;
@@ -33,7 +36,6 @@
       .font-lora {
         font-family: "Lora", serif;
       }
-
       nav {
         background: var(--cream);
         border-bottom: 1px solid var(--border);
@@ -58,7 +60,6 @@
       .nav-back:hover {
         color: var(--ink);
       }
-
       .hero-banner {
         width: 100%;
         height: 280px;
@@ -77,8 +78,6 @@
         transform: scale(1.15);
         opacity: 0.35;
       }
-
-      /* ⚡ FIX: Tách biệt nội dung chữ, căn lề trái rộng 240px để chừa chỗ trống cho ảnh bìa nhô lên không bị chạm nhau */
       .hero-content {
         position: relative;
         z-index: 2;
@@ -106,7 +105,6 @@
         color: rgba(255, 255, 255, 0.65);
         font-style: italic;
       }
-
       .main-layout {
         max-width: 960px;
         margin: 0 auto;
@@ -130,7 +128,6 @@
           padding-bottom: 60px;
         }
       }
-
       .cover-img {
         width: 100%;
         aspect-ratio: 2/3;
@@ -141,7 +138,6 @@
         display: block;
         background: var(--cream-2);
       }
-
       .content-col {
         padding-top: 105px;
         width: 100%;
@@ -151,7 +147,6 @@
           padding-top: 10px;
         }
       }
-
       .action-row {
         display: flex;
         gap: 10px;
@@ -186,7 +181,6 @@
       .btn-delete:hover {
         background: #fdf2f1;
       }
-
       .card {
         background: white;
         border: 1px solid var(--border);
@@ -209,7 +203,6 @@
         line-height: 1.75;
         white-space: pre-line;
       }
-
       .chapter-row {
         display: flex;
         justify-content: space-between;
@@ -222,9 +215,7 @@
         color: var(--ink);
         font-size: 13px;
         font-weight: 500;
-        transition:
-          background 0.2s,
-          border-color 0.2s;
+        transition: background 0.2s, border-color 0.2s;
         margin-bottom: 8px;
       }
       .chapter-row:hover {
@@ -240,17 +231,7 @@
   </head>
   <body>
     <nav>
-      <div
-        style="
-          max-width: 960px;
-          margin: 0 auto;
-          padding: 0 24px;
-          height: 54px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
+      <div style="max-width: 960px; margin: 0 auto; padding: 0 24px; height: 54px; display: flex; align-items: center; justify-content: space-between;">
         <a href="index.html" class="nav-logo">Chạm</a>
         <a href="index.html" class="nav-back">← Quay lại</a>
       </div>
@@ -271,10 +252,9 @@
 
       <div class="content-col">
         <div class="action-row">
-          <a id="btn-read-now" href="read.html" class="btn-read"
-            >Đọc tác phẩm</a
-          >
-          <button onclick="deleteStoryWithPassword()" class="btn-delete">
+          <a id="btn-read-now" href="read.html" class="btn-read">Đọc tác phẩm</a>
+          <!-- 🔒 TINH CHỈNH: Mặc định ẩn nút Xóa bản thảo, chỉ hiện lên nếu tài khoản xác thực là Admin -->
+          <button id="btn-admin-delete" onclick="deleteStoryWithPassword()" class="btn-delete hidden">
             Xóa bản thảo
           </button>
         </div>
@@ -291,8 +271,6 @@
       </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
@@ -311,23 +289,16 @@
       const MY_SECRET_PASSWORD = "067780";
 
       if (storyId) {
-        document.getElementById("btn-read-now").href =
-          `read.html?id=${storyId}&ch=1`;
+        document.getElementById("btn-read-now").href = `read.html?id=${storyId}&ch=1`;
 
-        database
-          .ref(`stories/${storyId}/story_info`)
-          .once("value")
-          .then((snapshot) => {
+        database.ref(`stories/${storyId}/story_info`).once("value").then((snapshot) => {
             const info = snapshot.val();
             if (info) {
               document.getElementById("story-title").innerText = info.title;
-              document.getElementById("story-author").innerText =
-                "Tác giả: " + (info.author || "Khuyết danh");
-              document.getElementById("story-desc").innerText =
-                info.description || "Tác phẩm chưa có tóm tắt.";
+              document.getElementById("story-author").innerText = "Tác giả: " + (info.author || "Khuyết danh");
+              document.getElementById("story-desc").innerText = info.description || "Tác phẩm chưa có tóm tắt.";
               document.getElementById("story-cover").src = info.cover;
-              document.getElementById("bg-blur").style.backgroundImage =
-                `url('${info.cover}')`;
+              document.getElementById("bg-blur").style.backgroundImage = `url('${info.cover}')`;
             }
           });
 
@@ -336,13 +307,10 @@
           container.innerHTML = "";
           const chapters = snapshot.val();
           if (!chapters) {
-            container.innerHTML =
-              '<p style="font-size:13px;color:var(--ink-3);font-style:italic;">Chưa có chương nào.</p>';
+            container.innerHTML = '<p style="font-size:13px;color:var(--ink-3);font-style:italic;">Chưa có chương nào.</p>';
             return;
           }
-          const sorted = Object.keys(chapters).sort(
-            (a, b) => parseInt(chapters[a].id) - parseInt(chapters[b].id),
-          );
+          const sorted = Object.keys(chapters).sort((a, b) => parseInt(chapters[a].id) - parseInt(chapters[b].id));
           sorted.forEach((key) => {
             const ch = chapters[key];
             container.innerHTML += `
@@ -354,27 +322,35 @@
         });
       }
 
+      // 🔒 KIỂM TRA QUYỀN ADMIN THỜI GIAN THỰC ĐỂ HIỂN THỊ NÚT XÓA TRUYỆN
+      firebase.auth().onAuthStateChanged((user) => {
+        const delBtn = document.getElementById("btn-admin-delete");
+        if (user) {
+          database.ref(`users/${user.uid}/profile`).once('value').then((snapshot) => {
+            const profile = snapshot.val();
+            if (user.email === "thinhowner@gmail.com" || profile?.role === "admin") {
+              delBtn.classList.remove("hidden"); // Hiện nút xóa nếu là Admin
+            } else {
+              delBtn.classList.add("hidden");
+            }
+          });
+        } else {
+          delBtn.classList.add("hidden");
+        }
+      });
+
       function deleteStoryWithPassword() {
         if (!storyId) return;
         if (!confirm("Xóa hoàn toàn bản thảo này và tất cả chương?")) return;
         const pin = prompt("Nhập mã PIN tác giả để xác thực:");
         if (pin === MY_SECRET_PASSWORD) {
-          database
-            .ref(`stories/${storyId}`)
-            .remove()
-            .then(() => {
-              const history =
-                JSON.parse(localStorage.getItem("wattpad_reading_history")) ||
-                {};
+          database.ref(`stories/${storyId}`).remove().then(() => {
+              const history = JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
               delete history[storyId];
-              localStorage.setItem(
-                "wattpad_reading_history",
-                JSON.stringify(history),
-              );
+              localStorage.setItem("wattpad_reading_history", JSON.stringify(history));
               alert("Đã xóa bản thảo.");
               window.location.href = "index.html";
-            })
-            .catch((e) => alert("Lỗi: " + e.message));
+            }).catch((e) => alert("Lỗi: " + e.message));
         } else {
           alert("Mã PIN không đúng. Hành động bị hủy.");
         }

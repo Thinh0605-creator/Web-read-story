@@ -37,7 +37,6 @@
         font-family: "Lora", serif;
       }
 
-      /* Auth modal */
       .modal-overlay {
         position: fixed;
         inset: 0;
@@ -111,7 +110,6 @@
         background: var(--ink-2);
       }
 
-      /* Nav */
       nav {
         background: var(--cream);
         border-bottom: 1px solid var(--border);
@@ -160,7 +158,6 @@
         color: var(--ink);
       }
 
-      /* Containers */
       .page {
         max-width: 760px;
         margin: 0 auto;
@@ -183,7 +180,6 @@
         border-bottom: 1px solid var(--border);
       }
 
-      /* Form fields */
       .field-label {
         display: block;
         font-size: 10px;
@@ -251,7 +247,6 @@
         font-weight: 600;
       }
 
-      /* Cover upload */
       .cover-drop {
         border: 1.5px dashed var(--border);
         border-radius: 10px;
@@ -293,7 +288,6 @@
         font-weight: 500;
       }
 
-      /* Grid */
       .grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -308,7 +302,6 @@
         margin-bottom: 20px;
       }
 
-      /* Continue button */
       .btn-continue {
         width: 100%;
         background: var(--ink);
@@ -339,7 +332,6 @@
         color: var(--ink);
       }
 
-      /* THANH ĐỊNH DẠNG */
       .format-toolbar {
         display: flex;
         align-items: center;
@@ -402,7 +394,6 @@
         letter-spacing: 0.05em;
       }
 
-      /* Story body textarea */
       #story-body {
         width: 100%;
         min-height: 55vh;
@@ -423,7 +414,6 @@
         border-color: var(--amber);
       }
 
-      /* Word count */
       .word-count {
         font-size: 11px;
         color: var(--ink-3);
@@ -441,37 +431,17 @@
       <div class="modal-box">
         <div class="modal-icon">🔑</div>
         <div class="modal-title">Phòng sáng tác riêng tư</div>
-        <p class="modal-sub">
-          Nhập mã PIN để mở khóa phiên làm việc của tác giả.
-        </p>
-        <input
-          type="password"
-          id="modal-pin-input"
-          class="modal-input"
-          placeholder="••••••"
-          maxlength="10"
-        />
+        <p class="modal-sub">Nhập mã PIN để mở khóa phiên làm việc của tác giả.</p>
+        <input type="password" id="modal-pin-input" class="modal-input" placeholder="••••••" maxlength="10" />
         <button class="modal-btn" onclick="verifyAdminPin()">Xác thực</button>
       </div>
     </div>
 
     <nav>
-      <div
-        style="
-          max-width: 760px;
-          margin: 0 auto;
-          padding: 0 24px;
-          height: 52px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        "
-      >
+      <div style="max-width: 760px; margin: 0 auto; padding: 0 24px; height: 52px; display: flex; align-items: center; gap: 12px;">
         <a href="index.html" class="nav-back">←</a>
         <a href="index.html" class="nav-logo">Chạm</a>
-        <span id="save-status" class="nav-status" style="flex: 1"
-          >Bước 1 — Cấu hình</span
-        >
+        <span id="save-status" class="nav-status" style="flex: 1">Bước 1 — Cấu hình</span>
         <button id="btn-publish" class="btn-publish" onclick="publishToFirebase()">Đăng tải</button>
       </div>
     </nav>
@@ -484,21 +454,13 @@
           <div class="grid-2 field-group">
             <div>
               <label class="field-label">Bộ truyện</label>
-              <select
-                id="story-mode-select"
-                onchange="handleStorySelection()"
-                class="field-select"
-              >
+              <select id="story-mode-select" onchange="handleStorySelection()" class="field-select">
                 <option value="new">Tạo bộ truyện mới</option>
               </select>
             </div>
             <div>
               <label class="field-label">Chương</label>
-              <select
-                id="chapter-mode-select"
-                onchange="handleChapterSelection()"
-                class="field-select amber"
-              >
+              <select id="chapter-mode-select" onchange="handleChapterSelection()" class="field-select amber">
                 <option value="new_chap">Viết chương mới</option>
               </select>
             </div>
@@ -506,20 +468,9 @@
 
           <div id="meta-fields-group">
             <div class="field-group">
-              <label id="cover-section-title" class="field-label"
-                >Ảnh bìa</label
-              >
-              <input
-                type="file"
-                id="book-cover-file"
-                accept="image/*"
-                style="display: none"
-                onchange="previewImage(this)"
-              />
-              <div
-                class="cover-drop"
-                onclick="document.getElementById('book-cover-file').click()"
-              >
+              <label id="cover-section-title" class="field-label">Ảnh bìa</label>
+              <input type="file" id="book-cover-file" accept="image/*" style="display: none" onchange="previewImage(this)" />
+              <div class="cover-drop" onclick="document.getElementById('book-cover-file').click()">
                 <img id="cover-preview" src="" alt="" style="display: none" />
                 <div id="upload-instruction" class="cover-drop-hint">
                   <div class="cover-icon">🖼️</div>
@@ -541,134 +492,75 @@
 
             <div class="field-group">
               <label class="field-label">Tóm tắt</label>
-              <textarea
-                id="book-desc"
-                class="field-textarea"
-                placeholder="Giới thiệu ngắn về tác phẩm..."
-              ></textarea>
+              <textarea id="book-desc" class="field-textarea" placeholder="Giới thiệu ngắn về tác phẩm..."></textarea>
             </div>
           </div>
 
           <div class="field-group">
             <label class="field-label">Trạng thái tác phẩm</label>
-            <select
-              id="story-status"
-              class="field-select font-semibold"
-            >
+            <select id="story-status" class="field-select font-semibold">
               <option value="ongoing">⏳ Chưa hoàn thành</option>
               <option value="completed">✅ Đã hoàn thành</option>
             </select>
           </div>
 
-          <button onclick="goToStep2()" class="btn-continue">
+          <!-- 📢 HỘP PHÁT THÔNG BÁO TÙY CHỈNH HỆ THỐNG TỪ ADMIN (ĐÃ FIX ĐẸP CHUẨN STYLE) -->
+          <div class="pt-5 mt-5 border-t border-stone-200">
+            <label class="field-label" style="color: var(--amber); font-weight: 700;">Gửi thông báo toàn hệ thống (Admin)</label>
+            <textarea id="adminNotification" class="field-textarea mt-2" placeholder="Nhập nội dung thông báo gửi tới toàn bộ độc giả tại đây..." style="height: 70px;"></textarea>
+            <button onclick="sendAdminNotification()" class="btn-continue mt-2" style="background: var(--amber); font-size: 13px; padding: 8px 12px; width: auto; display: inline-block;">
+              📢 Phát thông báo ngay
+            </button>
+          </div>
+
+          <button onclick="goToStep2()" class="btn-continue mt-6">
             Tiếp tục: Vào phòng viết →
           </button>
         </div>
       </div>
 
       <div id="step-2-container" style="display: none">
-        <button class="btn-back-step" onclick="goToStep1()">
-          ← Quay lại cấu hình
-        </button>
+        <button class="btn-back-step" onclick="goToStep1()">← Quay lại cấu hình</button>
 
         <div class="card">
           <div class="grid-14 field-group">
             <div>
               <label class="field-label">Số chương</label>
-              <input
-                type="number"
-                id="chapter-id"
-                class="field-input amber"
-                min="1"
-                style="font-weight: 700"
-              />
+              <input type="number" id="chapter-id" class="field-input amber" min="1" style="font-weight: 700" />
             </div>
             <div>
               <label class="field-label">Tên chương</label>
-              <input
-                type="text"
-                id="story-title"
-                class="field-input"
-                placeholder="Tiêu đề chương..."
-              />
+              <input type="text" id="story-title" class="field-input" placeholder="Tiêu đề chương..." />
             </div>
           </div>
 
           <div>
-            <label class="field-label" style="margin-bottom: 0"
-              >Nội dung chương</label
-            >
+            <label class="field-label" style="margin-bottom: 0">Nội dung chương</label>
 
             <div class="format-toolbar" id="format-toolbar">
               <span class="fmt-label">Định dạng</span>
               <div class="fmt-divider"></div>
 
-              <button
-                class="fmt-btn"
-                id="fmt-bold"
-                onclick="applyFormat('bold')"
-                title="In đậm (Ctrl+B)"
-              >
-                <strong>B</strong>
-              </button>
-              <button
-                class="fmt-btn"
-                id="fmt-italic"
-                onclick="applyFormat('italic')"
-                title="In nghiêng (Ctrl+I)"
-              >
-                <em style="font-style: italic">I</em>
-              </button>
-              <button
-                class="fmt-btn"
-                id="fmt-underline"
-                onclick="applyFormat('underline')"
-                title="Gạch chân (Ctrl+U)"
-              >
-                <span
-                  style="text-decoration: underline; text-underline-offset: 2px"
-                  >U</span
-                >
-              </button>
-              <button
-                class="fmt-btn"
-                id="fmt-strike"
-                onclick="applyFormat('strike')"
-                title="Gạch ngang"
-              >
-                <span style="text-decoration: line-through">S</span>
-              </button>
+              <button class="fmt-btn" id="fmt-bold" onclick="applyFormat('bold')" title="In đậm (Ctrl+B)"><strong>B</strong></button>
+              <button class="fmt-btn" id="fmt-italic" onclick="applyFormat('italic')" title="In nghiêng (Ctrl+I)"><em style="font-style: italic">I</em></button>
+              <button class="fmt-btn" id="fmt-underline" onclick="applyFormat('underline')" title="Gạch chân (Ctrl+U)"><span style="text-decoration: underline; text-underline-offset: 2px">U</span></button>
+              <button class="fmt-btn" id="fmt-strike" onclick="applyFormat('strike')" title="Gạch ngang"><span style="text-decoration: line-through">S</span></button>
 
               <div class="fmt-divider"></div>
 
-              <button
-                class="fmt-btn"
-                onclick="applyFormat('indent')"
-                title="Thụt đầu dòng"
-              >
+              <button class="fmt-btn" onclick="applyFormat('indent')" title="Thụt đầu dòng">
                 <svg viewBox="0 0 16 16">
                   <path d="M2 4h12M2 8h8M2 12h10" />
                   <path d="M12 6l3 2-3 2" stroke-width="1.5" />
                 </svg>
               </button>
-              <button
-                class="fmt-btn"
-                onclick="applyFormat('quote')"
-                title="Trích dẫn / dialogue"
-              >
+              <button class="fmt-btn" onclick="applyFormat('quote')" title="Trích dẫn / dialogue">
                 <svg viewBox="0 0 16 16">
                   <path d="M3 5h4v4H3zM9 5h4v4H9z" />
-                  <path
-                    d="M5 9c0 2-1.5 2.5-2 3M11 9c0 2-1.5 2.5-2 3"
-                    stroke-width="1"
-                  />
+                  <path d="M5 9c0 2-1.5 2.5-2 3M11 9c0 2-1.5 2.5-2 3" stroke-width="1" />
                 </svg>
               </button>
-              <button
-                class="fmt-btn"
-                onclick="applyFormat('separator')"
-                title="Dấu phân cách cảnh"
-              >
+              <button class="fmt-btn" onclick="applyFormat('separator')" title="Dấu phân cách cảnh">
                 <svg viewBox="0 0 16 16">
                   <path d="M2 8h12" />
                   <path d="M6 6l2-2 2 2M6 10l2 2 2-2" stroke-width="1.2" />
@@ -676,41 +568,14 @@
               </button>
 
               <div class="fmt-divider"></div>
-
-              <button
-                class="fmt-btn"
-                onclick="clearFormat()"
-                title="Xóa định dạng"
-                style="font-size: 12px"
-              >
-                ✕
-              </button>
-
+              <button class="fmt-btn" onclick="clearFormat()" title="Xóa định dạng" style="font-size: 12px">✕</button>
               <div style="flex: 1"></div>
-              <span
-                id="word-count-inline"
-                style="
-                  font-size: 11px;
-                  color: var(--ink-3);
-                  white-space: nowrap;
-                "
-                >0 từ</span
-              >
+              <span id="word-count-inline" style="font-size: 11px; color: var(--ink-3); white-space: nowrap;">0 từ</span>
             </div>
 
             <textarea id="story-body" oninput="updateWordCount()"></textarea>
-
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 8px;
-              "
-            >
-              <div class="word-count">
-                Số từ: <span id="word-count-num">0</span>
-              </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+              <div class="word-count">Số từ: <span id="word-count-num">0</span></div>
             </div>
           </div>
         </div>
@@ -723,11 +588,8 @@
       let loadedStories = {};
       let autoSaveTimer;
 
-      // ── Auth ──
       function checkAdminAccess() {
-        if (
-          sessionStorage.getItem("tramnang_admin_session") === "authenticated"
-        ) {
+        if (sessionStorage.getItem("tramnang_admin_session") === "authenticated") {
           document.getElementById("auth-modal").style.display = "none";
           document.getElementById("editor-body").style.opacity = "1";
           loadExistingStories();
@@ -746,14 +608,11 @@
           window.location.href = "index.html";
         }
       }
-      document
-        .getElementById("modal-pin-input")
-        .addEventListener("keypress", (e) => {
-          if (e.key === "Enter") verifyAdminPin();
-        });
+      document.getElementById("modal-pin-input").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") verifyAdminPin();
+      });
       window.addEventListener("DOMContentLoaded", checkAdminAccess);
 
-      // ── Firebase ──
       const firebaseConfig = {
         apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
         authDomain: "web-read-story.firebaseapp.com",
@@ -766,32 +625,56 @@
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
 
-      function loadExistingStories() {
-        database
-          .ref("stories")
-          .once("value")
-          .then((snap) => {
-            const data = snap.val();
-            if (!data) return;
-            loadedStories = data;
-            const sel = document.getElementById("story-mode-select");
-            sel.innerHTML = `<option value="new">Tạo bộ truyện mới</option>`;
-            Object.keys(data).forEach((id) => {
-              const opt = document.createElement("option");
-              opt.value = id;
-              opt.innerText = `Viết tiếp: ${data[id].story_info.title}`;
-              sel.appendChild(opt);
-            });
-          });
+      // Hàm gửi thông báo thủ công từ Admin lên nút announcements
+      function sendAdminNotification() {
+        const msgText = document.getElementById("adminNotification").value.trim();
+        if (!msgText) {
+          alert("Cậu chưa viết nội dung thông báo kìa!");
+          return;
+        }
+
+        const today = new Date();
+        const dateStr = today.toLocaleDateString("vi-VN");
+        const currentTimeMillis = today.getTime();
+        const notiId = "id_" + currentTimeMillis;
+
+        document.getElementById("save-status").innerText = "Đang phát...";
+
+        database.ref(`announcements/${notiId}`).set({
+          content: `📢 [Thông báo hệ thống]: ${msgText}`,
+          date: dateStr,
+          timestamp: currentTimeMillis
+        }).then(() => {
+          alert("Đã gửi thông báo thủ công tới toàn bộ người đọc thành công!");
+          document.getElementById("adminNotification").value = "";
+          document.getElementById("save-status").innerText = "Bước 1 — Cấu hình";
+        }).catch((err) => {
+          alert("Gặp lỗi khi gửi: " + err.message);
+          document.getElementById("save-status").innerText = "Bước 1 — Cấu hình";
+        });
       }
 
-      // ── Form handlers ──
+      function loadExistingStories() {
+        database.ref("stories").once("value").then((snap) => {
+          const data = snap.val();
+          if (!data) return;
+          loadedStories = data;
+          const sel = document.getElementById("story-mode-select");
+          sel.innerHTML = `<option value="new">Tạo bộ truyện mới</option>`;
+          Object.keys(data).forEach((id) => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.innerText = `Viết tiếp: ${data[id].story_info.title}`;
+            sel.appendChild(opt);
+          });
+        });
+      }
+
       function handleStorySelection() {
         const mode = document.getElementById("story-mode-select").value;
         const chapSel = document.getElementById("chapter-mode-select");
         chapSel.innerHTML = `<option value="new_chap">Viết chương mới</option>`;
-        document.getElementById("cover-section-title").innerText =
-          mode === "new" ? "ẢNH BÌA" : "THAY ĐỔI ẢNH BÌA (TÙY CHỌN)";
+        document.getElementById("cover-section-title").innerText = mode === "new" ? "ẢNH BÌA" : "THAY ĐỔI ẢNH BÌA (TÙY CHỌN)";
         if (mode === "new") {
           resetFormFields();
         } else {
@@ -806,8 +689,7 @@
               const img = document.getElementById("cover-preview");
               img.src = info.cover;
               img.style.display = "block";
-              document.getElementById("upload-instruction").style.display =
-                "none";
+              document.getElementById("upload-instruction").style.display = "none";
             }
           }
           const chs = loadedStories[mode]?.chapters;
@@ -874,10 +756,7 @@
       }
 
       function goToStep2() {
-        if (
-          !document.getElementById("book-title").value.trim() ||
-          !document.getElementById("book-author").value.trim()
-        ) {
+        if (!document.getElementById("book-title").value.trim() || !document.getElementById("book-author").value.trim()) {
           alert("Vui lòng điền tên truyện và tên tác giả.");
           return;
         }
@@ -887,12 +766,10 @@
         const status = document.getElementById("save-status");
         status.innerText = "Bước 2 — Viết nội dung";
         status.className = "nav-status active";
-        
+
         const draft = localStorage.getItem("tramnang_draft");
         if (draft && !document.getElementById("story-body").value) {
-          if (
-            confirm("Tớ thấy bản thảo chưa lưu trước đó. Khôi phục lại không?")
-          ) {
+          if (confirm("Tớ thấy bản thảo chưa lưu trước đó. Khôi phục lại không?")) {
             document.getElementById("story-body").value = draft;
             updateWordCount();
           }
@@ -924,9 +801,7 @@
         const bAuthor = document.getElementById("book-author").value.trim();
         const bDesc = document.getElementById("book-desc").value.trim();
         const bStatus = document.getElementById("story-status").value;
-        const cover =
-          base64ImageString ||
-          "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+        const cover = base64ImageString || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
 
         if (mode === "new") {
           targetId = "story_" + Math.random().toString(36).substr(2, 9);
@@ -948,7 +823,6 @@
           });
         }
 
-        // Tạo ngày định dạng chuẩn hiển thị
         const today = new Date();
         const dateStr = today.toLocaleDateString("vi-VN");
         const currentTimeMillis = today.getTime();
@@ -966,15 +840,13 @@
               document.getElementById("save-status").innerText = "Bước 2 — Viết nội dung";
             } else {
               localStorage.removeItem("tramnang_draft");
-
-              // 👑 HỆ THỐNG PHÁT THÔNG BÁO TỰ ĐỘNG THỜI GIAN THỰC ĐƯỢC CÀI Ở ĐÂY:
-              const notiId = "id_" + currentTimeMillis; // ID ngẫu nhiên không trùng lập dựa theo thời gian chạy
+              const notiId = "id_" + currentTimeMillis;
               const notiMessage = `📚 Tác phẩm "${bTitle}" vừa được cập nhật Chương ${chId}: ${chTitle} nhen cậu ơi!`;
-              
+
               database.ref(`announcements/${notiId}`).set({
                 content: notiMessage,
                 date: dateStr,
-                timestamp: currentTimeMillis
+                timestamp: currentTimeMillis,
               }).then(() => {
                 alert(`Chương ${chId} đã được đăng tải và thông báo tự động tới độc giả thành công!`);
                 window.location.href = "index.html";
@@ -984,7 +856,6 @@
         );
       }
 
-      // Autosave
       function autoSaveDraft() {
         clearTimeout(autoSaveTimer);
         autoSaveTimer = setTimeout(() => {
@@ -994,38 +865,26 @@
             const status = document.getElementById("save-status");
             const prev = status.innerText;
             status.innerText = "Đã lưu nháp ✓";
-            setTimeout(() => {
-              status.innerText = prev;
-            }, 2000);
+            setTimeout(() => { status.innerText = prev; }, 2000);
           }
         }, 30000);
       }
 
-      // ── WORD COUNT ──
       function updateWordCount() {
         const text = document.getElementById("story-body").value.trim();
         const words = text ? text.split(/\s+/).length : 0;
-        document.getElementById("word-count-num").innerText =
-          words.toLocaleString("vi-VN");
-        document.getElementById("word-count-inline").innerText =
-          words.toLocaleString("vi-VN") + " từ";
+        document.getElementById("word-count-num").innerText = words.toLocaleString("vi-VN");
+        document.getElementById("word-count-inline").innerText = words.toLocaleString("vi-VN") + " từ";
         autoSaveDraft();
       }
 
-      // ── THANH ĐỊNH DẠNG ──
       function insertAtCursor(textarea, before, after, placeholder) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const selected = textarea.value.substring(start, end);
-        const insert =
-          selected.length > 0
-            ? before + selected + after
-            : before + placeholder + after;
-        textarea.value =
-          textarea.value.substring(0, start) +
-          insert +
-          textarea.value.substring(end);
-        
+        const insert = selected.length > 0 ? before + selected + after : before + placeholder + after;
+        textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
+
         const selStart = start + before.length;
         const selEnd = selected.length > 0 ? start + before.length + selected.length : start + before.length + placeholder.length;
         textarea.setSelectionRange(selStart, selEnd);
@@ -1036,22 +895,13 @@
       function applyFormat(type) {
         const ta = document.getElementById("story-body");
         switch (type) {
-          case "bold":
-            insertAtCursor(ta, "**", "**", "in đậm");
-            break;
-          case "italic":
-            insertAtCursor(ta, "*", "*", "nghiêng");
-            break;
-          case "underline":
-            insertAtCursor(ta, "__", "__", "gạch chân");
-            break;
-          case "strike":
-            insertAtCursor(ta, "~~", "~~", "gạch ngang");
-            break;
+          case "bold": insertAtCursor(ta, "**", "**", "in đậm"); break;
+          case "italic": insertAtCursor(ta, "*", "*", "nghiêng"); break;
+          case "underline": insertAtCursor(ta, "__", "__", "gạch chân"); break;
+          case "strike": insertAtCursor(ta, "~~", "~~", "gạch ngang"); break;
           case "indent": {
             const start = ta.selectionStart;
-            ta.value =
-              ta.value.substring(0, start) + "    " + ta.value.substring(start);
+            ta.value = ta.value.substring(0, start) + "    " + ta.value.substring(start);
             ta.setSelectionRange(start + 4, start + 4);
             ta.focus();
             break;
@@ -1059,11 +909,9 @@
           case "quote": {
             const start = ta.selectionStart;
             const end = ta.selectionEnd;
-            const sel =
-              ta.value.substring(start, end) || "Câu thoại nhân vật...";
+            const sel = ta.value.substring(start, end) || "Câu thoại nhân vật...";
             const insert = `"${sel}"`;
-            ta.value =
-              ta.value.substring(0, start) + insert + ta.value.substring(end);
+            ta.value = ta.value.substring(0, start) + insert + ta.value.substring(end);
             ta.setSelectionRange(start + 1, start + 1 + sel.length);
             ta.focus();
             break;
@@ -1071,8 +919,7 @@
           case "separator": {
             const start = ta.selectionStart;
             const sep = "\n\n* * *\n\n";
-            ta.value =
-              ta.value.substring(0, start) + sep + ta.value.substring(start);
+            ta.value = ta.value.substring(0, start) + sep + ta.value.substring(start);
             ta.setSelectionRange(start + sep.length, start + sep.length);
             ta.focus();
             break;
@@ -1087,11 +934,7 @@
         const end = ta.selectionEnd;
         if (start === end) return;
         let sel = ta.value.substring(start, end);
-        sel = sel
-          .replace(/\*\*(.+?)\*\*/g, "$1")
-          .replace(/\*(.+?)\*/g, "$1")
-          .replace(/__(.+?)__/g, "$1")
-          .replace(/~~(.+?)~~/g, "$1");
+        sel = sel.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1").replace(/__(.+?)__/g, "$1").replace(/~~(.+?)~~/g, "$1");
         ta.value = ta.value.substring(0, start) + sel + ta.value.substring(end);
         ta.setSelectionRange(start, start + sel.length);
         ta.focus();
@@ -1101,29 +944,16 @@
       document.getElementById("story-body").addEventListener("keydown", (e) => {
         if (e.ctrlKey || e.metaKey) {
           switch (e.key) {
-            case "b":
-              e.preventDefault();
-              applyFormat("bold");
-              break;
-            case "i":
-              e.preventDefault();
-              applyFormat("italic");
-              break;
-            case "u":
-              e.preventDefault();
-              applyFormat("underline");
-              break;
+            case "b": e.preventDefault(); applyFormat("bold"); break;
+            case "i": e.preventDefault(); applyFormat("italic"); break;
+            case "u": e.preventDefault(); applyFormat("underline"); break;
           }
         }
       });
 
       window.addEventListener("beforeunload", (e) => {
         const body = document.getElementById("story-body")?.value;
-        if (
-          body &&
-          body.trim().length > 0 &&
-          document.getElementById("step-2-container").style.display !== "none"
-        ) {
+        if (body && body.trim().length > 0 && document.getElementById("step-2-container").style.display !== "none") {
           e.preventDefault();
           e.returnValue = "";
         }

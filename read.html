@@ -73,7 +73,6 @@
     class="bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden"
     id="body"
   >
-    <!-- Thanh điều hướng thông minh -->
     <nav
       class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300"
       id="nav-bar"
@@ -107,7 +106,7 @@
               class="bg-transparent text-amber-600 outline-none cursor-pointer font-bold"
             >
               <option value="vertical">📜 Cuộn dọc</option>
-              <option value="horizontal">↔️ Lật ngang</option>
+              <option value="horizontal">↔️ Lật nang</option>
             </select>
           </div>
           <button
@@ -127,7 +126,6 @@
       </div>
     </nav>
 
-    <!-- Nội dung chính -->
     <main
       class="max-w-2xl mx-auto px-4 pt-4 pb-24 md:py-10 flex-1 w-full flex flex-col justify-between relative"
     >
@@ -149,7 +147,6 @@
             class="text-sm text-stone-400 mb-4 text-center md:text-left hidden md:block"
           ></p>
 
-          <!-- THANH ĐIỀU KHIỂN CỠ CHỮ -->
           <div
             class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-xs md:text-sm mb-8 font-medium text-stone-600 transition-colors duration-300"
             id="control-panel"
@@ -206,7 +203,6 @@
             </div>
           </div>
 
-          <!-- VÙNG HIỂN THỊ CHỮ -->
           <div class="w-full overflow-hidden">
             <article
               id="render-content"
@@ -216,7 +212,6 @@
           </div>
         </div>
 
-        <!-- THANH ĐIỀU HƯỚNG CỐ ĐỊNH Ở ĐÁY MÀN HÌNH -->
         <div
           class="fixed bottom-0 left-0 right-0 md:relative bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-200 md:border-t md:border-stone-200 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300"
           id="navigation-footer"
@@ -246,6 +241,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
@@ -446,6 +442,7 @@
             });
         }
 
+        // Lưu lịch sử tạm thời vào máy cá nhân đề phòng mất mạng
         const readingHistory =
           JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
         readingHistory[storyId] = {
@@ -456,6 +453,16 @@
           "wattpad_reading_history",
           JSON.stringify(readingHistory),
         );
+
+        // 👑 ĐỒNG BỘ: Đẩy dữ liệu đọc dở lên đám mây tài khoản User nếu có đăng nhập
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            database.ref(`users/${user.uid}/reading_history/${storyId}`).set({
+              chapter: parseInt(chNum),
+              time: new Date().getTime(),
+            });
+          }
+        });
 
         database
           .ref(`stories/${storyId}/chapters/chuong_${chNum}`)
@@ -482,7 +489,6 @@
               const articleElement = document.getElementById("render-content");
               articleElement.innerHTML = "";
 
-              // 👑 ĐỒNG BỘ: Bộ lọc Markdown giữ nguyên chữ nghiêng * và chữ đậm ** của cậu
               paragraphs.forEach((pText) => {
                 let formattedText = pText
                   .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
