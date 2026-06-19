@@ -22,7 +22,6 @@
         margin-bottom: 1.5rem;
       }
 
-      /* 💻 CHẾ ĐỘ LẬT NGANG CHUẨN TRÊN LAPTOP */
       @media (min-width: 768px) {
         .horizontal-mode {
           display: block !important;
@@ -43,7 +42,6 @@
         }
       }
 
-      /* 📱 CHẾ ĐỘ LẬT NGANG SIÊU TỐI ƯU TRÊN ĐIỆN THOẠI */
       @media (max-width: 767px) {
         .horizontal-mode {
           display: block !important;
@@ -106,7 +104,7 @@
               class="bg-transparent text-amber-600 outline-none cursor-pointer font-bold"
             >
               <option value="vertical">📜 Cuộn dọc</option>
-              <option value="horizontal">↔️ Lật nang</option>
+              <option value="horizontal">↔️ Lật ngang</option>
             </select>
           </div>
           <button
@@ -129,8 +127,9 @@
     <main
       class="max-w-2xl mx-auto px-4 pt-4 pb-24 md:py-10 flex-1 w-full flex flex-col justify-between relative"
     >
-      <div id="loading" class="text-center text-stone-400 py-10 flex-1">
-        ⏳ Đang lấy nội dung chương...
+      <!-- ⏳ KHUNG THÔNG BÁO KIỂM TRA QUYỀN TRUY CẬP ĐĂNG NHẬP -->
+      <div id="loading" class="text-center text-stone-400 py-10 flex-1 font-medium">
+        ⏳ Đang kiểm tra quyền truy cập phòng đọc...
       </div>
 
       <div
@@ -262,6 +261,7 @@
       let currentFontSize = window.innerWidth < 768 ? 18 : 20;
       let currentLineHeight = 1.6;
       let isDarkMode = false;
+      let userAuthenticated = false;
 
       let readingMode =
         localStorage.getItem("tramnang_default_reading_mode") || "vertical";
@@ -270,6 +270,27 @@
         document.getElementById("back-to-detail").href =
           `detail.html?id=${storyId}`;
       }
+
+      // 👑 CHIẾC KHÓA BẢO MẬT: Quét tài khoản, đá khách vãng lai ra ngoài
+      firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+          userAuthenticated = false;
+          localStorage.removeItem("wattpad_reading_history");
+          
+          document.getElementById("loading").innerHTML = `
+            <div class="p-6 bg-red-50 border border-red-200 text-red-700 rounded-xl max-w-sm mx-auto text-center shadow-sm">
+              <p class="font-bold text-sm mb-1">🔐 Cậu chưa đăng nhập tài khoản</p>
+              <p class="text-xs text-red-600 leading-relaxed">Vui lòng đăng nhập hoặc đăng ký tài khoản Chạm ở trang chủ để lưu tiến trình đọc nhen! Hệ thống đang đưa cậu quay lại...</p>
+            </div>
+          `;
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 3000);
+        } else {
+          userAuthenticated = true;
+          loadChapter(currentChapter);
+        }
+      });
 
       function changeReadingModeAndSave(mode) {
         readingMode = mode;
@@ -428,41 +449,31 @@
       }
 
       function loadChapter(chNum) {
-        if (!storyId) return;
+        if (!storyId || !userAuthenticated) return;
         document.getElementById("loading").classList.remove("hidden");
         document.getElementById("story-container").classList.add("hidden");
-        document.getElementById("current-ch-display").innerText =
-          "Chương " + chNum;
+        document.getElementById("current-ch-display").innerText = "Chương " + chNum;
 
         if (parseInt(chNum) === 1) {
-          database
-            .ref(`stories/${storyId}/story_info/views`)
-            .transaction((views) => {
-              return (views || 0) + 1;
-            });
+          database.ref(`stories/${storyId}/story_info/views`).transaction((views) => {
+            return (views || 0) + 1;
+          });
         }
 
-        // Lưu lịch sử tạm thời vào máy cá nhân đề phòng mất mạng
-        const readingHistory =
-          JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
-        readingHistory[storyId] = {
-          chapter: parseInt(chNum),
-          time: new Date().getTime(),
-        };
-        localStorage.setItem(
-          "wattpad_reading_history",
-          JSON.stringify(readingHistory),
-        );
+        const user = firebase.auth().currentUser;
+        if (user) {
+          const readingHistory = JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
+          readingHistory[storyId] = {
+            chapter: parseInt(chNum),
+            time: new Date().getTime(),
+          };
+          localStorage.setItem("wattpad_reading_history", JSON.stringify(readingHistory));
 
-        // 👑 ĐỒNG BỘ: Đẩy dữ liệu đọc dở lên đám mây tài khoản User nếu có đăng nhập
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            database.ref(`users/${user.uid}/reading_history/${storyId}`).set({
-              chapter: parseInt(chNum),
-              time: new Date().getTime(),
-            });
-          }
-        });
+          database.ref(`users/${user.uid}/reading_history/${storyId}`).set({
+            chapter: parseInt(chNum),
+            time: new Date().getTime(),
+          });
+        }
 
         database
           .ref(`stories/${storyId}/chapters/chuong_${chNum}`)
@@ -470,22 +481,15 @@
           .then((snapshot) => {
             const data = snapshot.val();
             document.getElementById("loading").classList.add("hidden");
-            document
-              .getElementById("story-container")
-              .classList.remove("hidden");
+            document.getElementById("story-container").classList.remove("hidden");
 
             if (data) {
-              document.getElementById("render-title").innerText =
-                `Chương ${data.id}: ${data.title}`;
-              document.getElementById("nav-mobile-title").innerText =
-                `Chương ${data.id}: ${data.title}`;
-              document.getElementById("render-date").innerText =
-                "Ngày cập nhật: " + (data.date || "Hôm nay");
+              document.getElementById("render-title").innerText = `Chương ${data.id}: ${data.title}`;
+              document.getElementById("nav-mobile-title").innerText = `Chương ${data.id}: ${data.title}`;
+              document.getElementById("render-date").innerText = "Ngày cập nhật: " + (data.date || "Hôm nay");
 
               const rawContent = data.content || "";
-              const paragraphs = rawContent
-                .split("\n")
-                .filter((p) => p.trim() !== "");
+              const paragraphs = rawContent.split("\n").filter((p) => p.trim() !== "");
               const articleElement = document.getElementById("render-content");
               articleElement.innerHTML = "";
 
@@ -499,9 +503,7 @@
                 articleElement.appendChild(pTag);
               });
 
-              document.getElementById("render-content").style.fontSize =
-                currentFontSize + "px";
-
+              document.getElementById("render-content").style.fontSize = currentFontSize + "px";
               applyReadingModeSettings();
 
               if (readingMode !== "horizontal") {
@@ -510,10 +512,8 @@
                 document.getElementById("render-content").scrollLeft = 0;
               }
             } else {
-              document.getElementById("render-title").innerText =
-                "Chương chưa ra mắt";
-              document.getElementById("nav-mobile-title").innerText =
-                "Chương chưa ra mắt";
+              document.getElementById("render-title").innerText = "Chương chưa ra mắt";
+              document.getElementById("nav-mobile-title").innerText = "Chương chưa ra mắt";
               document.getElementById("render-content").innerHTML =
                 "<p class='text-center text-stone-400 italic py-8'>Bản thảo đang được tác giả cập nhật, cậu quay lại sau nhé! 😉</p>";
             }
@@ -526,8 +526,6 @@
         window.history.pushState({}, "", `?id=${storyId}&ch=${currentChapter}`);
         loadChapter(currentChapter);
       }
-
-      loadChapter(currentChapter);
     </script>
   </body>
 </html>
