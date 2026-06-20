@@ -59,7 +59,6 @@
         object-fit: contain;
         background: white;
       }
-      /* 👑 PHỤC DỰNG STYLE THANH CÔNG CỤ ĐỊNH DẠNG CŨ CỦA THỊNH */
       .format-toolbar {
         display: flex;
         align-items: center;
@@ -118,7 +117,7 @@
         letter-spacing: 0.05em;
       }
       #chapter-content {
-        border-radius: 0 0 8px 8px; /* Bo góc đáy để ăn khớp với thanh toolbar phía trên */
+        border-radius: 0 0 8px 8px;
       }
     </style>
   </head>
@@ -151,7 +150,6 @@
           Khu vực sáng tác
         </h2>
 
-        <!-- Hàng 1: Chọn bộ truyện và Chọn chương -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-1.5">
             <label
@@ -181,12 +179,10 @@
           </div>
         </div>
 
-        <!-- ID Truyện -->
         <div id="story-id-wrapper" class="space-y-1.5">
           <label
             class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
-            >Mã số truyện (Viết liền không dấu, ví dụ:
-            anh_den_can_ho_so_7)</label
+            >Mã số truyện</label
           >
           <input
             type="text"
@@ -196,7 +192,6 @@
           />
         </div>
 
-        <!-- Ảnh bìa Base64[cite: 1] -->
         <div class="space-y-1.5">
           <label
             id="cover-section-title"
@@ -224,7 +219,6 @@
           </div>
         </div>
 
-        <!-- Hàng 2: Tên truyện và Tác giả -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-1.5">
             <label
@@ -250,7 +244,6 @@
           </div>
         </div>
 
-        <!-- Tóm tắt truyện -->
         <div class="space-y-1.5">
           <label
             class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
@@ -263,7 +256,6 @@
           ></textarea>
         </div>
 
-        <!-- Trạng thái truyện -->
         <div class="space-y-1.5">
           <label
             class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
@@ -278,7 +270,6 @@
           </select>
         </div>
 
-        <!-- HỘP PHÁT THÔNG BÁO ĐỘC LẬP TỪ ADMIN[cite: 1] -->
         <div class="pt-5 mt-5 border-t border-stone-200/80">
           <label
             class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2"
@@ -288,7 +279,6 @@
             id="adminNotification"
             rows="2"
             class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed"
-            placeholder="Nhập nội dung tâm sự hoặc thông báo dừng/cập nhật truyện gửi tới độc giả tại đây..."
           ></textarea>
           <div class="mt-2 flex justify-start">
             <button
@@ -300,7 +290,6 @@
           </div>
         </div>
 
-        <!-- KHU VỰC SOẠN NỘI DUNG CHƯƠNG TRUYỆN -->
         <div class="border-t border-stone-200/80 pt-6 space-y-4">
           <h3
             id="chapter-editor-title"
@@ -340,7 +329,6 @@
               >Nội dung truyện</label
             >
 
-            <!-- 👑 PHỤC DỰNG TRỌN VẸN THANH CÔNG CỤ FORMAT Toolbar GỐC CỦA CẬU[cite: 1] -->
             <div class="format-toolbar" id="format-toolbar">
               <span class="fmt-label">Định dạng</span>
               <div class="fmt-divider"></div>
@@ -350,15 +338,15 @@
                 onclick="applyFormat('bold')"
                 title="In đậm (Ctrl+B)"
               >
-                <strong>B</strong></button
-              >[cite: 1]
+                <strong>B</strong>
+              </button>
               <button
                 class="fmt-btn"
                 onclick="applyFormat('italic')"
                 title="In nghiêng (Ctrl+I)"
               >
-                <em style="font-style: italic">I</em></button
-              >[cite: 1]
+                <em style="font-style: italic">I</em>
+              </button>
               <button
                 class="fmt-btn"
                 onclick="applyFormat('underline')"
@@ -367,15 +355,15 @@
                 <span
                   style="text-decoration: underline; text-underline-offset: 2px"
                   >U</span
-                ></button
-              >[cite: 1]
+                >
+              </button>
               <button
                 class="fmt-btn"
                 onclick="applyFormat('strike')"
                 title="Gạch ngang"
               >
-                <span style="text-decoration: line-through">S</span></button
-              >[cite: 1]
+                <span style="text-decoration: line-through">S</span>
+              </button>
 
               <div class="fmt-divider"></div>
 
@@ -384,36 +372,33 @@
                 onclick="applyFormat('indent')"
                 title="Thụt đầu dòng"
               >
-                [cite: 1]
                 <svg viewBox="0 0 16 16">
                   <path d="M2 4h12M2 8h8M2 12h10" />
-                  <path d="M12 6l3 2-3 2" stroke-width="1.5" /></svg
-                >[cite: 1]
+                  <path d="M12 6l3 2-3 2" stroke-width="1.5" />
+                </svg>
               </button>
               <button
                 class="fmt-btn"
                 onclick="applyFormat('quote')"
                 title="Trích dẫn / dialogue"
               >
-                [cite: 1]
                 <svg viewBox="0 0 16 16">
                   <path d="M3 5h4v4H3zM9 5h4v4H9z" />
                   <path
                     d="M5 9c0 2-1.5 2.5-2 3M11 9c0 2-1.5 2.5-2 3"
                     stroke-width="1"
-                  /></svg
-                >[cite: 1]
+                  />
+                </svg>
               </button>
               <button
                 class="fmt-btn"
                 onclick="applyFormat('separator')"
                 title="Dấu phân cách cảnh"
               >
-                [cite: 1]
                 <svg viewBox="0 0 16 16">
                   <path d="M2 8h12" />
-                  <path d="M6 6l2-2 2 2M6 10l2 2 2-2" stroke-width="1.2" /></svg
-                >[cite: 1]
+                  <path d="M6 6l2-2 2 2M6 10l2 2 2-2" stroke-width="1.2" />
+                </svg>
               </button>
 
               <div class="fmt-divider"></div>
@@ -423,8 +408,8 @@
                 title="Xóa định dạng"
                 style="font-size: 12px"
               >
-                ✕</button
-              >[cite: 1]
+                ✕
+              </button>
               <div style="flex: 1"></div>
               <span
                 id="word-count-inline"
@@ -434,7 +419,7 @@
                   white-space: nowrap;
                 "
                 >0 từ</span
-              >[cite: 1]
+              >
             </div>
 
             <textarea
@@ -442,6 +427,7 @@
               oninput="updateWordCount()"
               style="min-height: 380px"
               class="w-full border border-stone-200 p-3 text-sm bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed"
+              placeholder="Gõ câu chữ lãng mạn tại đây nhen Thịnh ơi... ✨"
             ></textarea>
 
             <div class="text-[11px] text-stone-400 mt-1 font-medium">
@@ -450,11 +436,9 @@
                 >0</span
               >
             </div>
-            [cite: 1]
           </div>
         </div>
 
-        <!-- Nút bấm đồng bộ -->
         <div class="pt-2 flex justify-end">
           <button
             onclick="handlePublishAction()"
@@ -534,7 +518,6 @@
         }, 3000);
       }
 
-      // 👑 LOGIC ĐỊNH DẠNG TEXT GỐC CỦA THỊNH[cite: 1]
       function insertAtCursor(textarea, before, after, placeholder) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -558,6 +541,7 @@
         updateWordCount();
       }
 
+      // ĐỊNH DẠNG TEXT GỐC
       function applyFormat(type) {
         const ta = document.getElementById("chapter-content");
         switch (type) {
@@ -623,7 +607,6 @@
         updateWordCount();
       }
 
-      // LẮNG NGHE PHÍM TẮT CTRL+B, CTRL+I, CTRL+U GỐC[cite: 1]
       document
         .getElementById("chapter-content")
         .addEventListener("keydown", (e) => {
@@ -645,7 +628,6 @@
           }
         });
 
-      // 👑 ĐẾM TỪ & LƯU NHÁP TỰ ĐỘNG[cite: 1]
       function autoSaveDraft() {
         clearTimeout(autoSaveTimer);
         autoSaveTimer = setTimeout(() => {
