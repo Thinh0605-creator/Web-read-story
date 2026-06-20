@@ -370,7 +370,6 @@
               type="text"
               id="auth-email-or-username"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600 font-medium"
-              placeholder="Nhập tên tài khoản hoặc email"
             />
           </div>
           <div id="email-field-wrapper" class="hidden">
@@ -382,7 +381,6 @@
               type="email"
               id="auth-real-email"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600"
-              placeholder="name@example.com"
             />
           </div>
           <div>
@@ -394,7 +392,6 @@
               type="password"
               id="auth-password"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600"
-              placeholder="••••••••"
             />
           </div>
           <div class="pt-2">
@@ -625,7 +622,7 @@
           ? "Username"
           : "Username hoặc Email";
         document.getElementById("auth-email-or-username").placeholder =
-          isSignUpMode ? "" : "Nhập tên tài khoản hoặc email";
+          isSignUpMode ? "" : "";
       }
 
       function handleBookClick(event, url) {
