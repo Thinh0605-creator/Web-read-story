@@ -40,7 +40,9 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: border-color 0.2s, background 0.2s;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
         background: var(--cream);
         position: relative;
         overflow: hidden;
@@ -57,31 +59,123 @@
         object-fit: contain;
         background: white;
       }
+      /* 👑 PHỤC DỰNG STYLE THANH CÔNG CỤ ĐỊNH DẠNG CŨ CỦA THỊNH */
+      .format-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        background: var(--cream-2);
+        border: 1px solid var(--border);
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        padding: 6px 10px;
+        flex-wrap: wrap;
+      }
+      .fmt-btn {
+        width: 30px;
+        height: 28px;
+        background: transparent;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-2);
+        font-family: "Inter", sans-serif;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        flex-shrink: 0;
+      }
+      .fmt-btn:hover {
+        background: var(--border);
+        color: var(--ink);
+      }
+      .fmt-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .fmt-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        margin: 0 4px;
+        flex-shrink: 0;
+      }
+      .fmt-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        font-weight: 600;
+        padding: 0 4px;
+        letter-spacing: 0.05em;
+      }
+      #chapter-content {
+        border-radius: 0 0 8px 8px; /* Bo góc đáy để ăn khớp với thanh toolbar phía trên */
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col pb-20">
     <nav class="border-b border-stone-200 bg-[#fdfcf9] sticky top-0 z-50">
-      <div class="max-w-[800px] mx-auto px-4 h-[54px] flex items-center justify-between">
-        <a href="index.html" class="font-lora font-bold text-[18px] text-stone-800 text-decoration-none tracking-tighter">Chạm Studio</a>
-        <a href="index.html" class="text-xs font-semibold text-stone-500 hover:text-stone-800 transition text-decoration-none">← Về trang chủ</a>
+      <div
+        class="max-w-[800px] mx-auto px-4 h-[54px] flex items-center justify-between"
+      >
+        <a
+          href="index.html"
+          class="font-lora font-bold text-[18px] text-stone-800 text-decoration-none tracking-tighter"
+          >Chạm Studio</a
+        >
+        <a
+          href="index.html"
+          class="text-xs font-semibold text-stone-500 hover:text-stone-800 transition text-decoration-none"
+          >← Về trang chủ</a
+        >
       </div>
     </nav>
 
-    <main id="admin-panel" class="hidden max-w-[800px] w-full mx-auto px-4 pt-8">
-      <div class="bg-white p-6 md:p-8 rounded-xl border border-stone-200 shadow-sm space-y-6">
-        <h2 class="font-lora font-bold text-xl text-stone-800">Khu vực sáng tác</h2>
-        
+    <main
+      id="admin-panel"
+      class="hidden max-w-[800px] w-full mx-auto px-4 pt-8"
+    >
+      <div
+        class="bg-white p-6 md:p-8 rounded-xl border border-stone-200 shadow-sm space-y-6"
+      >
+        <h2 class="font-lora font-bold text-xl text-stone-800">
+          Khu vực sáng tác
+        </h2>
+
         <!-- Hàng 1: Chọn bộ truyện và Chọn chương -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Bộ truyện</label>
-            <select id="story-selector" onchange="handleStoryChange(this.value)" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-semibold text-stone-700 outline-none focus:border-amber-600 cursor-pointer">
+            <label
+              class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+              >Bộ truyện</label
+            >
+            <select
+              id="story-selector"
+              onchange="handleStoryChange(this.value)"
+              class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-semibold text-stone-700 outline-none focus:border-amber-600 cursor-pointer"
+            >
               <option value="new">➕ Tạo bộ truyện mới</option>
             </select>
           </div>
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Chương</label>
-            <select id="chapter-selector" onchange="handleChapterChange(this.value)" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-semibold text-amber-700 outline-none focus:border-amber-600 cursor-pointer">
+            <label
+              class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+              >Chương</label
+            >
+            <select
+              id="chapter-selector"
+              onchange="handleChapterChange(this.value)"
+              class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-semibold text-amber-700 outline-none focus:border-amber-600 cursor-pointer"
+            >
               <option value="new">✍️ Viết chương mới</option>
             </select>
           </div>
@@ -89,19 +183,43 @@
 
         <!-- ID Truyện -->
         <div id="story-id-wrapper" class="space-y-1.5">
-          <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Mã số truyện (Viết liền không dấu, ví dụ: anh_den_can_ho_so_7)</label>
-          <input type="text" id="story-id" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800" placeholder="anh_den_can_ho_so_7">
+          <label
+            class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+            >Mã số truyện (Viết liền không dấu, ví dụ:
+            anh_den_can_ho_so_7)</label
+          >
+          <input
+            type="text"
+            id="story-id"
+            class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800"
+            placeholder="anh_den_can_ho_so_7"
+          />
         </div>
 
-        <!-- 🖼️ CƠ CHẾ CHÈN ẢNH BÌA BASE64 CHUẨN GỐC CỦA CẬU -->
+        <!-- Ảnh bìa Base64[cite: 1] -->
         <div class="space-y-1.5">
-          <label id="cover-section-title" class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Ảnh bìa</label>
-          <input type="file" id="book-cover-file" accept="image/*" style="display: none" onchange="previewImage(this)" />
-          <div class="cover-drop" onclick="document.getElementById('book-cover-file').click()">
+          <label
+            id="cover-section-title"
+            class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+            >Ảnh bìa</label
+          >
+          <input
+            type="file"
+            id="book-cover-file"
+            accept="image/*"
+            style="display: none"
+            onchange="previewImage(this)"
+          />
+          <div
+            class="cover-drop"
+            onclick="document.getElementById('book-cover-file').click()"
+          >
             <img id="cover-preview" src="" alt="" style="display: none" />
             <div id="upload-instruction" class="text-center">
               <div class="text-2xl mb-1">🖼️</div>
-              <div class="text-xs font-semibold text-stone-400">Bấm để chọn ảnh bìa từ máy...</div>
+              <div class="text-xs font-semibold text-stone-400">
+                Bấm để chọn ảnh bìa từ máy...
+              </div>
             </div>
           </div>
         </div>
@@ -109,33 +227,63 @@
         <!-- Hàng 2: Tên truyện và Tác giả -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tên truyện</label>
-            <input type="text" id="story-title" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800">
+            <label
+              class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+              >Tên truyện</label
+            >
+            <input
+              type="text"
+              id="story-title"
+              class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800"
+            />
           </div>
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tác giả / Bút danh</label>
-            <input type="text" id="story-author" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800" value="Mạc Hà">
+            <label
+              class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+              >Tác giả / Bút danh</label
+            >
+            <input
+              type="text"
+              id="story-author"
+              class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800"
+            />
           </div>
         </div>
 
         <!-- Tóm tắt truyện -->
         <div class="space-y-1.5">
-          <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Tóm tắt</label>
-          <textarea id="story-summary" rows="3" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed"></textarea>
+          <label
+            class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+            >Tóm tắt</label
+          >
+          <textarea
+            id="story-summary"
+            rows="3"
+            class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed"
+          ></textarea>
         </div>
 
         <!-- Trạng thái truyện -->
         <div class="space-y-1.5">
-          <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider">Trạng thái tác phẩm</label>
-          <select id="story-status" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-bold text-stone-700 outline-none focus:border-amber-600 cursor-pointer">
-            <option value="ongoing">⏳ Chưa hoàn thành (Ongoing)</option>
-            <option value="completed">✓ Đã hoàn thành (Completed)</option>
+          <label
+            class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider"
+            >Trạng thái tác phẩm</label
+          >
+          <select
+            id="story-status"
+            class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 font-bold text-stone-700 outline-none focus:border-amber-600 cursor-pointer"
+          >
+            <option value="ongoing">⏳ Chưa hoàn thành</option>
+            <option value="completed">✓ Đã hoàn thành</option>
           </select>
         </div>
 
-        <!-- 📢 HỘP PHÁT THÔNG BÁO ĐỘC LẬP TỪ ADMIN -->
+        <!-- HỘP PHÁT THÔNG BÁO ĐỘC LẬP TỪ ADMIN[cite: 1] -->
         <div class="pt-5 mt-5 border-t border-stone-200/80">
-          <label class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2">📢 Gửi thông báo toàn hệ thống (Admin)</label>
+          <label
+            class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2"
+            >📢 Gửi thông báo toàn hệ thống (Admin)</label
+          >
           <textarea
             id="adminNotification"
             rows="2"
@@ -154,39 +302,185 @@
 
         <!-- KHU VỰC SOẠN NỘI DUNG CHƯƠNG TRUYỆN -->
         <div class="border-t border-stone-200/80 pt-6 space-y-4">
-          <h3 id="chapter-editor-title" class="font-lora font-bold text-base text-stone-800">Soạn thảo chương</h3>
-          
+          <h3
+            id="chapter-editor-title"
+            class="font-lora font-bold text-base text-stone-800"
+          >
+            Soạn thảo chương
+          </h3>
+
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div class="space-y-1.5">
-              <label class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase">Số chương</label>
-              <input type="number" id="chapter-number" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-bold text-stone-800" placeholder="Ví dụ: 1">
+              <label
+                class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase"
+                >Số chương</label
+              >
+              <input
+                type="number"
+                id="chapter-number"
+                class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-bold text-stone-800"
+              />
             </div>
             <div class="sm:col-span-3 space-y-1.5">
-              <label class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase">Tiêu đề chương</label>
-              <input type="text" id="chapter-title" class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800" placeholder="Ví dụ: Nhẫn cưới">
+              <label
+                class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase"
+                >Tiêu đề chương</label
+              >
+              <input
+                type="text"
+                id="chapter-title"
+                class="w-full border border-stone-200 rounded-lg p-2.5 text-xs bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800"
+              />
             </div>
           </div>
 
-          <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase">Nội dung câu chữ</label>
-            <textarea id="chapter-content" style="min-height: 380px;" class="w-full border border-stone-200 rounded-lg p-3 text-sm bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed" placeholder="Gõ câu chữ lãng mạn tại đây nhen Thịnh ơi... ✨"></textarea>
+          <div class="space-y-0">
+            <label
+              class="block text-[10px] font-bold text-stone-400 tracking-wider uppercase mb-1.5"
+              >Nội dung truyện</label
+            >
+
+            <!-- 👑 PHỤC DỰNG TRỌN VẸN THANH CÔNG CỤ FORMAT Toolbar GỐC CỦA CẬU[cite: 1] -->
+            <div class="format-toolbar" id="format-toolbar">
+              <span class="fmt-label">Định dạng</span>
+              <div class="fmt-divider"></div>
+
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('bold')"
+                title="In đậm (Ctrl+B)"
+              >
+                <strong>B</strong></button
+              >[cite: 1]
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('italic')"
+                title="In nghiêng (Ctrl+I)"
+              >
+                <em style="font-style: italic">I</em></button
+              >[cite: 1]
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('underline')"
+                title="Gạch chân (Ctrl+U)"
+              >
+                <span
+                  style="text-decoration: underline; text-underline-offset: 2px"
+                  >U</span
+                ></button
+              >[cite: 1]
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('strike')"
+                title="Gạch ngang"
+              >
+                <span style="text-decoration: line-through">S</span></button
+              >[cite: 1]
+
+              <div class="fmt-divider"></div>
+
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('indent')"
+                title="Thụt đầu dòng"
+              >
+                [cite: 1]
+                <svg viewBox="0 0 16 16">
+                  <path d="M2 4h12M2 8h8M2 12h10" />
+                  <path d="M12 6l3 2-3 2" stroke-width="1.5" /></svg
+                >[cite: 1]
+              </button>
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('quote')"
+                title="Trích dẫn / dialogue"
+              >
+                [cite: 1]
+                <svg viewBox="0 0 16 16">
+                  <path d="M3 5h4v4H3zM9 5h4v4H9z" />
+                  <path
+                    d="M5 9c0 2-1.5 2.5-2 3M11 9c0 2-1.5 2.5-2 3"
+                    stroke-width="1"
+                  /></svg
+                >[cite: 1]
+              </button>
+              <button
+                class="fmt-btn"
+                onclick="applyFormat('separator')"
+                title="Dấu phân cách cảnh"
+              >
+                [cite: 1]
+                <svg viewBox="0 0 16 16">
+                  <path d="M2 8h12" />
+                  <path d="M6 6l2-2 2 2M6 10l2 2 2-2" stroke-width="1.2" /></svg
+                >[cite: 1]
+              </button>
+
+              <div class="fmt-divider"></div>
+              <button
+                class="fmt-btn"
+                onclick="clearFormat()"
+                title="Xóa định dạng"
+                style="font-size: 12px"
+              >
+                ✕</button
+              >[cite: 1]
+              <div style="flex: 1"></div>
+              <span
+                id="word-count-inline"
+                style="
+                  font-size: 11px;
+                  color: var(--ink-3);
+                  white-space: nowrap;
+                "
+                >0 từ</span
+              >[cite: 1]
+            </div>
+
+            <textarea
+              id="chapter-content"
+              oninput="updateWordCount()"
+              style="min-height: 380px"
+              class="w-full border border-stone-200 p-3 text-sm bg-stone-50 outline-none focus:border-amber-600 font-medium text-stone-800 resize-none leading-relaxed"
+            ></textarea>
+
+            <div class="text-[11px] text-stone-400 mt-1 font-medium">
+              Số từ:
+              <span id="word-count-num" class="text-amber-600 font-bold"
+                >0</span
+              >
+            </div>
+            [cite: 1]
           </div>
         </div>
 
         <!-- Nút bấm đồng bộ -->
         <div class="pt-2 flex justify-end">
-          <button onclick="handlePublishAction()" class="bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs px-6 py-3 rounded-lg shadow transition">
+          <button
+            onclick="handlePublishAction()"
+            class="bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs px-6 py-3 rounded-lg shadow transition"
+          >
             🚀 Cập nhật hệ thống / Phát hành bản thảo
           </button>
         </div>
       </div>
     </main>
 
-    <div id="access-denied" class="hidden flex-1 flex items-center justify-center p-4">
-      <div class="text-center p-8 bg-red-50 border border-red-200 rounded-xl max-w-sm w-full shadow-sm">
+    <div
+      id="access-denied"
+      class="hidden flex-1 flex items-center justify-center p-4"
+    >
+      <div
+        class="text-center p-8 bg-red-50 border border-red-200 rounded-xl max-w-sm w-full shadow-sm"
+      >
         <p class="text-xl mb-1">🔒</p>
-        <p class="font-bold text-stone-800 text-sm mb-1">Khu vực cấm: Studio của Chủ Tiệm</p>
-        <p class="text-xs text-red-600 leading-relaxed">Chỉ tài khoản Admin tối cao mới được vào phòng sáng tác. Đang quay xe...</p>
+        <p class="font-bold text-stone-800 text-sm mb-1">
+          Khu vực cấm: Studio của Chủ Tiệm
+        </p>
+        <p class="text-xs text-red-600 leading-relaxed">
+          Chỉ tài khoản Admin tối cao mới được vào phòng sáng tác. Đang quay
+          xe...
+        </p>
       </div>
     </div>
 
@@ -204,21 +498,25 @@
       const database = firebase.database();
 
       let globalStoriesCache = null;
-      let base64ImageString = ""; 
+      let base64ImageString = "";
+      let autoSaveTimer; //[cite: 1]
 
       firebase.auth().onAuthStateChanged((user) => {
         const panel = document.getElementById("admin-panel");
         const denied = document.getElementById("access-denied");
 
         if (user) {
-          database.ref(`users/${user.uid}/profile`).on('value', (snapshot) => {
+          database.ref(`users/${user.uid}/profile`).on("value", (snapshot) => {
             const profile = snapshot.val();
             const role = profile?.role || "user";
 
-            if (user.email === "nguyenhuuthinh0506@gmail.com" || role === "admin") {
+            if (
+              user.email === "nguyenhuuthinh0506@gmail.com" ||
+              role === "admin"
+            ) {
               panel.classList.remove("hidden");
               denied.classList.add("hidden");
-              loadStoriesToSelector(); 
+              loadStoriesToSelector();
             } else {
               kickOutUser();
             }
@@ -231,60 +529,218 @@
       function kickOutUser() {
         document.getElementById("admin-panel").classList.add("hidden");
         document.getElementById("access-denied").classList.remove("hidden");
-        setTimeout(() => { window.location.href = "index.html"; }, 3000);
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 3000);
+      }
+
+      // 👑 LOGIC ĐỊNH DẠNG TEXT GỐC CỦA THỊNH[cite: 1]
+      function insertAtCursor(textarea, before, after, placeholder) {
+        const start = textarea.selectionStart; //[cite: 1]
+        const end = textarea.selectionEnd; //[cite: 1]
+        const selected = textarea.value.substring(start, end); //[cite: 1]
+        const insert =
+          selected.length > 0
+            ? before + selected + after
+            : before + placeholder + after; //[cite: 1]
+        textarea.value =
+          textarea.value.substring(0, start) +
+          insert +
+          textarea.value.substring(end); //[cite: 1]
+
+        const selStart = start + before.length; //[cite: 1]
+        const selEnd =
+          selected.length > 0
+            ? start + before.length + selected.length
+            : start + before.length + placeholder.length; //[cite: 1]
+        textarea.setSelectionRange(selStart, selEnd); //[cite: 1]
+        textarea.focus(); //[cite: 1]
+        updateWordCount(); //[cite: 1]
+      }
+
+      function applyFormat(type) {
+        const ta = document.getElementById("chapter-content"); //[cite: 1]
+        switch (
+          type //[cite: 1]
+        ) {
+          case "bold":
+            insertAtCursor(ta, "**", "**", "in đậm");
+            break; //[cite: 1]
+          case "italic":
+            insertAtCursor(ta, "*", "*", "nghiêng");
+            break; //[cite: 1]
+          case "underline":
+            insertAtCursor(ta, "__", "__", "gạch chân");
+            break; //[cite: 1]
+          case "strike":
+            insertAtCursor(ta, "~~", "~~", "gạch ngang");
+            break; //[cite: 1]
+          case "indent": {
+            //[cite: 1]
+            const start = ta.selectionStart; //[cite: 1]
+            ta.value =
+              ta.value.substring(0, start) + "    " + ta.value.substring(start); //[cite: 1]
+            ta.setSelectionRange(start + 4, start + 4); //[cite: 1]
+            ta.focus(); //[cite: 1]
+            break; //[cite: 1]
+          }
+          case "quote": {
+            //[cite: 1]
+            const start = ta.selectionStart; //[cite: 1]
+            const end = ta.selectionEnd; //[cite: 1]
+            const sel =
+              ta.value.substring(start, end) || "Câu thoại nhân vật..."; //[cite: 1]
+            const insert = `"${sel}"`; //[cite: 1]
+            ta.value =
+              ta.value.substring(0, start) + insert + ta.value.substring(end); //[cite: 1]
+            ta.setSelectionRange(start + 1, start + 1 + sel.length); //[cite: 1]
+            ta.focus(); //[cite: 1]
+            break; //[cite: 1]
+          }
+          case "separator": {
+            //[cite: 1]
+            const start = ta.selectionStart; //[cite: 1]
+            const sep = "\n\n* * *\n\n"; //[cite: 1]
+            ta.value =
+              ta.value.substring(0, start) + sep + ta.value.substring(start); //[cite: 1]
+            ta.setSelectionRange(start + sep.length, start + sep.length); //[cite: 1]
+            ta.focus(); //[cite: 1]
+            break; //[cite: 1]
+          }
+        }
+        updateWordCount(); //[cite: 1]
+      }
+
+      function clearFormat() {
+        const ta = document.getElementById("chapter-content"); //[cite: 1]
+        const start = ta.selectionStart; //[cite: 1]
+        const end = ta.selectionEnd; //[cite: 1]
+        if (start === end) return; //[cite: 1]
+        let sel = ta.value.substring(start, end); //[cite: 1]
+        sel = sel
+          .replace(/\*\*(.+?)\*\*/g, "$1")
+          .replace(/\*(.+?)\*/g, "$1")
+          .replace(/__(.+?)__/g, "$1")
+          .replace(/~~(.+?)~~/g, "$1"); //[cite: 1]
+        ta.value = ta.value.substring(0, start) + sel + ta.value.substring(end); //[cite: 1]
+        ta.setSelectionRange(start, start + sel.length); //[cite: 1]
+        ta.focus(); //[cite: 1]
+        updateWordCount(); //[cite: 1]
+      }
+
+      // LẮNG NGHE PHÍM TẮT CTRL+B, CTRL+I, CTRL+U GỐC[cite: 1]
+      document
+        .getElementById("chapter-content")
+        .addEventListener("keydown", (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            //[cite: 1]
+            switch (
+              e.key //[cite: 1]
+            ) {
+              case "b":
+                e.preventDefault();
+                applyFormat("bold");
+                break; //[cite: 1]
+              case "i":
+                e.preventDefault();
+                applyFormat("italic");
+                break; //[cite: 1]
+              case "u":
+                e.preventDefault();
+                applyFormat("underline");
+                break; //[cite: 1]
+            }
+          }
+        });
+
+      // 👑 ĐẾM TỪ & LƯU NHÁP TỰ ĐỘNG[cite: 1]
+      function autoSaveDraft() {
+        clearTimeout(autoSaveTimer); //[cite: 1]
+        autoSaveTimer = setTimeout(() => {
+          //[cite: 1]
+          const content = document.getElementById("chapter-content").value; //[cite: 1]
+          if (content.trim()) {
+            //[cite: 1]
+            localStorage.setItem("tramnang_draft", content); //[cite: 1]
+          }
+        }, 15000);
+      }
+
+      function updateWordCount() {
+        const text = document.getElementById("chapter-content").value.trim(); //[cite: 1]
+        const words = text ? text.split(/\s+/).length : 0; //[cite: 1]
+        document.getElementById("word-count-num").innerText =
+          words.toLocaleString("vi-VN"); //[cite: 1]
+        document.getElementById("word-count-inline").innerText =
+          words.toLocaleString("vi-VN") + " từ"; //[cite: 1]
+        autoSaveDraft(); //[cite: 1]
       }
 
       function sendAdminNotification() {
-        const msgText = document.getElementById("adminNotification").value.trim(); 
-        if (!msgText) { 
-          alert("Cậu chưa viết nội dung thông báo kìa! 😉"); 
-          return; 
-        } 
+        const msgText = document
+          .getElementById("adminNotification")
+          .value.trim();
+        if (!msgText) {
+          alert("Cậu chưa viết nội dung thông báo kìa! 😉");
+          return;
+        }
 
-        const today = new Date(); 
-        const dateStr = today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear(); 
-        const currentTimeMillis = today.getTime(); 
-        const notiId = "id_" + currentTimeMillis; 
+        const today = new Date();
+        const dateStr =
+          today.getDate() +
+          "/" +
+          (today.getMonth() + 1) +
+          "/" +
+          today.getFullYear();
+        const currentTimeMillis = today.getTime();
+        const notiId = "id_" + currentTimeMillis;
 
-        database.ref(`announcements/${notiId}`).set({ 
-          content: `📢 [Thông báo hệ thống]: ${msgText}`, 
-          date: dateStr, 
-          timestamp: currentTimeMillis 
-        }).then(() => { 
-          alert("Đã bắn thông báo độc lập tới toàn bộ chuông người đọc thành công! 🎉"); 
-          document.getElementById("adminNotification").value = ""; 
-        }).catch((err) => alert("Lỗi: " + err.message)); 
+        database
+          .ref(`announcements/${notiId}`)
+          .set({
+            content: `📢 [Thông báo hệ thống]: ${msgText}`,
+            date: dateStr,
+            timestamp: currentTimeMillis,
+          })
+          .then(() => {
+            alert(
+              "Đã bắn thông báo độc lập tới toàn bộ chuông người đọc thành công! 🎉",
+            );
+            document.getElementById("adminNotification").value = "";
+          })
+          .catch((err) => alert("Lỗi: " + err.message));
       }
 
       function previewImage(input) {
-        const file = input.files[0]; 
-        if (!file) return; 
-        if (file.size > 1500000) { 
-          alert("Ảnh quá 1.5MB, chọn ảnh nhẹ hơn nhé!"); 
-          input.value = ""; 
-          return; 
-        } 
-        const reader = new FileReader(); 
-        reader.onload = (e) => { 
-          base64ImageString = e.target.result; 
-          const img = document.getElementById("cover-preview"); 
-          img.src = base64ImageString; 
-          img.style.display = "block"; 
-          document.getElementById("upload-instruction").style.display = "none"; 
-        }; 
-        reader.readAsDataURL(file); 
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 1500000) {
+          alert("Ảnh quá 1.5MB, chọn ảnh nhẹ hơn nhé!");
+          input.value = "";
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          base64ImageString = e.target.result;
+          const img = document.getElementById("cover-preview");
+          img.src = base64ImageString;
+          img.style.display = "block";
+          document.getElementById("upload-instruction").style.display = "none";
+        };
+        reader.readAsDataURL(file);
       }
 
       function loadStoriesToSelector() {
         database.ref("stories").on("value", (snapshot) => {
           const data = snapshot.val();
           globalStoriesCache = data;
-          
+
           const selector = document.getElementById("story-selector");
           const currentVal = selector.value;
-          
-          selector.innerHTML = '<option value="new">➕ Tạo bộ truyện mới</option>';
-          
+
+          selector.innerHTML =
+            '<option value="new">➕ Tạo bộ truyện mới</option>';
+
           if (data) {
             Object.keys(data).forEach((id) => {
               const info = data[id].story_info;
@@ -294,7 +750,7 @@
             });
           }
           selector.value = currentVal;
-          if(selector.value !== "new") {
+          if (selector.value !== "new") {
             updateChapterSelector(selector.value);
           }
         });
@@ -303,55 +759,66 @@
       function handleStoryChange(storyId) {
         const idWrapper = document.getElementById("story-id-wrapper");
         const chSelector = document.getElementById("chapter-selector");
-        
+
         clearAllFields();
 
         document.getElementById("cover-section-title").innerText =
-          storyId === "new" ? "ẢNH BÌA" : "THAY ĐỔI ẢNH BÌA (TÙY CHỌN)"; 
+          storyId === "new" ? "ẢNH BÌA" : "THAY ĐỔI ẢNH BÌA (TÙY CHỌN)";
 
         if (storyId === "new") {
           idWrapper.style.display = "block";
-          chSelector.innerHTML = '<option value="new">✍️ Viết chương mới</option>';
-          document.getElementById("chapter-editor-title").innerText = "Soạn thảo chương";
+          chSelector.innerHTML =
+            '<option value="new">✍️ Viết chương mới</option>';
+          document.getElementById("chapter-editor-title").innerText =
+            "Soạn thảo chương";
         } else {
           idWrapper.style.display = "none";
           document.getElementById("story-id").value = storyId;
-          
+
           const story = globalStoriesCache[storyId];
           if (story && story.story_info) {
             const info = story.story_info;
             document.getElementById("story-title").value = info.title || "";
-            document.getElementById("story-author").value = info.author || "Mạc Hà";
-            document.getElementById("story-status").value = info.status || "ongoing";
-            document.getElementById("story-summary").value = info.summary || info.description || "";
-            
-            if (info.cover) { 
-              base64ImageString = info.cover; 
-              const img = document.getElementById("cover-preview"); 
-              img.src = info.cover; 
-              img.style.display = "block"; 
-              document.getElementById("upload-instruction").style.display = "none"; 
+            document.getElementById("story-author").value =
+              info.author || "Mạc Hà";
+            document.getElementById("story-status").value =
+              info.status || "ongoing";
+            document.getElementById("story-summary").value =
+              info.summary || info.description || "";
+
+            if (info.cover) {
+              base64ImageString = info.cover;
+              const img = document.getElementById("cover-preview");
+              img.src = info.cover;
+              img.style.display = "block";
+              document.getElementById("upload-instruction").style.display =
+                "none";
             }
           }
           updateChapterSelector(storyId);
         }
       }
 
-      // 👑 SỬA LỖI ĐỌC CHƯƠNG: Trỏ trúng định dạng dữ liệu id chương thực tế để load ra danh sách
       function updateChapterSelector(storyId) {
         const selector = document.getElementById("chapter-selector");
         const currentVal = selector.value;
-        
+
         selector.innerHTML = '<option value="new">✍️ Viết chương mới</option>';
-        
+
         const story = globalStoriesCache[storyId];
         if (story && story.chapters) {
           const chKeys = Object.keys(story.chapters).sort((a, b) => {
-            const numA = parseInt(a.replace("chuong_", "")) || parseInt(story.chapters[a].id) || 0;
-            const numB = parseInt(b.replace("chuong_", "")) || parseInt(story.chapters[b].id) || 0;
+            const numA =
+              parseInt(a.replace("chuong_", "")) ||
+              parseInt(story.chapters[a].id) ||
+              0;
+            const numB =
+              parseInt(b.replace("chuong_", "")) ||
+              parseInt(story.chapters[b].id) ||
+              0;
             return numA - numB;
           });
-          
+
           chKeys.forEach((key) => {
             const chObj = story.chapters[key];
             const chDisplayNum = chObj.id || key.replace("chuong_", "");
@@ -364,21 +831,27 @@
       function handleChapterChange(chKey) {
         const storyId = document.getElementById("story-selector").value;
         const titleHeader = document.getElementById("chapter-editor-title");
-        
+
         if (chKey === "new") {
           document.getElementById("chapter-number").value = "";
           document.getElementById("chapter-title").value = "";
           document.getElementById("chapter-content").value = "";
           titleHeader.innerText = "Soạn thảo chương";
+          updateWordCount();
         } else {
-          if(storyId !== "new" && globalStoriesCache[storyId]?.chapters?.[chKey]) {
+          if (
+            storyId !== "new" &&
+            globalStoriesCache[storyId]?.chapters?.[chKey]
+          ) {
             const chData = globalStoriesCache[storyId].chapters[chKey];
             const chNum = chData.id || chKey.replace("chuong_", "");
             titleHeader.innerText = `Chỉnh sửa Chương ${chNum}`;
-            
+
             document.getElementById("chapter-number").value = chNum;
             document.getElementById("chapter-title").value = chData.title || "";
-            document.getElementById("chapter-content").value = chData.content || "";
+            document.getElementById("chapter-content").value =
+              chData.content || "";
+            updateWordCount();
           }
         }
       }
@@ -389,15 +862,16 @@
         document.getElementById("story-author").value = "Mạc Hà";
         document.getElementById("story-summary").value = "";
         document.getElementById("story-status").value = "ongoing";
-        
-        document.getElementById("cover-preview").style.display = "none"; 
-        document.getElementById("upload-instruction").style.display = "flex"; 
+
+        document.getElementById("cover-preview").style.display = "none";
+        document.getElementById("upload-instruction").style.display = "flex";
         document.getElementById("book-cover-file").value = "";
-        base64ImageString = ""; 
-        
+        base64ImageString = "";
+
         document.getElementById("chapter-number").value = "";
         document.getElementById("chapter-title").value = "";
         document.getElementById("chapter-content").value = "";
+        updateWordCount();
       }
 
       function handlePublishAction() {
@@ -413,46 +887,68 @@
         const chContent = document.getElementById("chapter-content").value;
 
         if (selectStoryMode === "new" && !storyId) {
-          storyId = "story_" + Math.random().toString(36).substr(2, 9); 
+          storyId = "story_" + Math.random().toString(36).substr(2, 9);
         }
 
         if (!storyId || !title || !chNum || !chTitle || !chContent) {
-          alert("Điền đầy đủ Mã số, Tên truyện, Số chương, Tiêu đề chương và Câu chữ giùm tớ nhen!");
+          alert(
+            "Điền đầy đủ Mã số, Tên truyện, Số chương, Tiêu đề chương và Câu chữ giùm tớ nhen!",
+          );
           return;
         }
 
         const today = new Date();
-        const dateStr = today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear();
-        
-        const coverToSave = base64ImageString || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500"; 
+        const dateStr =
+          today.getDate() +
+          "/" +
+          (today.getMonth() + 1) +
+          "/" +
+          today.getFullYear();
 
-        database.ref(`stories/${storyId}/story_info`).set({
-          title: title,
-          author: author || "Mạc Hà",
-          cover: coverToSave,
-          status: status,
-          summary: summary,
-          description: summary 
-        }).then(() => {
-          database.ref(`stories/${storyId}/chapters/chuong_${chNum}`).set({
-            id: parseInt(chNum),
-            title: chTitle,
-            content: chContent,
-            date: dateStr
-          }).then(() => {
-            const currentTimeMillis = today.getTime();
-            const autoNotiId = "id_" + currentTimeMillis;
-            database.ref(`announcements/${autoNotiId}`).set({
-              content: `📚 Tác phẩm "${title}" vừa được cập nhật Chương ${chNum}: ${chTitle} nhen cậu ơi!`,
-              date: dateStr,
-              timestamp: currentTimeMillis
-            }).then(() => {
-              alert(`🚀 Thành công rực rỡ! Toàn bộ tác phẩm và Chương ${chNum} đã lên sóng an toàn!`);
-              document.getElementById("chapter-selector").value = "new";
-              handleChapterChange("new");
-            });
-          });
-        }).catch((err) => alert("Lỗi: " + err.message));
+        const coverToSave =
+          base64ImageString ||
+          "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+
+        database
+          .ref(`stories/${storyId}/story_info`)
+          .set({
+            title: title,
+            author: author || "Mạc Hà",
+            cover: coverToSave,
+            status: status,
+            summary: summary,
+            description: summary,
+          })
+          .then(() => {
+            database
+              .ref(`stories/${storyId}/chapters/chuong_${chNum}`)
+              .set({
+                id: parseInt(chNum),
+                title: chTitle,
+                content: chContent,
+                date: dateStr,
+              })
+              .then(() => {
+                localStorage.removeItem("tramnang_draft"); //[cite: 1]
+                const currentTimeMillis = today.getTime();
+                const autoNotiId = "id_" + currentTimeMillis;
+                database
+                  .ref(`announcements/${autoNotiId}`)
+                  .set({
+                    content: `📚 Tác phẩm "${title}" vừa được cập nhật Chương ${chNum}: ${chTitle} nhen cậu ơi!`,
+                    date: dateStr,
+                    timestamp: currentTimeMillis,
+                  })
+                  .then(() => {
+                    alert(
+                      `🚀 Thành công rực rỡ! Toàn bộ tác phẩm và Chương ${chNum} đã lên sóng an toàn!`,
+                    );
+                    document.getElementById("chapter-selector").value = "new";
+                    handleChapterChange("new");
+                  });
+              });
+          })
+          .catch((err) => alert("Lỗi: " + err.message));
       }
     </script>
   </body>
