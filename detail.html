@@ -6,12 +6,9 @@
     <title>Chi Tiết Tác Phẩm - Chạm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&family=Lora:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
     />
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
       :root {
         --cream: #fdfcf9;
@@ -20,275 +17,82 @@
         --ink-2: #4a4640;
         --ink-3: #8c877f;
         --amber: #c27b2a;
-        --amber-light: #f5e6d0;
         --border: #e8e4dc;
-        --danger: #c0392b;
-      }
-      * {
-        box-sizing: border-box;
       }
       body {
         font-family: "Inter", sans-serif;
         background: var(--cream);
         color: var(--ink);
-        margin: 0;
       }
       .font-lora {
         font-family: "Lora", serif;
       }
-      nav {
-        background: var(--cream);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-      }
-      .nav-logo {
-        font-family: "Lora", serif;
-        font-weight: 600;
-        color: var(--ink);
-        font-size: 18px;
-        text-decoration: none;
-      }
-      .nav-back {
-        font-size: 13px;
-        color: var(--ink-3);
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-      }
-      .nav-back:hover {
-        color: var(--ink);
-      }
-      .hero-banner {
-        width: 100%;
-        height: 280px;
-        position: relative;
-        overflow: hidden;
-        background: var(--ink);
-        display: flex;
-        align-items: flex-end;
-      }
-      .hero-blur {
-        position: absolute;
-        inset: 0;
-        background-size: cover;
-        background-position: center;
-        filter: blur(28px);
-        transform: scale(1.15);
-        opacity: 0.35;
-      }
-      .hero-content {
-        position: relative;
-        z-index: 2;
-        padding: 32px 32px 105px 32px;
-        max-width: 960px;
-        margin: 0 auto;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      @media (min-width: 768px) {
-        .hero-content {
-          padding-left: 240px;
-        }
-      }
-      .hero-title {
-        font-family: "Lora", serif;
-        font-size: 30px;
-        font-weight: 600;
-        color: white;
-        line-height: 1.25;
-        margin-bottom: 6px;
-      }
-      .hero-author {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.65);
-        font-style: italic;
-      }
-      .main-layout {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 24px 64px;
-        display: grid;
-        grid-template-columns: 200px 1fr;
-        gap: 40px;
-        margin-top: -80px;
-        position: relative;
-        z-index: 10;
-      }
-      @media (max-width: 767px) {
-        .main-layout {
-          grid-template-columns: 1fr;
-          gap: 24px;
-          margin-top: -40px;
-          justify-items: start;
-        }
-        .hero-content {
-          padding-left: 32px;
-          padding-bottom: 60px;
-        }
-      }
-      .cover-img {
-        width: 100%;
-        aspect-ratio: 2/3;
-        object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
-        border: 3px solid white;
-        display: block;
-        background: var(--cream-2);
-      }
-      .content-col {
-        padding-top: 105px;
-        width: 100%;
-      }
-      @media (max-width: 767px) {
-        .content-col {
-          padding-top: 10px;
-        }
-      }
-      .action-row {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 32px;
-        flex-wrap: wrap;
-      }
-      .btn-read {
-        background: var(--ink);
-        color: white;
-        font-size: 13px;
-        font-weight: 600;
-        padding: 10px 24px;
-        border-radius: 7px;
-        text-decoration: none;
-        transition: background 0.2s;
-      }
-      .btn-read:hover {
-        background: var(--ink-2);
-      }
-      .btn-delete {
-        background: transparent;
-        color: var(--danger);
-        font-size: 13px;
-        font-weight: 600;
-        padding: 10px 20px;
-        border-radius: 7px;
-        border: 1px solid #e8b4b0;
-        cursor: pointer;
-        transition: background 0.2s;
-        font-family: "Inter", sans-serif;
-      }
-      .btn-delete:hover {
-        background: #fdf2f1;
-      }
-      .card {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 24px;
-        margin-bottom: 20px;
-      }
-      .card-title {
-        font-family: "Lora", serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--ink);
-        margin-bottom: 14px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border);
-      }
-      .card-body {
-        font-size: 14px;
-        color: var(--ink-2);
-        line-height: 1.75;
-        white-space: pre-line;
-      }
-      .chapter-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 13px 16px;
-        border-radius: 7px;
-        background: var(--cream);
-        border: 1px solid var(--border);
-        text-decoration: none;
-        color: var(--ink);
-        font-size: 13px;
-        font-weight: 500;
-        transition:
-          background 0.2s,
-          border-color 0.2s;
-        margin-bottom: 8px;
-      }
-      .chapter-row:hover {
-        background: var(--amber-light);
-        border-color: var(--amber);
-        color: var(--ink);
-      }
-      .chapter-date {
-        font-size: 11px;
-        color: var(--ink-3);
-      }
     </style>
   </head>
-  <body>
-    <nav>
-      <div
-        style="
-          max-width: 960px;
-          margin: 0 auto;
-          padding: 0 24px;
-          height: 54px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
-        <a href="index.html" class="nav-logo">Chạm</a>
-        <a href="index.html" class="nav-back">← Quay lại</a>
+  <body class="min-h-screen flex flex-col">
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+      <div class="max-w-4xl mx-auto px-4 h-[54px] flex items-center justify-between">
+        <a href="index.html" class="font-lora font-bold text-amber-600 text-lg text-decoration-none">Chạm</a>
+        <a href="index.html" class="text-xs font-semibold text-stone-500 hover:text-stone-800 transition text-decoration-none">← Quay lại</a>
       </div>
     </nav>
 
-    <div class="hero-banner">
-      <div id="bg-blur" class="hero-blur"></div>
-      <div class="hero-content">
-        <h1 id="story-title" class="hero-title">Đang tải...</h1>
-        <p id="story-author" class="hero-author"></p>
+    <!-- Khối Banner Đầu Truyện -->
+    <div class="bg-stone-900 text-stone-100 py-12 px-4 transition-colors">
+      <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 items-center md:items-end relative">
+        <h2 id="render-title" class="font-lora font-bold text-2xl md:text-3xl text-center md:text-left md:absolute md:left-[210px] md:bottom-10 w-full md:w-[calc(100%-240px)]">
+          Đang tải tác phẩm...
+        </h2>
+        <p id="render-author" class="text-stone-400 text-sm italic md:absolute md:left-[210px] md:bottom-4 w-full md:w-[calc(100%-240px)] text-center md:text-left"></p>
       </div>
     </div>
 
-    <div class="main-layout">
-      <div>
-        <img id="story-cover" src="" alt="Bìa truyện" class="cover-img" />
+    <!-- Khối Nội Dung Chính bên dưới -->
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-1 grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+      <!-- Cột trái: Ảnh bìa đè lên banner -->
+      <div class="md:col-span-1 -mt-24 md:-mt-32 z-10 w-44 mx-auto md:w-full">
+        <div class="bg-stone-100 rounded-xl overflow-hidden shadow-lg border border-stone-200 aspect-[3/4] relative">
+          <img id="render-cover" src="" alt="Bìa truyện" class="w-full h-full object-cover hidden">
+          <div id="cover-skeleton" class="absolute inset-0 bg-stone-200 animate-pulse flex items-center justify-center text-stone-400 text-xs font-medium">⏳</div>
+        </div>
       </div>
 
-      <div class="content-col">
-        <div class="action-row">
-          <a id="btn-read-now" href="read.html" class="btn-read"
-            >Đọc tác phẩm</a
-          >
-          <!-- 🔒 TINH CHỈNH: Mặc định ẩn nút Xóa bản thảo, chỉ hiện lên nếu tài khoản xác thực là Admin -->
-          <button
-            id="btn-admin-delete"
-            onclick="deleteStoryWithPassword()"
-            class="btn-delete hidden"
-          >
-            Xóa bản thảo
+      <!-- Cột phải: Thông tin, tóm tắt và danh sách chương -->
+      <div class="md:col-span-3 space-y-6">
+        <div class="flex flex-wrap gap-3 items-center">
+          <a id="btn-start-reading" href="#" class="px-5 py-2.5 bg-stone-900 text-white rounded-lg text-xs md:text-sm font-bold shadow hover:bg-stone-800 transition text-decoration-none hidden">
+            Đọc tác phẩm
+          </a>
+          
+          <!-- 👑 NÚT THẢ TIM TRUYỆN XIN XẮN -->
+          <button id="btn-favorite-story" onclick="toggleFavoriteStory()" class="px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none">
+            💖 Thả tim tác phẩm
+          </button>
+
+          <button id="btn-admin-delete" onclick="handleDeleteStory()" class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition outline-none hidden">
+            🗑️ Xóa tác phẩm (Admin)
           </button>
         </div>
 
-        <div class="card">
-          <div class="card-title">Tóm tắt nội dung</div>
-          <p id="story-desc" class="card-body">Đang tải...</p>
+        <!-- Khung tóm tắt nội dung -->
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-2">
+          <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2">Tóm tắt nội dung</h3>
+          <p id="render-summary" class="text-sm text-stone-600 leading-relaxed font-medium pt-1">Tác phẩm chưa có tóm tắt.</p>
         </div>
 
-        <div class="card">
-          <div class="card-title">Danh mục chương</div>
-          <div id="chapters-list"></div>
+        <!-- Danh mục chương truyện -->
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
+          <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2">Danh mục chương</h3>
+          <div id="chapter-list-container" class="divide-y divide-stone-100 max-h-[300px] overflow-y-auto pr-1">
+            <div class="text-stone-400 text-xs italic py-4 text-center">Đang bốc danh sách chương từ máy chủ...</div>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyArxUa4X2Y5HQO_pE94W8Ym_NRr2cEsUEs",
@@ -304,99 +108,143 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const storyId = urlParams.get("id");
-      const MY_SECRET_PASSWORD = "067780";
 
-      if (storyId) {
-        document.getElementById("btn-read-now").href =
-          `read.html?id=${storyId}&ch=1`;
+      let currentUid = null;
+      let isFavorited = false;
 
-        database
-          .ref(`stories/${storyId}/story_info`)
-          .once("value")
-          .then((snapshot) => {
-            const info = snapshot.val();
-            if (info) {
-              document.getElementById("story-title").innerText = info.title;
-              document.getElementById("story-author").innerText =
-                "Tác giả: " + (info.author || "Khuyết danh");
-              document.getElementById("story-desc").innerText =
-                info.description || "Tác phẩm chưa có tóm tắt.";
-              document.getElementById("story-cover").src = info.cover;
-              document.getElementById("bg-blur").style.backgroundImage =
-                `url('${info.cover}')`;
+      if (!storyId) {
+        alert("Không tìm thấy mã số bộ truyện này rồi cậu ơi!");
+        window.location.href = "index.html";
+      }
+
+      // 👑 ĐỒNG BỘ REAL-TIME QUYỀN ADMIN & TRẠNG THÁI THẢ TIM CỦA USER
+      firebase.auth().onAuthStateChanged((user) => {
+        const delBtn = document.getElementById("btn-admin-delete");
+        const favBtn = document.getElementById("btn-favorite-story");
+
+        if (user) {
+          currentUid = user.uid;
+          
+          database.ref(`users/${user.uid}/profile`).on('value', (snapshot) => {
+            const profile = snapshot.val();
+            const role = profile?.role || "user";
+
+            if (user.email === "nguyenhuuthinh0506@gmail.com" || role === "admin") {
+              delBtn.classList.remove("hidden"); 
+            } else {
+              delBtn.classList.add("hidden");
             }
           });
 
-        database.ref(`stories/${storyId}/chapters`).on("value", (snapshot) => {
-          const container = document.getElementById("chapters-list");
-          container.innerHTML = "";
-          const chapters = snapshot.val();
-          if (!chapters) {
-            container.innerHTML =
-              '<p style="font-size:13px;color:var(--ink-3);font-style:italic;">Chưa có chương nào.</p>';
-            return;
-          }
-          const sorted = Object.keys(chapters).sort(
-            (a, b) => parseInt(chapters[a].id) - parseInt(chapters[b].id),
-          );
-          sorted.forEach((key) => {
-            const ch = chapters[key];
-            container.innerHTML += `
-                <a href="read.html?id=${storyId}&ch=${ch.id}" class="chapter-row">
-                    <span>Chương ${ch.id}: ${ch.title}</span>
-                    <span class="chapter-date">${ch.date || ""}</span>
-                </a>`;
+          // Lắng nghe xem tài khoản này đã thả tim bộ truyện này chưa
+          database.ref(`users/${user.uid}/favorites/${storyId}`).on('value', (snapshot) => {
+            isFavorited = snapshot.val() === true;
+            if (isFavorited) {
+              favBtn.innerHTML = "❤️ Đã thả tim";
+              favBtn.className = "px-5 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-red-100 transition flex items-center gap-1.5 outline-none";
+            } else {
+              favBtn.innerHTML = "💖 Thả tim tác phẩm";
+              favBtn.className = "px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none";
+            }
           });
-        });
-      }
 
-      // 🔒 KIỂM TRA QUYỀN ADMIN THỜI GIAN THỰC ĐỂ HIỂN THỊ NÚT XÓA TRUYỆN
-      firebase.auth().onAuthStateChanged((user) => {
-        const delBtn = document.getElementById("btn-admin-delete");
-        if (user) {
-          database
-            .ref(`users/${user.uid}/profile`)
-            .once("value")
-            .then((snapshot) => {
-              const profile = snapshot.val();
-              if (
-                user.email === "nguyenhuuthinh0506@gmail.com" ||
-                profile?.role === "admin"
-              ) {
-                delBtn.classList.remove("hidden"); // Hiện nút xóa nếu là Admin
-              } else {
-                delBtn.classList.add("hidden");
-              }
-            });
         } else {
+          currentUid = null;
           delBtn.classList.add("hidden");
+          favBtn.innerHTML = "💖 Thả tim tác phẩm";
         }
       });
 
-      function deleteStoryWithPassword() {
-        if (!storyId) return;
-        if (!confirm("Xóa hoàn toàn bản thảo này và tất cả chương?")) return;
-        const pin = prompt("Nhập mã PIN tác giả để xác thực:");
-        if (pin === MY_SECRET_PASSWORD) {
-          database
-            .ref(`stories/${storyId}`)
-            .remove()
-            .then(() => {
-              const history =
-                JSON.parse(localStorage.getItem("wattpad_reading_history")) ||
-                {};
-              delete history[storyId];
-              localStorage.setItem(
-                "wattpad_reading_history",
-                JSON.stringify(history),
-              );
-              alert("Đã xóa bản thảo.");
-              window.location.href = "index.html";
-            })
-            .catch((e) => alert("Lỗi: " + e.message));
-        } else {
-          alert("Mã PIN không đúng. Hành động bị hủy.");
+      // 👑 HÀM XỬ LÝ BẤM NÚT THẢ TIM / HỦY THẢ TIM TRUYỆN
+      function toggleFavoriteStory() {
+        if (!currentUid) {
+          alert("Cậu đăng nhập tài khoản Chạm ngoài trang chủ để mở khóa tính năng Thả tim lưu trữ nhen! ✨");
+          window.location.href = "index.html";
+          return;
         }
+
+        isFavorited = !isFavorited;
+        database.ref(`users/${currentUid}/favorites/${storyId}`).set(isFavorited ? true : null)
+          .then(() => {
+            if (isFavorited) alert("Đã thêm tác phẩm vào kệ sách yêu thích của cậu! 🥰");
+          });
+      }
+
+      // Đổ nội dung thông tin truyện
+      database.ref(`stories/${storyId}`).on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (!data || !data.story_info) {
+          document.getElementById("render-title").innerText = "Tác phẩm không tồn tại hoặc đã bị gỡ bỏ nhen cậu!";
+          return;
+        }
+
+        const info = data.story_info;
+        document.title = info.title + " - Chạm";
+        document.getElementById("render-title").innerText = info.title;
+        document.getElementById("render-author").innerText = "Tác giả: " + (info.author || "Khuyết danh");
+        document.getElementById("render-summary").innerText = info.summary || "Tác phẩm hiện tại chưa có phần tóm tắt nội dung.";
+
+        const imgElement = document.getElementById("render-cover");
+        const skeleton = document.getElementById("cover-skeleton");
+        if (info.cover) {
+          imgElement.src = info.cover;
+          imgElement.onload = () => {
+            imgElement.classList.remove("hidden");
+            skeleton.classList.add("hidden");
+          };
+        } else {
+          imgElement.src = "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+          imgElement.onload = () => {
+            imgElement.classList.remove("hidden");
+            skeleton.classList.add("hidden");
+          };
+        }
+
+        // Đổ danh sách chương
+        const chapters = data.chapters;
+        const chContainer = document.getElementById("chapter-list-container");
+        const readBtn = document.getElementById("btn-start-reading");
+
+        if (!chapters) {
+          chContainer.innerHTML = '<div class="text-stone-400 text-xs italic py-4 text-center">Tác phẩm này hiện tại chưa có chương nào lên sóng... ⏳</div>';
+          readBtn.classList.add("hidden");
+          return;
+        }
+
+        chContainer.innerHTML = "";
+        const chKeys = Object.keys(chapters).sort((a, b) => {
+          return parseInt(a.replace("chuong_", "")) - parseInt(b.replace("chuong_", ""));
+        });
+
+        if (chKeys.length > 0) {
+          const firstChNum = chKeys[0].replace("chuong_", "");
+          readBtn.href = `read.html?id=${storyId}&ch=${firstChNum}`;
+          readBtn.classList.remove("hidden");
+        }
+
+        chKeys.forEach((key) => {
+          const ch = chapters[key];
+          const chNum = key.replace("chuong_", "");
+          chContainer.innerHTML += `
+            <a href="read.html?id=${storyId}&ch=${chNum}" class="flex justify-between items-center py-3 text-stone-600 hover:text-amber-600 font-medium text-xs md:text-sm text-decoration-none transition">
+              <span>Chương ${chNum}: ${ch.title}</span>
+              <span class="text-[10px] text-stone-400 font-normal">🕒 ${ch.date || "Mới đây"}</span>
+            </a>
+          `;
+        });
+      });
+
+      function handleDeleteStory() {
+        if (!confirm("Cậu có chắc chắn muốn XÓA VĨNH VIỄN toàn bộ tác phẩm này cùng tất cả các chương và bình luận của nó không? Không rút lại được đâu nha cậu ơi!")) return;
+        
+        // Tiến hành xóa sạch dữ liệu truyện lẫn bình luận liên quan trên Firebase
+        database.ref(`stories/${storyId}`).remove()
+          .then(() => {
+            database.ref(`comments/${storyId}`).remove();
+            alert("Đã gỡ bỏ toàn bộ tác phẩm thành công!");
+            window.location.href = "index.html";
+          })
+          .catch((err) => alert("Lỗi hệ thống: " + err.message));
       }
     </script>
   </body>

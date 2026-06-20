@@ -43,6 +43,7 @@
         font-weight: 600;
         color: var(--ink);
         letter-spacing: -0.5px;
+        text-decoration: none;
       }
       .nav-link {
         color: var(--ink-3);
@@ -71,7 +72,7 @@
       .hero {
         background: var(--cream);
         border-bottom: 1px solid var(--border);
-        padding: 56px 0 48px;
+        padding: 48px 0 36px;
       }
       .hero-eyebrow {
         font-size: 11px;
@@ -95,7 +96,6 @@
         color: var(--ink-3);
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        margin-bottom: 20px;
       }
       .book-card {
         text-decoration: none;
@@ -278,17 +278,9 @@
       <div
         class="max-w-[1100px] mx-auto px-4 md:px-6 h-[54px] flex items-center justify-between relative"
       >
-        <a
-          href="index.html"
-          class="nav-logo"
-          style="font-size: 18px; text-decoration: none"
-          >Chạm</a
-        >
+        <a href="index.html" class="nav-logo" style="font-size: 18px">Chạm</a>
         <div style="display: flex; align-items: center; gap: 20px">
           <a href="index.html" class="nav-link hidden md:inline">Khám phá</a>
-          <a href="editor.html" id="nav-editor-link" class="nav-link hidden"
-            >Sáng tác</a
-          >
 
           <div class="reading-mode-pill hidden md:flex">
             <span style="color: var(--ink-3)">Đọc:</span>
@@ -337,21 +329,22 @@
           </div>
 
           <a href="editor.html" id="nav-write-btn" class="btn-primary hidden"
-            >Viết tiếp</a
+            >Sáng tác</a
           >
         </div>
       </div>
     </nav>
 
-    <!-- 🔑 MODAL QUẢN LÝ TÀI KHOẢN & ĐĂNG NHẬP / ĐĂNG KÝ -->
     <div
       id="user-auth-modal"
       class="hidden fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
     >
       <div
-        class="bg-white rounded-xl max-w-sm w-full p-6 border border-stone-200 shadow-xl"
+        class="bg-white rounded-xl max-w-md w-full p-6 border border-stone-200 shadow-xl max-h-[90vh] flex flex-col justify-between"
       >
-        <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <div
+          class="flex justify-between items-center border-b pb-3 mb-4 flex-shrink-0"
+        >
           <h3
             id="auth-modal-title"
             class="font-lora font-bold text-lg text-stone-800"
@@ -366,8 +359,7 @@
           </button>
         </div>
 
-        <!-- Form Đăng nhập / Đăng ký -->
-        <div id="auth-form-fields" class="space-y-3">
+        <div id="auth-form-fields" class="space-y-3 flex-1 overflow-y-auto">
           <div>
             <label
               id="auth-identity-label"
@@ -378,6 +370,7 @@
               type="text"
               id="auth-email-or-username"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600 font-medium"
+              placeholder="Nhập tên tài khoản hoặc email"
             />
           </div>
           <div id="email-field-wrapper" class="hidden">
@@ -389,6 +382,7 @@
               type="email"
               id="auth-real-email"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600"
+              placeholder="name@example.com"
             />
           </div>
           <div>
@@ -400,6 +394,7 @@
               type="password"
               id="auth-password"
               class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-stone-50 outline-none focus:border-amber-600"
+              placeholder="••••••••"
             />
           </div>
           <div class="pt-2">
@@ -420,10 +415,12 @@
           </div>
         </div>
 
-        <!-- KHU VỰC QUẢN LÝ TÀI KHOẢN -->
-        <div id="auth-logged-fields" class="hidden space-y-4">
+        <div
+          id="auth-logged-fields"
+          class="hidden flex-1 overflow-y-auto space-y-4 pr-1"
+        >
           <div
-            class="bg-stone-50 p-3 rounded-lg border border-stone-150 text-xs text-stone-600 space-y-2"
+            class="bg-stone-50 p-3 rounded-lg border border-stone-150 text-xs text-stone-600 space-y-1.5"
           >
             <div>
               Email:
@@ -463,7 +460,22 @@
             </div>
           </div>
 
-          <div class="pt-2 border-t border-stone-100">
+          <div class="border-t border-stone-100 pt-3">
+            <label
+              class="block text-[10px] font-bold text-red-500 uppercase tracking-wider mb-2 flex items-center gap-1"
+              >❤️ Truyện yêu thích</label
+            >
+            <div
+              id="favorite-modal-list"
+              class="space-y-2 max-h-[180px] overflow-y-auto pr-1"
+            >
+              <div class="text-[11px] text-stone-400 italic py-2 text-center">
+                Cậu chưa thả tim bộ truyện nào... ✨
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-stone-100 flex-shrink-0">
             <button
               onclick="handleSignOut()"
               class="w-full bg-red-50 text-red-600 border border-red-200 font-semibold p-2 rounded-lg text-xs transition hover:bg-red-100"
@@ -476,31 +488,72 @@
     </div>
 
     <div class="hero px-4 text-center md:text-left">
-      <div style="max-width: 1100px; margin: 0 auto">
-        <div class="hero-eyebrow">Kệ sách chữa lành</div>
-        <h1 class="hero-title text-2xl md:text-3xl">
-          Nơi những câu truyện thú vị<br />được quan sát qua nhiều câu chuyện
-          khác nhau
-        </h1>
+      <div style="max-width: 1100px; margin: 0 auto" class="space-y-6">
+        <div>
+          <div class="hero-eyebrow">Kệ sách chữa lành</div>
+          <h1 class="hero-title text-2xl md:text-3xl">
+            Nơi những câu truyện thú vị<br />được quan sát qua nhiều câu chuyện
+            khác nhau
+          </h1>
+        </div>
+
+        <div
+          class="max-w-md w-full mx-auto md:mx-0 flex gap-2 p-1 bg-white border border-stone-200 rounded-xl shadow-sm"
+        >
+          <input
+            type="text"
+            id="search-input"
+            oninput="handleSearchAndFilter()"
+            class="flex-1 pl-3 pr-2 py-2 text-xs bg-transparent outline-none font-medium text-stone-800 placeholder-stone-400"
+            placeholder="Tìm tên tác phẩm... 🔍"
+          />
+        </div>
       </div>
     </div>
 
-    <main style="max-width: 1100px; margin: 0 auto" class="px-4 py-8 md:py-12">
-      <!-- Vùng Đang đọc dở -->
+    <main style="max-width: 1100px; margin: 0 auto" class="px-4 py-8 md:py-10">
       <div
         id="reading-history-section"
         style="display: none"
         class="mb-10 md:mb-14"
       >
-        <div class="section-label">Đang đọc dở</div>
+        <div class="section-label mb-5">Đang đọc dở</div>
         <div
           class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 items-start"
           id="history-list-grid"
         ></div>
       </div>
 
-      <div>
+      <div
+        class="mb-6 flex justify-between items-center border-t border-stone-200/60 pt-6"
+      >
         <div class="section-label">Tất cả tác phẩm</div>
+
+        <div
+          class="flex bg-stone-100 p-0.5 rounded-lg border border-stone-200 text-[10px] md:text-[11px] font-bold text-stone-500 shadow-sm"
+        >
+          <button
+            onclick="changeFilterStatus('all', this)"
+            class="px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-white text-stone-800 shadow-sm id-filter-btn"
+          >
+            Tất cả
+          </button>
+          <button
+            onclick="changeFilterStatus('ongoing', this)"
+            class="px-2.5 py-1 md:px-3 md:py-1.5 rounded-md hover:text-stone-800 id-filter-btn"
+          >
+            Chưa hoàn thành
+          </button>
+          <button
+            onclick="changeFilterStatus('completed', this)"
+            class="px-2.5 py-1 md:px-3 md:py-1.5 rounded-md hover:text-stone-800 id-filter-btn"
+          >
+            Đã xong
+          </button>
+        </div>
+      </div>
+
+      <div>
         <div
           class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 items-start"
           id="story-list-grid"
@@ -537,6 +590,9 @@
       let currentUser = null;
       let isAdmin = false;
 
+      let cachedGlobalStories = null;
+      let activeFilterStatus = "all";
+
       function saveGlobalReadingMode(val) {
         localStorage.setItem("tramnang_default_reading_mode", val);
       }
@@ -563,10 +619,8 @@
         document.getElementById("btn-switch-auth").innerText = isSignUpMode
           ? "Đã có tài khoản? Đăng nhập"
           : "Chưa có tài khoản? Đăng ký ngay";
-
         document.getElementById("email-field-wrapper").style.display =
           isSignUpMode ? "block" : "none";
-
         document.getElementById("auth-identity-label").innerText = isSignUpMode
           ? "Username"
           : "Username hoặc Email";
@@ -574,16 +628,14 @@
           isSignUpMode ? "" : "Nhập tên tài khoản hoặc email";
       }
 
-      // 👑 CHẶN TRUY CẬP ĐỂ XEM TRUYỆN NẾU CHƯA ĐĂNG NHẬP
       function handleBookClick(event, url) {
-        event.preventDefault(); // Ngăn trình duyệt nhảy trang ngay lập tức
+        event.preventDefault();
         if (currentUser) {
-          window.location.href = url; // Đã đăng nhập -> Cho xem truyện bình thường
+          window.location.href = url;
         } else {
           alert(
             "Cậu ơi, đăng nhập hoặc tạo tài khoản Chạm để xem và lưu tiến trình đọc nhen! ✨",
           );
-          // Tự động bật Modal đăng nhập lên ngay lập tức trước mặt người dùng
           const authModal = document.getElementById("user-auth-modal");
           if (authModal.classList.contains("hidden")) {
             authModal.classList.remove("hidden");
@@ -746,7 +798,6 @@
         const btnUser = document.getElementById("btn-user-profile");
         const formFields = document.getElementById("auth-form-fields");
         const loggedFields = document.getElementById("auth-logged-fields");
-        const edLink = document.getElementById("nav-editor-link");
         const wtBtn = document.getElementById("nav-write-btn");
 
         if (user) {
@@ -764,34 +815,29 @@
               if (profile.role) role = profile.role;
             }
 
+            // 👑 CHỈ BẬT DUY NHẤT 1 CHIẾC NÚT ĐEN "SÁNG TÁC" NẾU LÀ ADMIN CHÍNH CHỦ
             if (
               user.email === "nguyenhuuthinh0506@gmail.com" ||
               role === "admin"
             ) {
               isAdmin = true;
-              document.getElementById("logged-role").innerText =
-                "Chủ tiệm (Admin)";
+              document.getElementById("logged-role").innerText = "Chủ tiệm";
               document.getElementById("logged-role").className =
                 "px-1.5 py-0.5 bg-amber-600 text-white font-bold rounded text-[10px]";
-              edLink.classList.remove("hidden");
-              wtBtn.classList.remove("hidden");
+              if (wtBtn) wtBtn.classList.remove("hidden");
             } else {
               isAdmin = false;
-              document.getElementById("logged-role").innerText =
-                "Độc giả (User)";
+              document.getElementById("logged-role").innerText = "Độc giả";
               document.getElementById("logged-role").className =
                 "px-1.5 py-0.5 bg-stone-200 text-stone-700 font-bold rounded text-[10px]";
-              edLink.classList.add("hidden");
-              wtBtn.classList.add("hidden");
+              if (wtBtn) wtBtn.classList.add("hidden");
             }
 
             btnUser.innerText = `👤 ${displayTitle}`;
             document.getElementById("logged-username-input").value =
               profile?.username || "";
 
-            database.ref("stories").once("value", (snap) => {
-              renderStoryGrid(snap.val());
-            });
+            if (cachedGlobalStories) renderStoryGrid(cachedGlobalStories);
           });
 
           database
@@ -803,33 +849,220 @@
                   "wattpad_reading_history",
                   JSON.stringify(fbHistory),
                 );
-                database.ref("stories").once("value", (snap) => {
-                  renderReadingHistory(snap.val());
-                });
               } else {
                 localStorage.removeItem("wattpad_reading_history");
-                document.getElementById(
-                  "reading-history-section",
-                ).style.display = "none";
               }
+              if (cachedGlobalStories)
+                renderReadingHistory(cachedGlobalStories);
+            });
+
+          database
+            .ref(`users/${user.uid}/favorites`)
+            .on("value", (snapshot) => {
+              const favData = snapshot.val();
+              if (cachedGlobalStories)
+                renderModalFavoriteList(cachedGlobalStories, favData);
             });
         } else {
           isAdmin = false;
           btnUser.innerText = "👤 Tài khoản";
           formFields.classList.remove("hidden");
           loggedFields.classList.add("hidden");
-          edLink.classList.add("hidden");
-          wtBtn.classList.add("hidden");
+          if (wtBtn) wtBtn.classList.add("hidden");
 
           localStorage.removeItem("wattpad_reading_history");
           document.getElementById("reading-history-section").style.display =
             "none";
+          document.getElementById("favorite-modal-list").innerHTML =
+            '<div class="text-[11px] text-stone-400 italic py-2 text-center">Cậu chưa thả tim bộ truyện nào... ✨</div>';
 
-          database.ref("stories").once("value", (snap) => {
-            renderStoryGrid(snap.val());
-          });
+          if (cachedGlobalStories) renderStoryGrid(cachedGlobalStories);
         }
       });
+
+      function renderModalFavoriteList(allStories, favData) {
+        const listContainer = document.getElementById("favorite-modal-list");
+
+        if (!favData || !allStories || !Object.keys(favData).length) {
+          listContainer.innerHTML =
+            '<div class="text-[11px] text-stone-400 italic py-2 text-center">Cậu chưa thả tim bộ truyện nào... ✨</div>';
+          return;
+        }
+
+        let hasFav = false;
+        listContainer.innerHTML = "";
+
+        Object.keys(favData).forEach((storyId) => {
+          if (favData[storyId] === true && allStories[storyId]?.story_info) {
+            hasFav = true;
+            const story = allStories[storyId].story_info;
+
+            listContainer.innerHTML += `
+              <a href="detail.html?id=${storyId}" class="flex items-center gap-3 p-1.5 rounded-lg hover:bg-stone-50 border border-stone-100 transition text-decoration-none group">
+                <div class="w-8 h-10 rounded bg-stone-100 border border-stone-200 flex-shrink-0 overflow-hidden">
+                  <img src="${story.cover || "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=100"}" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold text-stone-800 truncate group-hover:text-amber-600 transition">${story.title}</div>
+                  <div class="text-[10px] text-stone-400 truncate">${story.author || "Khuyết danh"}</div>
+                </div>
+                <div class="text-xs pr-1">❤️</div>
+              </a>`;
+          }
+        });
+
+        if (!hasFav) {
+          listContainer.innerHTML =
+            '<div class="text-[11px] text-stone-400 italic py-2 text-center">Cậu chưa thả tim bộ truyện nào... ✨</div>';
+        }
+      }
+
+      function renderReadingHistory(allStories) {
+        const section = document.getElementById("reading-history-section");
+        const grid = document.getElementById("history-list-grid");
+        const localHistory =
+          JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
+        if (!Object.keys(localHistory).length || !allStories) {
+          section.style.display = "none";
+          return;
+        }
+
+        let hasValid = false;
+        grid.innerHTML = "";
+        Object.keys(localHistory).forEach((storyId) => {
+          if (allStories[storyId]?.story_info) {
+            hasValid = true;
+            const story = allStories[storyId].story_info;
+            const lastCh = localHistory[storyId].chapter;
+            const cover =
+              story.cover ||
+              "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+            const chapters = allStories[storyId].chapters;
+            const chCount = chapters ? Object.keys(chapters).length : 0;
+
+            let statusLabel =
+              story.status === "completed"
+                ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
+                : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳ Chưa hoàn thành</span>';
+
+            grid.innerHTML += `
+                <a href="read.html?id=${storyId}&ch=${lastCh}" onclick="handleBookClick(event, 'read.html?id=${storyId}&ch=${lastCh}')" class="book-card">
+                    <div class="book-cover">
+                        <img src="${cover}" alt="">
+                        <div class="history-badge">Ch.${lastCh}</div>
+                        <div class="book-badge">
+                            <span>${chCount} chương</span>
+                        </div>
+                    </div>
+                    <div class="book-title">${statusLabel} <span class="truncate">${story.title}</span></div>
+                    <div class="history-label">Đọc tiếp →</div>
+                </a>`;
+          }
+        });
+        section.style.display = hasValid ? "block" : "none";
+      }
+
+      function changeFilterStatus(status, element) {
+        activeFilterStatus = status;
+
+        document.querySelectorAll(".id-filter-btn").forEach((btn) => {
+          btn.className =
+            "px-2.5 py-1 md:px-3 md:py-1.5 rounded-md hover:text-stone-800";
+        });
+        element.className =
+          "px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-white text-stone-800 shadow-sm id-filter-btn";
+
+        handleSearchAndFilter();
+      }
+
+      function handleSearchAndFilter() {
+        if (!cachedGlobalStories) return;
+
+        const keyword = document
+          .getElementById("search-input")
+          .value.toLowerCase()
+          .trim();
+        const filteredStories = {};
+
+        Object.keys(cachedGlobalStories).forEach((storyId) => {
+          const story = cachedGlobalStories[storyId].story_info;
+          if (!story) return;
+
+          const matchKeyword =
+            story.title.toLowerCase().includes(keyword) ||
+            (story.author && story.author.toLowerCase().includes(keyword));
+          let matchStatus = true;
+
+          if (activeFilterStatus === "completed") {
+            matchStatus = story.status === "completed";
+          } else if (activeFilterStatus === "ongoing") {
+            matchStatus = story.status !== "completed";
+          }
+
+          if (matchKeyword && matchStatus) {
+            filteredStories[storyId] = cachedGlobalStories[storyId];
+          }
+        });
+
+        renderStoryGrid(filteredStories, true);
+      }
+
+      function renderStoryGrid(allStories, isFiltering = false) {
+        const grid = document.getElementById("story-list-grid");
+        grid.innerHTML = "";
+
+        if (!isFiltering) {
+          cachedGlobalStories = allStories;
+          renderReadingHistory(allStories);
+          if (currentUser) {
+            database
+              .ref(`users/${currentUser.uid}/favorites`)
+              .once("value")
+              .then((snap) => {
+                renderModalFavoriteList(allStories, snap.val());
+              });
+          }
+        }
+
+        if (!allStories || !Object.keys(allStories).length) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--ink-3); padding: 32px 0; font-size: 13px; font-style: italic;">Không tìm thấy tác phẩm nào khớp từ khóa của cậu... 🔍</div>`;
+          if (isAdmin && !isFiltering) {
+            grid.innerHTML += `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></div></a>`;
+          }
+          return;
+        }
+
+        Object.keys(allStories).forEach((storyId) => {
+          const story = allStories[storyId].story_info;
+          if (!story) return;
+          const cover =
+            story.cover ||
+            "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+          const chapters = allStories[storyId].chapters;
+          const chCount = chapters ? Object.keys(chapters).length : 0;
+
+          let statusLabel =
+            story.status === "completed"
+              ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
+              : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳ Chưa hoàn thành</span>';
+
+          grid.innerHTML += `
+            <a href="detail.html?id=${storyId}" onclick="handleBookClick(event, 'detail.html?id=${storyId}')" class="book-card">
+                <div class="book-cover">
+                    <img src="${cover}" alt="">
+                    <div class="book-badge">
+                        <span>${chCount} chương</span>
+                    </div>
+                </div>
+                <div class="book-title">${statusLabel} <span class="truncate">${story.title}</span></div>
+                <div class="book-author">${story.author || "Khuyết danh"}</div>
+            </a>`;
+        });
+
+        if (isAdmin) {
+          grid.innerHTML += `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></div></a>`;
+        }
+      }
 
       function toggleNotificationDropdown(e) {
         e.stopPropagation();
@@ -882,98 +1115,9 @@
         if (hasNewNoti) badge.classList.remove("hidden");
       });
 
-      function renderReadingHistory(allStories) {
-        const section = document.getElementById("reading-history-section");
-        const grid = document.getElementById("history-list-grid");
-        const localHistory =
-          JSON.parse(localStorage.getItem("wattpad_reading_history")) || {};
-        if (!Object.keys(localHistory).length || !allStories) {
-          section.style.display = "none";
-          return;
-        }
-
-        let hasValid = false;
-        grid.innerHTML = "";
-        Object.keys(localHistory).forEach((storyId) => {
-          if (allStories[storyId]?.story_info) {
-            hasValid = true;
-            const story = allStories[storyId].story_info;
-            const lastCh = localHistory[storyId].chapter;
-            const cover =
-              story.cover ||
-              "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
-            const chapters = allStories[storyId].chapters;
-            const chCount = chapters ? Object.keys(chapters).length : 0;
-
-            let statusLabel =
-              story.status === "completed"
-                ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
-                : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳ Chưa hoàn thành</span>';
-
-            // Tích hợp hàm kiểm tra click đăng nhập cho phần lịch sử đọc dở
-            grid.innerHTML += `
-                <a href="detail.html?id=${storyId}&ch=${lastCh}" onclick="handleBookClick(event, 'detail.html?id=${storyId}&ch=${lastCh}')" class="book-card">
-                    <div class="book-cover">
-                        <img src="${cover}" alt="">
-                        <div class="history-badge">Ch.${lastCh}</div>
-                        <div class="book-badge">
-                            <span>${chCount} chương</span>
-                        </div>
-                    </div>
-                    <div class="book-title">${statusLabel} <span class="truncate">${story.title}</span></div>
-                    <div class="history-label">Đọc tiếp →</div>
-                </a>`;
-          }
-        });
-        section.style.display = hasValid ? "block" : "none";
-      }
-
-      function renderStoryGrid(allStories) {
-        const grid = document.getElementById("story-list-grid");
-        grid.innerHTML = "";
-        renderReadingHistory(allStories);
-
-        if (!allStories) {
-          if (isAdmin)
-            grid.innerHTML = `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></div></a>`;
-          return;
-        }
-
-        Object.keys(allStories).forEach((storyId) => {
-          const story = allStories[storyId].story_info;
-          if (!story) return;
-          const cover =
-            story.cover ||
-            "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
-          const chapters = allStories[storyId].chapters;
-          const chCount = chapters ? Object.keys(chapters).length : 0;
-
-          let statusLabel =
-            story.status === "completed"
-              ? '<span class="text-[10px] bg-green-100 text-green-700 px-1 rounded font-bold flex-shrink-0">✓ Xong</span>'
-              : '<span class="text-[10px] bg-amber-100 text-amber-700 px-1 rounded font-bold flex-shrink-0">⏳ Chưa hoàn thành</span>';
-
-          // 👑 CHIẾC BẪY THÔNG MINH: Lồng hàm handleBookClick vào thẻ <a> để chặn độc giả vãng lai ngay từ trang chủ
-          grid.innerHTML += `
-            <a href="detail.html?id=${storyId}" onclick="handleBookClick(event, 'detail.html?id=${storyId}')" class="book-card">
-                <div class="book-cover">
-                    <img src="${cover}" alt="">
-                    <div class="book-badge">
-                        <span>${chCount} chương</span>
-                    </div>
-                </div>
-                <div class="book-title">${statusLabel} <span class="truncate">${story.title}</span></div>
-                <div class="book-author">${story.author || "Khuyết danh"}</div>
-            </a>`;
-        });
-
-        if (isAdmin) {
-          grid.innerHTML += `<a href="editor.html" class="add-card"><div class="add-content"><div class="add-icon">+</div><div class="add-text">Thêm truyện</div></div></a>`;
-        }
-      }
-
       database.ref("stories").on("value", (snapshot) => {
-        renderStoryGrid(snapshot.val());
+        const stories = snapshot.val();
+        renderStoryGrid(stories);
       });
     </script>
   </body>

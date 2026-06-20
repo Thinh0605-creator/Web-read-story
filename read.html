@@ -9,12 +9,16 @@
     <title>Đọc Truyện - Chạm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <style>
-      .font-story {
+      .font-story-serif {
         font-family: "Merriweather", serif;
+      }
+      
+      .font-story-sans {
+        font-family: "Inter", sans-serif;
       }
 
       .story-content-wrapper p {
@@ -64,6 +68,27 @@
 
       .horizontal-mode::-webkit-scrollbar {
         display: none !important;
+      }
+
+      .progress-container {
+        position: fixed;
+        top: 45px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: transparent;
+        z-index: 49;
+      }
+      @media (min-width: 768px) {
+        .progress-container {
+          top: 53px;
+        }
+      }
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: #c27b2a;
+        transition: width 0.1s ease-out;
       }
     </style>
   </head>
@@ -124,10 +149,13 @@
       </div>
     </nav>
 
+    <div class="progress-container">
+      <div class="progress-bar" id="reading-progress"></div>
+    </div>
+
     <main
       class="max-w-2xl mx-auto px-4 pt-4 pb-24 md:py-10 flex-1 w-full flex flex-col justify-between relative"
     >
-      <!-- ⏳ KHUNG THÔNG BÁO KIỂM TRA QUYỀN TRUY CẬP ĐĂNG NHẬP -->
       <div id="loading" class="text-center text-stone-400 py-10 flex-1 font-medium">
         ⏳ Đang kiểm tra quyền truy cập phòng đọc...
       </div>
@@ -139,7 +167,7 @@
         <div>
           <h1
             id="render-title"
-            class="text-2xl md:text-3xl font-bold mb-2 text-center md:text-left text-amber-600 font-story hidden md:block"
+            class="text-2xl md:text-3xl font-bold mb-2 text-center md:text-left text-amber-600 hidden md:block"
           ></h1>
           <p
             id="render-date"
@@ -194,6 +222,17 @@
                 ↕+
               </button>
             </div>
+            
+            <div class="flex items-center gap-2">
+              <button
+                onclick="toggleStoryFontFamily()"
+                class="px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-lg font-bold transition text-stone-700 flex items-center gap-1 text-xs"
+                id="btn-change-font-family"
+              >
+                🔤 Kiểu chữ: Có chân
+              </button>
+            </div>
+
             <div
               class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold"
               id="badge-mode"
@@ -205,9 +244,46 @@
           <div class="w-full overflow-hidden">
             <article
               id="render-content"
-              class="story-content-wrapper font-story text-justify md:border-t md:border-stone-200 md:pt-6 transition-all duration-300"
+              class="story-content-wrapper text-justify md:border-t md:border-stone-200 md:pt-6 transition-all duration-300"
               style="font-size: 19px; line-height: 1.6"
             ></article>
+          </div>
+        </div>
+
+        <!-- 👑 HỆ THỐNG BÌNH LUẬN REAL-TIME CỦA CHẠM -->
+        <div class="mt-14 border-t border-stone-200 pt-8 pb-4" id="comment-section-wrapper">
+          <h3 class="font-semibold text-stone-800 text-sm md:text-base mb-4 flex items-center gap-2">
+            💬 Độc giả thảo luận <span id="comment-count-badge" class="bg-stone-200 text-stone-600 px-2 py-0.5 rounded-full text-xs font-bold">0</span>
+          </h3>
+          
+          <!-- Khung nhập bình luận (Chỉ hiện khi đã đăng nhập) -->
+          <div id="comment-form" class="mb-6">
+            <div class="flex gap-3 items-start">
+              <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0" id="comment-avatar">
+                👤
+              </div>
+              <div class="flex-1">
+                <textarea 
+                  id="comment-input" 
+                  rows="2" 
+                  class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-white outline-none focus:border-amber-600 font-medium placeholder-stone-400 resize-none transition"
+                  placeholder="Cậu thấy chương truyện này thế nào? Chia sẻ cùng Chạm nhé... ✨"
+                ></textarea>
+                <div class="flex justify-end mt-2">
+                  <button 
+                    onclick="submitComment()" 
+                    class="bg-stone-900 text-white font-semibold text-xs px-4 py-2 rounded-lg transition hover:bg-stone-800 shadow-sm"
+                  >
+                    Gửi bình luận
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danh sách hiển thị bình luận đổ từ Firebase -->
+          <div id="comment-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+            <div class="text-center text-xs text-stone-400 italic py-4">Đang tải thảo luận của độc giả...</div>
           </div>
         </div>
 
@@ -262,16 +338,15 @@
       let currentLineHeight = 1.6;
       let isDarkMode = false;
       let userAuthenticated = false;
+      let activeUsername = "Độc giả";
 
-      let readingMode =
-        localStorage.getItem("tramnang_default_reading_mode") || "vertical";
+      let storyFontType = localStorage.getItem("tramnang_story_font_type") || "serif";
+      let readingMode = localStorage.getItem("tramnang_default_reading_mode") || "vertical";
 
       if (storyId) {
-        document.getElementById("back-to-detail").href =
-          `detail.html?id=${storyId}`;
+        document.getElementById("back-to-detail").href = `detail.html?id=${storyId}`;
       }
 
-      // 👑 CHIẾC KHÓA BẢO MẬT: Quét tài khoản, đá khách vãng lai ra ngoài
       firebase.auth().onAuthStateChanged((user) => {
         if (!user) {
           userAuthenticated = false;
@@ -288,9 +363,144 @@
           }, 3000);
         } else {
           userAuthenticated = true;
+          
+          // Bốc lấy tên hiển thị Username thực của thành viên để gán vào avatar bình luận
+          database.ref(`users/${user.uid}/profile`).once('value').then((snap) => {
+            const prof = snap.val();
+            if (prof && prof.username) {
+              activeUsername = prof.username;
+              const avt = document.getElementById("comment-avatar");
+              if (avt) avt.innerText = prof.username.charAt(0).toUpperCase();
+            }
+          });
+
           loadChapter(currentChapter);
+          listenToCommentsRealtime(); // Kích hoạt lắng nghe bình luận trực tiếp
         }
       });
+
+      // 👑 JAVASCRIPT LẮNG NGHE BÌNH LUẬN THỜI GIAN THỰC ĐỔ TỪ FIREBASE
+      function listenToCommentsRealtime() {
+        if (!storyId) return;
+        
+        database.ref(`comments/${storyId}/chuong_${currentChapter}`).on('value', (snapshot) => {
+          const listContainer = document.getElementById("comment-list");
+          const countBadge = document.getElementById("comment-count-badge");
+          const data = snapshot.val();
+
+          if (!data) {
+            countBadge.innerText = "0";
+            listContainer.innerHTML = '<div class="text-center text-xs text-stone-400 italic py-6">Chương này chưa có bình luận nào, cậu mở bát đầu tiên đi nhen! ✨</div>';
+            return;
+          }
+
+          listContainer.innerHTML = "";
+          const keys = Object.keys(data);
+          countBadge.innerText = keys.length;
+
+          // Sắp xếp bình luận mới nhất đẩy lên đầu danh sách
+          keys.sort((a, b) => data[b].timestamp - data[a].timestamp);
+
+          keys.forEach((id) => {
+            const comment = data[id];
+            const timeAgo = formatCommentTime(comment.timestamp);
+            const firstLetter = comment.username ? comment.username.charAt(0).toUpperCase() : "👤";
+
+            listContainer.innerHTML += `
+              <div class="flex gap-3 items-start border-b border-stone-100 pb-3 last:border-b-0">
+                <div class="w-7 h-7 bg-stone-200 text-stone-600 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">
+                  ${firstLetter}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs font-bold text-stone-800 truncate">${comment.username}</span>
+                    <span class="text-[10px] text-stone-400 font-medium">🕒 ${timeAgo}</span>
+                  </div>
+                  <p class="text-xs md:text-sm text-stone-600 leading-relaxed break-words font-medium">${comment.content}</p>
+                </div>
+              </div>
+            `;
+          });
+        });
+      }
+
+      // 👑 HÀM GỬI BÌNH LUẬN LÊN HỆ THỐNG CLOUD FIREBASE
+      function submitComment() {
+        const input = document.getElementById("comment-input");
+        const content = input.value.trim();
+
+        if (!content) {
+          alert("Cậu nhập nội dung thảo luận trước khi bấm gửi nhen! 😉");
+          return;
+        }
+
+        const commentData = {
+          username: activeUsername,
+          content: content,
+          timestamp: new Date().getTime()
+        };
+
+        database.ref(`comments/${storyId}/chuong_${currentChapter}`).push(commentData)
+          .then(() => {
+            input.value = ""; // Gửi xong dọn sạch ô nhập liệu
+          })
+          .catch((err) => alert("Không gửi được bình luận rồi cậu ơi: " + err.message));
+      }
+
+      // Hàm convert mốc thời gian mili-giây thành chữ trực quan
+      function formatCommentTime(ts) {
+        const diff = new Date().getTime() - ts;
+        const mins = Math.floor(diff / 60000);
+        const hours = Math.floor(mins / 600);
+        const days = Math.floor(hours / 24);
+
+        if (mins < 1) return "Vừa xong";
+        if (mins < 60) return mins + " phút trước";
+        if (hours < 24) return hours + " giờ before";
+        return days + " ngày trước";
+      }
+
+      function updateReadingProgress() {
+        const progressBar = document.getElementById("reading-progress");
+        if (!progressBar) return;
+
+        if (readingMode === "horizontal") {
+          const contentBox = document.getElementById("render-content");
+          if (!contentBox || !contentBox.classList.contains("horizontal-mode")) return;
+          
+          const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
+          const percentage = maxScrollLeft > 0 ? (contentBox.scrollLeft / maxScrollLeft) * 100 : 0;
+          progressBar.style.width = percentage + "%";
+        } else {
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const percentage = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+          progressBar.style.width = percentage + "%";
+        }
+      }
+
+      window.addEventListener("scroll", updateReadingProgress);
+
+      function applySavedFontFamily() {
+        const contentBox = document.getElementById("render-content");
+        const fontBtn = document.getElementById("btn-change-font-family");
+        if (!contentBox) return;
+
+        if (storyFontType === "sans") {
+          contentBox.classList.remove("font-story-serif");
+          contentBox.classList.add("font-story-sans");
+          if (fontBtn) fontBtn.innerText = "🔤 Kiểu chữ: Không chân";
+        } else {
+          contentBox.classList.remove("font-story-sans");
+          contentBox.classList.add("font-story-serif");
+          if (fontBtn) fontBtn.innerText = "🔤 Kiểu chữ: Có chân";
+        }
+      }
+
+      function toggleStoryFontFamily() {
+        storyFontType = storyFontType === "serif" ? "sans" : "serif";
+        localStorage.setItem("tramnang_story_font_type", storyFontType);
+        applySavedFontFamily();
+      }
 
       function changeReadingModeAndSave(mode) {
         readingMode = mode;
@@ -308,8 +518,7 @@
           contentBox.classList.add("horizontal-mode");
           if (badge) {
             badge.innerText = "↔️ Chế độ lật ngang";
-            badge.className =
-              "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
+            badge.className = "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
           }
           contentBox.scrollLeft = 0;
           setTimeout(updateHorizontalNavigation, 150);
@@ -317,20 +526,20 @@
           contentBox.classList.remove("horizontal-mode");
           if (badge) {
             badge.innerText = "📜 Chế độ cuộn dọc";
-            badge.className =
-              "text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold";
+            badge.className = "text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold";
           }
           document.getElementById("btn-prev").innerText = "← Chương trước";
           document.getElementById("btn-next").innerText = "Chương sau →";
         }
+        
+        setTimeout(updateReadingProgress, 200);
       }
 
       function navigatePageOrChapter(direction) {
         const contentBox = document.getElementById("render-content");
 
         if (readingMode === "horizontal") {
-          const pageWidth =
-            contentBox.clientWidth + (window.innerWidth < 768 ? 32 : 40);
+          const pageWidth = contentBox.clientWidth + (window.innerWidth < 768 ? 32 : 40);
           const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
 
           if (direction === 1) {
@@ -362,21 +571,17 @@
 
         const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
 
-        btnPrev.innerText =
-          contentBox.scrollLeft <= 15 ? "← Chương trước" : "← Trang trước";
-        btnNext.innerText =
-          contentBox.scrollLeft >= maxScrollLeft - 15
-            ? "Chương sau →"
-            : "Trang sau →";
+        btnPrev.innerText = contentBox.scrollLeft <= 15 ? "← Chương trước" : "← Trang trước";
+        btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 15 ? "Chương sau →" : "Trang sau →";
+            
+        updateReadingProgress();
       }
 
-      document
-        .getElementById("render-content")
-        .addEventListener("scroll", () => {
-          if (readingMode === "horizontal") {
-            updateHorizontalNavigation();
-          }
-        });
+      document.getElementById("render-content").addEventListener("scroll", () => {
+        if (readingMode === "horizontal") {
+          updateHorizontalNavigation();
+        }
+      });
 
       function toggleGlobalDarkMode() {
         isDarkMode = !isDarkMode;
@@ -388,43 +593,31 @@
         const footer = document.getElementById("navigation-footer");
         const btnPrev = document.getElementById("btn-prev");
         const menuSelect = document.getElementById("menu-select-wrapper");
+        const btnFontFamily = document.getElementById("btn-change-font-family");
+        const cWrapper = document.getElementById("comment-section-wrapper");
 
         if (isDarkMode) {
-          body.className =
-            "bg-stone-900 text-stone-200 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden";
-          nav.className =
-            "bg-stone-800 shadow-sm border-b border-stone-700 sticky top-0 z-50 transition-colors duration-300";
-          menuLink.className =
-            "px-2.5 py-1 bg-stone-700 border border-stone-600 rounded-lg text-[11px] md:text-xs font-bold text-stone-300 transition text-decoration-none";
-          if (controlPanel)
-            controlPanel.className =
-              "bg-stone-800 p-3 rounded-xl border border-stone-700 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-sm mb-8 font-medium text-stone-300 transition-colors duration-300";
-          btnDarkMode.className =
-            "px-2.5 py-1 bg-stone-700 border border-stone-600 rounded-lg text-[11px] md:text-xs font-bold text-stone-100 transition";
-          footer.className =
-            "fixed bottom-0 left-0 right-0 md:relative bg-stone-800/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-700 md:border-t md:border-stone-700 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300";
-          btnPrev.className =
-            "px-4 py-2.5 md:py-2 bg-stone-700 rounded-lg text-xs md:text-sm font-bold text-stone-200 transition min-w-[110px]";
-          menuSelect.className =
-            "bg-stone-700 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg border border-stone-600 text-[11px] md:text-xs font-bold flex items-center gap-1";
+          body.className = "bg-stone-900 text-stone-200 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden";
+          nav.className = "bg-stone-800 shadow-sm border-b border-stone-700 sticky top-0 z-50 transition-colors duration-300";
+          menuLink.className = "px-2.5 py-1 bg-stone-700 border border-stone-600 rounded-lg text-[11px] md:text-xs font-bold text-stone-300 transition text-decoration-none";
+          if (controlPanel) controlPanel.className = "bg-stone-800 p-3 rounded-xl border border-stone-700 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-sm mb-8 font-medium text-stone-300 transition-colors duration-300";
+          btnDarkMode.className = "px-2.5 py-1 bg-stone-700 border border-stone-600 rounded-lg text-[11px] md:text-xs font-bold text-stone-100 transition";
+          footer.className = "fixed bottom-0 left-0 right-0 md:relative bg-stone-800/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-700 md:border-t border-stone-700 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300";
+          btnPrev.className = "px-4 py-2.5 md:py-2 bg-stone-700 rounded-lg text-xs md:text-sm font-bold text-stone-200 transition min-w-[110px]";
+          menuSelect.className = "bg-stone-700 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg border border-stone-600 text-[11px] md:text-xs font-bold flex items-center gap-1";
+          if (btnFontFamily) btnFontFamily.className = "px-2.5 py-1.5 bg-stone-700 hover:bg-stone-600 border border-stone-600 rounded-lg font-bold transition text-stone-100 flex items-center gap-1 text-xs";
+          if (cWrapper) cWrapper.className = "mt-14 border-t border-stone-700 pt-8 pb-4";
         } else {
-          body.className =
-            "bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden";
-          nav.className =
-            "bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300";
-          menuLink.className =
-            "px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-500 hover:text-amber-600 transition text-decoration-none";
-          if (controlPanel)
-            controlPanel.className =
-              "bg-white p-3 rounded-xl border border-stone-200 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-xs md:text-sm mb-8 font-medium text-stone-600 transition-colors duration-300";
-          btnDarkMode.className =
-            "px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-700 transition";
-          footer.className =
-            "fixed bottom-0 left-0 right-0 md:relative bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-200 md:border-t md:border-stone-200 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300";
-          btnPrev.className =
-            "px-4 py-2.5 md:py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-xs md:text-sm font-bold text-stone-700 transition min-w-[110px]";
-          menuSelect.className =
-            "bg-stone-100 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg border border-stone-200 text-[11px] md:text-xs font-bold flex items-center gap-1";
+          body.className = "bg-stone-50 text-stone-900 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden";
+          nav.className = "bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50 transition-colors duration-300";
+          menuLink.className = "px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-500 hover:text-amber-600 transition text-decoration-none";
+          if (controlPanel) controlPanel.className = "bg-white p-3 rounded-xl border border-stone-200 shadow-sm hidden md:flex flex-wrap gap-4 items-center justify-start text-xs md:text-sm mb-8 font-medium text-stone-600 transition-colors duration-300";
+          btnDarkMode.className = "px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-lg text-[11px] md:text-xs font-bold text-stone-700 transition";
+          footer.className = "fixed bottom-0 left-0 right-0 md:relative bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-200 md:border-t md:border-stone-200 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300";
+          btnPrev.className = "px-4 py-2.5 md:py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-xs md:text-sm font-bold text-stone-700 transition min-w-[110px]";
+          menuSelect.className = "bg-stone-100 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg border border-stone-200 text-[11px] md:text-xs font-bold flex items-center gap-1";
+          if (btnFontFamily) btnFontFamily.className = "px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-lg font-bold transition text-stone-700 flex items-center gap-1 text-xs";
+          if (cWrapper) cWrapper.className = "mt-14 border-t border-stone-200 pt-8 pb-4";
         }
       }
 
@@ -432,20 +625,20 @@
         currentFontSize += delta;
         if (currentFontSize < 16) currentFontSize = 16;
         if (currentFontSize > 32) currentFontSize = 32;
-        document.getElementById("render-content").style.fontSize =
-          currentFontSize + "px";
+        document.getElementById("render-content").style.fontSize = currentFontSize + "px";
         const display = document.getElementById("font-size-display");
         if (display) display.innerText = currentFontSize + "px";
+        setTimeout(updateReadingProgress, 300);
       }
 
       function changeLineHeight(delta) {
         currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
         if (currentLineHeight < 1.4) currentLineHeight = 1.4;
         if (currentLineHeight > 2.4) currentLineHeight = 2.4;
-        document.getElementById("render-content").style.lineHeight =
-          currentLineHeight;
+        document.getElementById("render-content").style.lineHeight = currentLineHeight;
         const display = document.getElementById("line-height-display");
         if (display) display.innerText = currentLineHeight;
+        setTimeout(updateReadingProgress, 300);
       }
 
       function loadChapter(chNum) {
@@ -504,7 +697,10 @@
               });
 
               document.getElementById("render-content").style.fontSize = currentFontSize + "px";
+              
               applyReadingModeSettings();
+              applySavedFontFamily();
+              listenToCommentsRealtime(); // Tải danh sách comment chuẩn theo số chương vừa nhảy
 
               if (readingMode !== "horizontal") {
                 window.scrollTo(0, 0);
