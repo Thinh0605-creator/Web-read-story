@@ -31,60 +31,127 @@
   </head>
   <body class="min-h-screen flex flex-col">
     <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
-      <div class="max-w-4xl mx-auto px-4 h-[54px] flex items-center justify-between">
-        <a href="index.html" class="font-lora font-bold text-amber-600 text-lg text-decoration-none">Chạm</a>
-        <a href="index.html" class="text-xs font-semibold text-stone-500 hover:text-stone-800 transition text-decoration-none">← Quay lại</a>
+      <div
+        class="max-w-4xl mx-auto px-4 h-[54px] flex items-center justify-between"
+      >
+        <a
+          href="index.html"
+          class="font-lora font-bold text-amber-600 text-lg text-decoration-none"
+          >Chạm</a
+        >
+        <a
+          href="index.html"
+          class="text-xs font-semibold text-stone-500 hover:text-stone-800 transition text-decoration-none"
+          >← Quay lại</a
+        >
       </div>
     </nav>
 
     <!-- Khối Banner Đầu Truyện -->
-    <div class="bg-stone-900 text-stone-100 py-12 px-4 transition-colors">
-      <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 items-center md:items-end relative">
-        <h2 id="render-title" class="font-lora font-bold text-2xl md:text-3xl text-center md:text-left md:absolute md:left-[210px] md:bottom-10 w-full md:w-[calc(100%-240px)]">
-          Đang tải tác phẩm...
-        </h2>
-        <p id="render-author" class="text-stone-400 text-sm italic md:absolute md:left-[210px] md:bottom-4 w-full md:w-[calc(100%-240px)] text-center md:text-left"></p>
+    <div class="bg-stone-900 text-stone-100 py-16 px-4 transition-colors">
+      <div
+        class="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 items-center md:items-start relative min-h-[120px]"
+      >
+        <div
+          class="md:pl-[210px] w-full space-y-2 text-center md:text-left flex flex-col justify-center"
+        >
+          <h2
+            id="render-title"
+            class="font-lora font-bold text-2xl md:text-3xl leading-tight"
+          >
+            Đang tải tác phẩm...
+          </h2>
+          <p id="render-author" class="text-stone-400 text-sm italic"></p>
+        </div>
       </div>
     </div>
 
     <!-- Khối Nội Dung Chính bên dưới -->
-    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-1 grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+    <main
+      class="max-w-4xl mx-auto px-4 py-8 w-full flex-1 grid grid-cols-1 md:grid-cols-4 gap-8 relative"
+    >
       <!-- Cột trái: Ảnh bìa đè lên banner -->
       <div class="md:col-span-1 -mt-24 md:-mt-32 z-10 w-44 mx-auto md:w-full">
-        <div class="bg-stone-100 rounded-xl overflow-hidden shadow-lg border border-stone-200 aspect-[3/4] relative">
-          <img id="render-cover" src="" alt="Bìa truyện" class="w-full h-full object-cover hidden">
-          <div id="cover-skeleton" class="absolute inset-0 bg-stone-200 animate-pulse flex items-center justify-center text-stone-400 text-xs font-medium">⏳</div>
+        <div
+          class="bg-stone-100 rounded-xl overflow-hidden shadow-lg border border-stone-200 aspect-[3/4] relative"
+        >
+          <img
+            id="render-cover"
+            src=""
+            alt="Bìa truyện"
+            class="w-full h-full object-cover hidden"
+          />
+          <div
+            id="cover-skeleton"
+            class="absolute inset-0 bg-stone-200 animate-pulse flex items-center justify-center text-stone-400 text-xs font-medium"
+          >
+            ⏳
+          </div>
         </div>
       </div>
 
       <!-- Cột phải: Thông tin, tóm tắt và danh sách chương -->
       <div class="md:col-span-3 space-y-6">
         <div class="flex flex-wrap gap-3 items-center">
-          <a id="btn-start-reading" href="#" class="px-5 py-2.5 bg-stone-900 text-white rounded-lg text-xs md:text-sm font-bold shadow hover:bg-stone-800 transition text-decoration-none hidden">
+          <a
+            id="btn-start-reading"
+            href="#"
+            class="px-5 py-2.5 bg-stone-900 text-white rounded-lg text-xs md:text-sm font-bold shadow hover:bg-stone-800 transition text-decoration-none hidden"
+          >
             Đọc tác phẩm
           </a>
-          
+
           <!-- 👑 NÚT THẢ TIM TRUYỆN XIN XẮN -->
-          <button id="btn-favorite-story" onclick="toggleFavoriteStory()" class="px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none">
-            💖 Thả tim tác phẩm
+          <button
+            id="btn-favorite-story"
+            onclick="toggleFavoriteStory()"
+            class="px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none"
+          >
+            💖 Lưu tác phẩm
           </button>
 
-          <button id="btn-admin-delete" onclick="handleDeleteStory()" class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition outline-none hidden">
+          <button
+            id="btn-admin-delete"
+            onclick="handleDeleteStory()"
+            class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition outline-none hidden"
+          >
             🗑️ Xóa tác phẩm (Admin)
           </button>
         </div>
 
         <!-- Khung tóm tắt nội dung -->
-        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-2">
-          <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2">Tóm tắt nội dung</h3>
-          <p id="render-summary" class="text-sm text-stone-600 leading-relaxed font-medium pt-1">Tác phẩm chưa có tóm tắt.</p>
+        <div
+          class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-2"
+        >
+          <h3
+            class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2"
+          >
+            Tóm tắt nội dung
+          </h3>
+          <p
+            id="render-summary"
+            class="text-sm text-stone-600 leading-relaxed font-medium pt-1"
+          >
+            Tác phẩm chưa có tóm tắt.
+          </p>
         </div>
 
         <!-- Danh mục chương truyện -->
-        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
-          <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2">Danh mục chương</h3>
-          <div id="chapter-list-container" class="divide-y divide-stone-100 max-h-[300px] overflow-y-auto pr-1">
-            <div class="text-stone-400 text-xs italic py-4 text-center">Đang bốc danh sách chương từ máy chủ...</div>
+        <div
+          class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-3"
+        >
+          <h3
+            class="text-xs font-bold text-stone-400 uppercase tracking-wider border-b pb-2"
+          >
+            Danh mục chương
+          </h3>
+          <div
+            id="chapter-list-container"
+            class="divide-y divide-stone-100 max-h-[300px] overflow-y-auto pr-1"
+          >
+            <div class="text-stone-400 text-xs italic py-4 text-center">
+              Đang bốc danh sách chương từ máy chủ...
+            </div>
           </div>
         </div>
       </div>
@@ -124,30 +191,36 @@
 
         if (user) {
           currentUid = user.uid;
-          
-          database.ref(`users/${user.uid}/profile`).on('value', (snapshot) => {
+
+          database.ref(`users/${user.uid}/profile`).on("value", (snapshot) => {
             const profile = snapshot.val();
             const role = profile?.role || "user";
 
-            if (user.email === "nguyenhuuthinh0506@gmail.com" || role === "admin") {
-              delBtn.classList.remove("hidden"); 
+            if (
+              user.email === "nguyenhuuthinh0506@gmail.com" ||
+              role === "admin"
+            ) {
+              delBtn.classList.remove("hidden");
             } else {
               delBtn.classList.add("hidden");
             }
           });
 
           // Lắng nghe xem tài khoản này đã thả tim bộ truyện này chưa
-          database.ref(`users/${user.uid}/favorites/${storyId}`).on('value', (snapshot) => {
-            isFavorited = snapshot.val() === true;
-            if (isFavorited) {
-              favBtn.innerHTML = "❤️ Đã thả tim";
-              favBtn.className = "px-5 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-red-100 transition flex items-center gap-1.5 outline-none";
-            } else {
-              favBtn.innerHTML = "💖 Thả tim tác phẩm";
-              favBtn.className = "px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none";
-            }
-          });
-
+          database
+            .ref(`users/${user.uid}/favorites/${storyId}`)
+            .on("value", (snapshot) => {
+              isFavorited = snapshot.val() === true;
+              if (isFavorited) {
+                favBtn.innerHTML = "❤️ Đã lưu";
+                favBtn.className =
+                  "px-5 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-red-100 transition flex items-center gap-1.5 outline-none";
+              } else {
+                favBtn.innerHTML = "💖 Lưu tác phẩm";
+                favBtn.className =
+                  "px-5 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg text-xs md:text-sm font-bold shadow-sm hover:bg-stone-50 transition flex items-center gap-1.5 outline-none";
+              }
+            });
         } else {
           currentUid = null;
           delBtn.classList.add("hidden");
@@ -158,15 +231,20 @@
       // 👑 HÀM XỬ LÝ BẤM NÚT THẢ TIM / HỦY THẢ TIM TRUYỆN
       function toggleFavoriteStory() {
         if (!currentUid) {
-          alert("Cậu đăng nhập tài khoản Chạm ngoài trang chủ để mở khóa tính năng Thả tim lưu trữ nhen! ✨");
+          alert(
+            "Cậu đăng nhập tài khoản Chạm ngoài trang chủ để mở khóa tính năng Thả tim lưu trữ nhen! ✨",
+          );
           window.location.href = "index.html";
           return;
         }
 
         isFavorited = !isFavorited;
-        database.ref(`users/${currentUid}/favorites/${storyId}`).set(isFavorited ? true : null)
+        database
+          .ref(`users/${currentUid}/favorites/${storyId}`)
+          .set(isFavorited ? true : null)
           .then(() => {
-            if (isFavorited) alert("Đã thêm tác phẩm vào kệ sách yêu thích của cậu! 🥰");
+            if (isFavorited)
+              alert("Đã thêm tác phẩm vào kệ sách yêu thích của cậu! 🥰");
           });
       }
 
@@ -174,15 +252,18 @@
       database.ref(`stories/${storyId}`).on("value", (snapshot) => {
         const data = snapshot.val();
         if (!data || !data.story_info) {
-          document.getElementById("render-title").innerText = "Tác phẩm không tồn tại hoặc đã bị gỡ bỏ nhen cậu!";
+          document.getElementById("render-title").innerText =
+            "Tác phẩm không tồn tại hoặc đã bị gỡ bỏ nhen cậu!";
           return;
         }
 
         const info = data.story_info;
         document.title = info.title + " - Chạm";
         document.getElementById("render-title").innerText = info.title;
-        document.getElementById("render-author").innerText = "Tác giả: " + (info.author || "Khuyết danh");
-        document.getElementById("render-summary").innerText = info.summary || "Tác phẩm hiện tại chưa có phần tóm tắt nội dung.";
+        document.getElementById("render-author").innerText =
+          "Tác giả: " + (info.author || "Khuyết danh");
+        document.getElementById("render-summary").innerText =
+          info.summary || "Tác phẩm hiện tại chưa có phần tóm tắt nội dung.";
 
         const imgElement = document.getElementById("render-cover");
         const skeleton = document.getElementById("cover-skeleton");
@@ -193,7 +274,8 @@
             skeleton.classList.add("hidden");
           };
         } else {
-          imgElement.src = "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
+          imgElement.src =
+            "https://images.unsplash.com/photo-1543004218-ee141104595e?auto=format&fit=crop&q=80&w=500";
           imgElement.onload = () => {
             imgElement.classList.remove("hidden");
             skeleton.classList.add("hidden");
@@ -206,14 +288,18 @@
         const readBtn = document.getElementById("btn-start-reading");
 
         if (!chapters) {
-          chContainer.innerHTML = '<div class="text-stone-400 text-xs italic py-4 text-center">Tác phẩm này hiện tại chưa có chương nào lên sóng... ⏳</div>';
+          chContainer.innerHTML =
+            '<div class="text-stone-400 text-xs italic py-4 text-center">Tác phẩm này hiện tại chưa có chương nào lên sóng... ⏳</div>';
           readBtn.classList.add("hidden");
           return;
         }
 
         chContainer.innerHTML = "";
         const chKeys = Object.keys(chapters).sort((a, b) => {
-          return parseInt(a.replace("chuong_", "")) - parseInt(b.replace("chuong_", ""));
+          return (
+            parseInt(a.replace("chuong_", "")) -
+            parseInt(b.replace("chuong_", ""))
+          );
         });
 
         if (chKeys.length > 0) {
@@ -235,10 +321,17 @@
       });
 
       function handleDeleteStory() {
-        if (!confirm("Cậu có chắc chắn muốn XÓA VĨNH VIỄN toàn bộ tác phẩm này cùng tất cả các chương và bình luận của nó không? Không rút lại được đâu nha cậu ơi!")) return;
-        
+        if (
+          !confirm(
+            "Cậu có chắc chắn muốn XÓA VĨNH VIỄN toàn bộ tác phẩm này cùng tất cả các chương và bình luận của nó không? Không rút lại được đâu nha cậu ơi!",
+          )
+        )
+          return;
+
         // Tiến hành xóa sạch dữ liệu truyện lẫn bình luận liên quan trên Firebase
-        database.ref(`stories/${storyId}`).remove()
+        database
+          .ref(`stories/${storyId}`)
+          .remove()
           .then(() => {
             database.ref(`comments/${storyId}`).remove();
             alert("Đã gỡ bỏ toàn bộ tác phẩm thành công!");
