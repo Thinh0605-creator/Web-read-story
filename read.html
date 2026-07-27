@@ -12,64 +12,29 @@
       href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <!-- 👑 NHÚNG THƯ VIỆN SWIPER JS ĐỂ LƯỚT TAY MƯỢT NHƯ WATTPAD -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <style>
       .font-story-serif {
         font-family: "Merriweather", serif;
       }
-      
+
       .font-story-sans {
         font-family: "Inter", sans-serif;
       }
 
+      /* Style mặc định chế độ cuộn dọc */
       .story-content-wrapper p {
         text-indent: 28px;
         margin-bottom: 1.5rem;
       }
 
-      @media (min-width: 768px) {
-        .horizontal-mode {
-          display: block !important;
-          column-width: calc(100vw - 40px);
-          column-gap: 40px;
-          height: 72vh;
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
-          scroll-snap-type: x mandatory;
-          scroll-behavior: smooth;
-          box-sizing: border-box;
-        }
-        .horizontal-mode p {
-          scroll-snap-align: start;
-          break-inside: auto;
-          text-indent: 28px;
-          margin-bottom: 1.5rem;
-        }
-      }
-
-      @media (max-width: 767px) {
-        .horizontal-mode {
-          display: block !important;
-          column-width: calc(100vw - 32px) !important;
-          column-gap: 32px !important;
-          height: 62vh !important;
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
-          scroll-snap-type: x mandatory;
-          scroll-behavior: smooth;
-          box-sizing: border-box;
-        }
-        .horizontal-mode p {
-          scroll-snap-align: start;
-          break-inside: auto !important;
-          text-indent: 24px;
-          margin-bottom: 1.25rem;
-        }
-      }
-
-      .horizontal-mode::-webkit-scrollbar {
-        display: none !important;
-      }
-
+      /* Progress Bar cố định phía trên */
       .progress-container {
         position: fixed;
         top: 45px;
@@ -89,6 +54,16 @@
         width: 0%;
         background: #c27b2a;
         transition: width 0.1s ease-out;
+      }
+
+      /* Style riêng cho trang khi lướt ngang dạng Swiper */
+      .swiper-slide {
+        box-sizing: border-box;
+        height: auto;
+      }
+      .horizontal-page p {
+        text-indent: 24px;
+        margin-bottom: 1.25rem;
       }
     </style>
   </head>
@@ -129,7 +104,7 @@
               class="bg-transparent text-amber-600 outline-none cursor-pointer font-bold"
             >
               <option value="vertical">📜 Cuộn dọc</option>
-              <option value="horizontal">↔️ Lật ngang</option>
+              <option value="horizontal">↔️ Lật ngang (Swipe)</option>
             </select>
           </div>
           <button
@@ -222,7 +197,7 @@
                 ↕+
               </button>
             </div>
-            
+
             <div class="flex items-center gap-2">
               <button
                 onclick="toggleStoryFontFamily()"
@@ -241,7 +216,8 @@
             </div>
           </div>
 
-          <div class="w-full overflow-hidden">
+          <!-- KHUNG RENDER NỘI DUNG CHƯƠNG -->
+          <div class="w-full overflow-hidden min-h-[300px]">
             <article
               id="render-content"
               class="story-content-wrapper text-justify md:border-t md:border-stone-200 md:pt-6 transition-all duration-300"
@@ -250,28 +226,27 @@
           </div>
         </div>
 
-        <!-- 👑 HỆ THỐNG BÌNH LUẬN REAL-TIME CỦA CHẠM -->
+        <!-- HỆ THỐNG BÌNH LUẬN REAL-TIME -->
         <div class="mt-14 border-t border-stone-200 pt-8 pb-4" id="comment-section-wrapper">
           <h3 class="font-semibold text-stone-800 text-sm md:text-base mb-4 flex items-center gap-2">
             💬 Độc giả thảo luận <span id="comment-count-badge" class="bg-stone-200 text-stone-600 px-2 py-0.5 rounded-full text-xs font-bold">0</span>
           </h3>
-          
-          <!-- Khung nhập bình luận (Chỉ hiện khi đã đăng nhập) -->
+
           <div id="comment-form" class="mb-6">
             <div class="flex gap-3 items-start">
               <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0" id="comment-avatar">
                 👤
               </div>
               <div class="flex-1">
-                <textarea 
-                  id="comment-input" 
-                  rows="2" 
+                <textarea
+                  id="comment-input"
+                  rows="2"
                   class="w-full border border-stone-200 rounded-lg p-2.5 text-sm bg-white outline-none focus:border-amber-600 font-medium placeholder-stone-400 resize-none transition"
                   placeholder="Cậu thấy chương truyện này thế nào? Chia sẻ cùng Chạm nhé... ✨"
                 ></textarea>
                 <div class="flex justify-end mt-2">
-                  <button 
-                    onclick="submitComment()" 
+                  <button
+                    onclick="submitComment()"
                     class="bg-stone-900 text-white font-semibold text-xs px-4 py-2 rounded-lg transition hover:bg-stone-800 shadow-sm"
                   >
                     Gửi bình luận
@@ -281,22 +256,22 @@
             </div>
           </div>
 
-          <!-- Danh sách hiển thị bình luận đổ từ Firebase -->
           <div id="comment-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
             <div class="text-center text-xs text-stone-400 italic py-4">Đang tải thảo luận của độc giả...</div>
           </div>
         </div>
 
+        <!-- THANH ĐIỀU HƯỚNG CHUYỂN CHƯƠNG -->
         <div
           class="fixed bottom-0 left-0 right-0 md:relative bg-white/90 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-t border-stone-200 md:border-t md:border-stone-200 px-4 py-3 md:px-0 md:py-0 md:mt-12 flex justify-between items-center z-40 transition-colors duration-300"
           id="navigation-footer"
         >
           <button
-            onclick="navigatePageOrChapter(-1)"
+            onclick="navigateChapter(-1)"
             id="btn-prev"
             class="px-4 py-2.5 md:py-2 bg-stone-200 rounded-lg hover:bg-stone-300 text-xs md:text-sm font-bold text-stone-700 transition min-w-[110px]"
           >
-            ← Trước
+            ← Chương trước
           </button>
           <span
             id="current-ch-display"
@@ -304,11 +279,11 @@
             >Chương 1</span
           >
           <button
-            onclick="navigatePageOrChapter(1)"
+            onclick="navigateChapter(1)"
             id="btn-next"
             class="px-4 py-2.5 md:py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs md:text-sm font-bold transition min-w-[110px]"
           >
-            Tiếp theo →
+            Chương sau →
           </button>
         </div>
       </div>
@@ -339,6 +314,8 @@
       let isDarkMode = false;
       let userAuthenticated = false;
       let activeUsername = "Độc giả";
+      let rawStoryContent = ""; // Lưu nội dung thô để switch mode
+      let swiperInstance = null; // Quản lý Swiper lướt ngang
 
       let storyFontType = localStorage.getItem("tramnang_story_font_type") || "serif";
       let readingMode = localStorage.getItem("tramnang_default_reading_mode") || "vertical";
@@ -351,7 +328,7 @@
         if (!user) {
           userAuthenticated = false;
           localStorage.removeItem("wattpad_reading_history");
-          
+
           document.getElementById("loading").innerHTML = `
             <div class="p-6 bg-red-50 border border-red-200 text-red-700 rounded-xl max-w-sm mx-auto text-center shadow-sm">
               <p class="font-bold text-sm mb-1">🔐 Cậu chưa đăng nhập tài khoản</p>
@@ -363,8 +340,7 @@
           }, 3000);
         } else {
           userAuthenticated = true;
-          
-          // Bốc lấy tên hiển thị Username thực của thành viên để gán vào avatar bình luận
+
           database.ref(`users/${user.uid}/profile`).once('value').then((snap) => {
             const prof = snap.val();
             if (prof && prof.username) {
@@ -375,14 +351,13 @@
           });
 
           loadChapter(currentChapter);
-          listenToCommentsRealtime(); // Kích hoạt lắng nghe bình luận trực tiếp
+          listenToCommentsRealtime();
         }
       });
 
-      // 👑 JAVASCRIPT LẮNG NGHE BÌNH LUẬN THỜI GIAN THỰC ĐỔ TỪ FIREBASE
       function listenToCommentsRealtime() {
         if (!storyId) return;
-        
+
         database.ref(`comments/${storyId}/chuong_${currentChapter}`).on('value', (snapshot) => {
           const listContainer = document.getElementById("comment-list");
           const countBadge = document.getElementById("comment-count-badge");
@@ -397,8 +372,6 @@
           listContainer.innerHTML = "";
           const keys = Object.keys(data);
           countBadge.innerText = keys.length;
-
-          // Sắp xếp bình luận mới nhất đẩy lên đầu danh sách
           keys.sort((a, b) => data[b].timestamp - data[a].timestamp);
 
           keys.forEach((id) => {
@@ -424,7 +397,6 @@
         });
       }
 
-      // 👑 HÀM GỬI BÌNH LUẬN LÊN HỆ THỐNG CLOUD FIREBASE
       function submitComment() {
         const input = document.getElementById("comment-input");
         const content = input.value.trim();
@@ -441,13 +413,10 @@
         };
 
         database.ref(`comments/${storyId}/chuong_${currentChapter}`).push(commentData)
-          .then(() => {
-            input.value = ""; // Gửi xong dọn sạch ô nhập liệu
-          })
+          .then(() => { input.value = ""; })
           .catch((err) => alert("Không gửi được bình luận rồi cậu ơi: " + err.message));
       }
 
-      // Hàm convert mốc thời gian mili-giây thành chữ trực quan
       function formatCommentTime(ts) {
         const diff = new Date().getTime() - ts;
         const mins = Math.floor(diff / 60000);
@@ -456,20 +425,19 @@
 
         if (mins < 1) return "Vừa xong";
         if (mins < 60) return mins + " phút trước";
-        if (hours < 24) return hours + " giờ before";
+        if (hours < 24) return hours + " giờ trước";
         return days + " ngày trước";
       }
 
+      // CẬP NHẬT THANH TIẾN TRÌNH ĐỌC (PROGRESS BAR)
       function updateReadingProgress() {
         const progressBar = document.getElementById("reading-progress");
         if (!progressBar) return;
 
-        if (readingMode === "horizontal") {
-          const contentBox = document.getElementById("render-content");
-          if (!contentBox || !contentBox.classList.contains("horizontal-mode")) return;
-          
-          const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
-          const percentage = maxScrollLeft > 0 ? (contentBox.scrollLeft / maxScrollLeft) * 100 : 0;
+        if (readingMode === "horizontal" && swiperInstance) {
+          const totalSlides = swiperInstance.slides.length;
+          const currentSlide = swiperInstance.activeIndex + 1;
+          const percentage = totalSlides > 0 ? (currentSlide / totalSlides) * 100 : 0;
           progressBar.style.width = percentage + "%";
         } else {
           const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -505,83 +473,106 @@
       function changeReadingModeAndSave(mode) {
         readingMode = mode;
         localStorage.setItem("tramnang_default_reading_mode", mode);
-        applyReadingModeSettings();
+        renderContentByMode();
       }
 
-      function applyReadingModeSettings() {
-        const contentBox = document.getElementById("render-content");
+      // 👑 HÀM XỬ LÝ RENDER NỘI DUNG THEO CHẾ ĐỘ (DỌC HOẶC LƯỚT NGANG CỰC MƯỢT)
+      function renderContentByMode() {
+        const articleElement = document.getElementById("render-content");
         const badge = document.getElementById("badge-mode");
-
         document.getElementById("inline-reading-mode").value = readingMode;
 
+        // Xóa instance Swiper cũ nếu có
+        if (swiperInstance) {
+          swiperInstance.destroy(true, true);
+          swiperInstance = null;
+        }
+
         if (readingMode === "horizontal") {
-          contentBox.classList.add("horizontal-mode");
           if (badge) {
-            badge.innerText = "↔️ Chế độ lật ngang";
+            badge.innerText = "↔️ Lật ngang (Swipe)";
             badge.className = "text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold";
           }
-          contentBox.scrollLeft = 0;
-          setTimeout(updateHorizontalNavigation, 150);
+
+          // Tạo khung chứa Swiper
+          articleElement.className = "w-full transition-all duration-300";
+          articleElement.innerHTML = `
+            <div class="swiper story-swiper w-full">
+              <div class="swiper-wrapper" id="swiper-target"></div>
+            </div>
+          `;
+
+          const wrapper = document.getElementById("swiper-target");
+          const paragraphs = rawStoryContent.split("\n").filter((p) => p.trim() !== "");
+
+          let currentSlideHTML = "";
+          let wordCountInSlide = 0;
+          // Khoảng 220 - 250 từ là vừa đủ cho 1 trang màn hình điện thoại/máy tính
+          const WORDS_PER_PAGE = window.innerWidth < 768 ? 110 : 160;
+
+          paragraphs.forEach((pText, index) => {
+            let formattedText = pText
+              .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+              .replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+            currentSlideHTML += `<p class="text-justify indent-6 mb-4">${formattedText}</p>`;
+            wordCountInSlide += pText.split(" ").length;
+
+            if (wordCountInSlide >= WORDS_PER_PAGE || index === paragraphs.length - 1) {
+              const slide = document.createElement("div");
+              slide.className = "swiper-slide horizontal-page select-none";
+              slide.innerHTML = `<div class="story-page-content" style="font-size: ${currentFontSize}px; line-height: ${currentLineHeight};">${currentSlideHTML}</div>`;
+              wrapper.appendChild(slide);
+
+              currentSlideHTML = "";
+              wordCountInSlide = 0;
+            }
+          });
+
+          // Kích hoạt Swiper cảm ứng lướt ngang
+          swiperInstance = new Swiper('.story-swiper', {
+            direction: 'horizontal',
+            loop: false,
+            speed: 250,
+            touchRatio: 1.2,
+            on: {
+              slideChange: function () {
+                updateReadingProgress();
+              }
+            }
+          });
+
+          setTimeout(updateReadingProgress, 100);
+
         } else {
-          contentBox.classList.remove("horizontal-mode");
+          // Chế độ Cuộn Dọc truyền thống
           if (badge) {
             badge.innerText = "📜 Chế độ cuộn dọc";
             badge.className = "text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded font-bold";
           }
-          document.getElementById("btn-prev").innerText = "← Chương trước";
-          document.getElementById("btn-next").innerText = "Chương sau →";
+
+          articleElement.className = "story-content-wrapper text-justify md:border-t md:border-stone-200 md:pt-6 transition-all duration-300";
+          articleElement.innerHTML = "";
+
+          const paragraphs = rawStoryContent.split("\n").filter((p) => p.trim() !== "");
+          paragraphs.forEach((pText) => {
+            let formattedText = pText
+              .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+              .replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+            const pTag = document.createElement("p");
+            pTag.innerHTML = formattedText;
+            articleElement.appendChild(pTag);
+          });
+
+          articleElement.style.fontSize = currentFontSize + "px";
+          articleElement.style.lineHeight = currentLineHeight;
+          window.scrollTo(0, 0);
+          setTimeout(updateReadingProgress, 100);
         }
-        
-        setTimeout(updateReadingProgress, 200);
+
+        applySavedFontFamily();
       }
-
-      function navigatePageOrChapter(direction) {
-        const contentBox = document.getElementById("render-content");
-
-        if (readingMode === "horizontal") {
-          const pageWidth = contentBox.clientWidth + (window.innerWidth < 768 ? 32 : 40);
-          const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
-
-          if (direction === 1) {
-            if (contentBox.scrollLeft >= maxScrollLeft - 15) {
-              navigateChapter(1);
-              return;
-            }
-            contentBox.scrollLeft += pageWidth;
-          } else {
-            if (contentBox.scrollLeft <= 15) {
-              navigateChapter(-1);
-              return;
-            }
-            contentBox.scrollLeft -= pageWidth;
-          }
-
-          setTimeout(updateHorizontalNavigation, 250);
-        } else {
-          navigateChapter(direction);
-        }
-      }
-
-      function updateHorizontalNavigation() {
-        const contentBox = document.getElementById("render-content");
-        const btnPrev = document.getElementById("btn-prev");
-        const btnNext = document.getElementById("btn-next");
-
-        if (!contentBox.classList.contains("horizontal-mode")) return;
-
-        const maxScrollLeft = contentBox.scrollWidth - contentBox.clientWidth;
-
-        btnPrev.innerText = contentBox.scrollLeft <= 15 ? "← Chương trước" : "← Trang trước";
-        btnNext.innerText = contentBox.scrollLeft >= maxScrollLeft - 15 ? "Chương sau →" : "Trang sau →";
-            
-        updateReadingProgress();
-      }
-
-      document.getElementById("render-content").addEventListener("scroll", () => {
-        if (readingMode === "horizontal") {
-          updateHorizontalNavigation();
-        }
-      });
 
       function toggleGlobalDarkMode() {
         isDarkMode = !isDarkMode;
@@ -625,20 +616,18 @@
         currentFontSize += delta;
         if (currentFontSize < 16) currentFontSize = 16;
         if (currentFontSize > 32) currentFontSize = 32;
-        document.getElementById("render-content").style.fontSize = currentFontSize + "px";
         const display = document.getElementById("font-size-display");
         if (display) display.innerText = currentFontSize + "px";
-        setTimeout(updateReadingProgress, 300);
+        renderContentByMode();
       }
 
       function changeLineHeight(delta) {
         currentLineHeight = parseFloat((currentLineHeight + delta).toFixed(1));
         if (currentLineHeight < 1.4) currentLineHeight = 1.4;
         if (currentLineHeight > 2.4) currentLineHeight = 2.4;
-        document.getElementById("render-content").style.lineHeight = currentLineHeight;
         const display = document.getElementById("line-height-display");
         if (display) display.innerText = currentLineHeight;
-        setTimeout(updateReadingProgress, 300);
+        renderContentByMode();
       }
 
       function loadChapter(chNum) {
@@ -681,32 +670,9 @@
               document.getElementById("nav-mobile-title").innerText = `Chương ${data.id}: ${data.title}`;
               document.getElementById("render-date").innerText = "Ngày cập nhật: " + (data.date || "Hôm nay");
 
-              const rawContent = data.content || "";
-              const paragraphs = rawContent.split("\n").filter((p) => p.trim() !== "");
-              const articleElement = document.getElementById("render-content");
-              articleElement.innerHTML = "";
-
-              paragraphs.forEach((pText) => {
-                let formattedText = pText
-                  .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                  .replace(/\*(.*?)\*/g, "<em>$1</em>");
-
-                const pTag = document.createElement("p");
-                pTag.innerHTML = formattedText;
-                articleElement.appendChild(pTag);
-              });
-
-              document.getElementById("render-content").style.fontSize = currentFontSize + "px";
-              
-              applyReadingModeSettings();
-              applySavedFontFamily();
-              listenToCommentsRealtime(); // Tải danh sách comment chuẩn theo số chương vừa nhảy
-
-              if (readingMode !== "horizontal") {
-                window.scrollTo(0, 0);
-              } else {
-                document.getElementById("render-content").scrollLeft = 0;
-              }
+              rawStoryContent = data.content || "";
+              renderContentByMode();
+              listenToCommentsRealtime();
             } else {
               document.getElementById("render-title").innerText = "Chương chưa ra mắt";
               document.getElementById("nav-mobile-title").innerText = "Chương chưa ra mắt";
